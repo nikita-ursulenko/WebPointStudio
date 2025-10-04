@@ -71,6 +71,14 @@ All colors MUST be HSL.
   html {
     scroll-behavior: smooth;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
@@ -88,6 +96,8 @@ All colors MUST be HSL.
 
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-2;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .hover-lift:hover {
@@ -96,15 +106,24 @@ All colors MUST be HSL.
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .animate-pulse-slow {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    will-change: opacity;
   }
 
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
+    will-change: background-position;
+  }
+
+  .glass-effect {
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 }
 
