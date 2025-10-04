@@ -1,0 +1,275 @@
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset } from 'react-icons/fa';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+
+const Home = () => {
+  const { t } = useLanguage();
+
+  const features = [
+    { icon: FaRocket, title: t('features.design'), desc: t('features.design.desc') },
+    { icon: FaMobile, title: t('features.responsive'), desc: t('features.responsive.desc') },
+    { icon: FaSearch, title: t('features.seo'), desc: t('features.seo.desc') },
+    { icon: FaHeadset, title: t('features.support'), desc: t('features.support.desc') },
+  ];
+
+  const services = [
+    {
+      title: t('services.landing'),
+      desc: t('services.landing.desc'),
+      price: '€299',
+      features: ['Современный дизайн', 'Адаптивная верстка', 'SEO-оптимизация', 'Форма заявки'],
+      gradient: 'from-blue-500 to-cyan-500',
+    },
+    {
+      title: t('services.business'),
+      desc: t('services.business.desc'),
+      price: '€599',
+      features: ['До 10 страниц', 'CMS админ-панель', 'Интеграция с соцсетями', 'Аналитика'],
+      gradient: 'from-purple-500 to-pink-500',
+      popular: true,
+    },
+    {
+      title: t('services.shop'),
+      desc: t('services.shop.desc'),
+      price: '€999',
+      features: ['Каталог товаров', 'Корзина и оплата', 'Личный кабинет', 'Интеграция доставки'],
+      gradient: 'from-orange-500 to-red-500',
+    },
+  ];
+
+  const stats = [
+    { value: '5+', label: t('about.experience') },
+    { value: '150+', label: t('about.projects') },
+    { value: '98%', label: t('about.clients') },
+  ];
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 90, 0],
+            }}
+            transition={{ duration: 20, repeat: Infinity }}
+            className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.3, 1],
+              rotate: [0, -90, 0],
+            }}
+            transition={{ duration: 25, repeat: Infinity }}
+            className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl"
+          />
+        </div>
+
+        <div className="container mx-auto px-4 pt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-block mb-6"
+            >
+              <div className="glass-effect px-6 py-2 rounded-full border border-primary/30">
+                <span className="text-sm font-medium gradient-text">🚀 Профессиональная разработка сайтов</span>
+              </div>
+            </motion.div>
+
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              {t('hero.title')}
+              <br />
+              <span className="gradient-text">{t('hero.highlight')}</span>
+            </h1>
+
+            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+              {t('hero.subtitle')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 glow-effect text-lg px-8 py-6">
+                <Link to="/contact">{t('hero.cta')}</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="glass-effect border-white/20 text-lg px-8 py-6">
+                <Link to="/portfolio">{t('hero.consultation')}</Link>
+              </Button>
+            </div>
+
+            {/* Quick Contact Buttons */}
+            <div className="flex items-center justify-center gap-4">
+              <a
+                href="https://wa.me/37360123456"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 glass-effect px-6 py-3 rounded-full hover-lift"
+              >
+                <FaWhatsapp className="text-xl text-green-500" />
+                <span className="text-sm font-medium">WhatsApp</span>
+              </a>
+              <a
+                href="https://t.me/webpoint"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 glass-effect px-6 py-3 rounded-full hover-lift"
+              >
+                <FaTelegram className="text-xl text-blue-500" />
+                <span className="text-sm font-medium">Telegram</span>
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20"
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                className="glass-effect p-8 rounded-2xl text-center hover-lift"
+              >
+                <div className="text-5xl font-bold gradient-text mb-2">{stat.value}</div>
+                <div className="text-muted-foreground">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-card">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Почему выбирают <span className="gradient-text">нас</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Мы предлагаем полный спектр услуг для создания успешного веб-присутствия вашего бизнеса
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="glass-effect p-8 hover-lift h-full border-white/10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-6 glow-effect">
+                    <feature.icon className="text-3xl text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.desc}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('services.title')}</h2>
+            <p className="text-xl text-muted-foreground">{t('services.subtitle')}</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="relative"
+              >
+                {service.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <div className="bg-gradient-to-r from-primary to-accent px-4 py-1 rounded-full text-sm font-semibold">
+                      Популярный
+                    </div>
+                  </div>
+                )}
+                <Card className={`glass-effect p-8 h-full hover-lift border-white/10 ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                  <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent mb-2`}>
+                    {service.price}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                  <p className="text-muted-foreground mb-6">{service.desc}</p>
+                  <ul className="space-y-3 mb-8">
+                    {service.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        </div>
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90">
+                    <Link to="/contact">{t('services.order')}</Link>
+                  </Button>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-card">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="glass-effect p-12 md:p-16 rounded-3xl text-center border border-primary/20 glow-effect"
+          >
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              Готовы начать <span className="gradient-text">свой проект?</span>
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Свяжитесь с нами сегодня и получите бесплатную консультацию по вашему проекту
+            </p>
+            <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg px-8 py-6">
+              <Link to="/contact">{t('hero.cta')}</Link>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;

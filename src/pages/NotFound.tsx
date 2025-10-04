@@ -1,21 +1,38 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaHome } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl"
+        />
+      </div>
+
+      <div className="container mx-auto px-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl mx-auto"
+        >
+          <div className="text-9xl font-bold gradient-text mb-4">404</div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Страница не найдена</h1>
+          <p className="text-xl text-muted-foreground mb-8">
+            К сожалению, запрашиваемая страница не существует или была перемещена.
+          </p>
+          <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+            <Link to="/">
+              <FaHome className="mr-2" />
+              Вернуться на главную
+            </Link>
+          </Button>
+        </motion.div>
       </div>
     </div>
   );
