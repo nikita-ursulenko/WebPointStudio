@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,6 +34,14 @@ const Navigation = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const languages = [
+    { code: 'ru' as const, flag: '🇷🇺', name: 'Русский' },
+    { code: 'ro' as const, flag: '🇷🇴', name: 'Română' },
+    { code: 'en' as const, flag: '🇬🇧', name: 'English' },
+  ];
+
+  const currentLanguage = languages.find((lang) => lang.code === language) || languages[0];
 
   return (
     <motion.nav
@@ -73,38 +87,32 @@ const Navigation = () => {
 
           {/* Language Switcher & CTA */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="flex items-center space-x-1 glass-effect rounded-lg p-1">
-              <button
-                onClick={() => setLanguage('ru')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  language === 'ru'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                RU
-              </button>
-              <button
-                onClick={() => setLanguage('ro')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  language === 'ro'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                RO
-              </button>
-              <button
-                onClick={() => setLanguage('en')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  language === 'en'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                EN
-              </button>
-            </div>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="glass-effect border-white/20 hover:bg-white/10 gap-2 focus-visible:outline-none focus-visible:ring-0"
+                >
+                  <span className="text-lg">{currentLanguage.flag}</span>
+                  <span className="font-medium">{currentLanguage.code.toUpperCase()}</span>
+                  <FaChevronDown className="h-3 w-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="glass-effect border-white/20 min-w-[150px]" onCloseAutoFocus={(e) => e.preventDefault()}>
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={`cursor-pointer flex items-center gap-2 ${
+                      language === lang.code ? 'bg-primary/20 text-primary' : ''
+                    }`}
+                  >
+                    <span className="text-lg">{lang.flag}</span>
+                    <span>{lang.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90 glow-effect">
               <Link to="/contact">{t('hero.cta')}</Link>
             </Button>
@@ -144,37 +152,38 @@ const Navigation = () => {
                   {link.label}
                 </Link>
               ))}
-              <div className="flex items-center space-x-2 pt-4">
-                <button
-                  onClick={() => setLanguage('ru')}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                    language === 'ru'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'glass-effect text-foreground'
-                  }`}
-                >
-                  RU
-                </button>
-                <button
-                  onClick={() => setLanguage('ro')}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                    language === 'ro'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'glass-effect text-foreground'
-                  }`}
-                >
-                  RO
-                </button>
-                <button
-                  onClick={() => setLanguage('en')}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                    language === 'en'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'glass-effect text-foreground'
-                  }`}
-                >
-                  EN
-                </button>
+              <div className="pt-4">
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full glass-effect border-white/20 hover:bg-white/10 gap-2 focus-visible:outline-none focus-visible:ring-0"
+                    >
+                      <span className="text-lg">{currentLanguage.flag}</span>
+                      <span className="font-medium">{currentLanguage.name}</span>
+                      <FaChevronDown className="h-3 w-3 opacity-50 ml-auto" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent 
+                    align="start" 
+                    side="bottom"
+                    className="glass-effect border-white/20 w-[calc(100vw-2rem)] max-w-none md:w-auto md:max-w-[150px]" 
+                    onCloseAutoFocus={(e) => e.preventDefault()}
+                  >
+                    {languages.map((lang) => (
+                      <DropdownMenuItem
+                        key={lang.code}
+                        onClick={() => setLanguage(lang.code)}
+                        className={`cursor-pointer flex items-center gap-2 ${
+                          language === lang.code ? 'bg-primary/20 text-primary' : ''
+                        }`}
+                      >
+                        <span className="text-lg">{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <Button asChild className="w-full bg-gradient-to-r from-primary to-accent">
                 <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
