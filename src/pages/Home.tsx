@@ -19,14 +19,14 @@ const Home = () => {
     {
       title: t('services.landing'),
       desc: t('services.landing.desc'),
-      price: '€299',
+      price: '€199',
       features: ['Современный дизайн', 'Адаптивная верстка', 'SEO-оптимизация', 'Форма заявки'],
       gradient: 'from-blue-500 to-cyan-500',
     },
     {
       title: t('services.business'),
       desc: t('services.business.desc'),
-      price: '€599',
+      price: '€499',
       features: ['До 10 страниц', 'CMS админ-панель', 'Интеграция с соцсетями', 'Аналитика'],
       gradient: 'from-purple-500 to-pink-500',
       popular: true,
@@ -34,7 +34,7 @@ const Home = () => {
     {
       title: t('services.shop'),
       desc: t('services.shop.desc'),
-      price: '€999',
+      price: '€899',
       features: ['Каталог товаров', 'Корзина и оплата', 'Личный кабинет', 'Интеграция доставки'],
       gradient: 'from-orange-500 to-red-500',
     },

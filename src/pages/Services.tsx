@@ -14,7 +14,7 @@ const Services = () => {
       icon: FaRocket,
       title: t('services.landing'),
       desc: t('services.landing.desc'),
-      price: '€299',
+      price: '€199',
       time: '7-10 дней',
       features: [
         'Уникальный современный дизайн',
@@ -33,7 +33,7 @@ const Services = () => {
       icon: FaBriefcase,
       title: t('services.business'),
       desc: t('services.business.desc'),
-      price: '€599',
+      price: '€499',
       time: '14-21 день',
       features: [
         'До 10 информационных страниц',
@@ -55,7 +55,7 @@ const Services = () => {
       icon: FaStore,
       title: t('services.shop'),
       desc: t('services.shop.desc'),
-      price: '€999',
+      price: '€899',
       time: '30-45 дней',
       features: [
         'Каталог товаров с фильтрацией',
