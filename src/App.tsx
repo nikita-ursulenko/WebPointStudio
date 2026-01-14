@@ -17,7 +17,6 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Blog from "./pages/Blog";
 import ArticleDetail from "./pages/ArticleDetail";
 import Contact from "./pages/Contact";
-import AdditionalServices from "./pages/AdditionalServices";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Dashboard from "./pages/admin/Dashboard";
@@ -61,7 +60,6 @@ const AppContent = () => (
           <Route path="/blog" element={<PublicLayout><Blog /></PublicLayout>} />
           <Route path="/blog/:id" element={<PublicLayout><ArticleDetail /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-          <Route path="/additional-services" element={<PublicLayout><AdditionalServices /></PublicLayout>} />
           
           {/* Admin Routes without Navigation and Footer */}
           <Route path="/admin/login" element={<Login />} />

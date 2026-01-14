@@ -46,7 +46,7 @@ const SEO = ({
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:locale" content="ru_RU" />
-      <meta property="og:site_name" content="WebPoint - Создание Сайтов в Молдове" />
+      <meta property="og:site_name" content="WebPoint - Создание Сайтов" />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />

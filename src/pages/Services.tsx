@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaCheck, FaRocket, FaStore, FaBriefcase } from 'react-icons/fa';
+import { FaCheck, FaRocket, FaStore, FaBriefcase, FaHeadset, FaSearch, FaBullhorn } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -78,31 +78,40 @@ const Services = () => {
 
   const additionalServices = [
     {
+      icon: FaHeadset,
       title: t('services.additional.support.title'),
+      desc: t('services.additional.support.desc'),
       price: t('services.additional.support.price'),
       features: [
         t('services.additional.support.content'),
         t('services.additional.support.tech'),
         t('services.additional.support.monitoring'),
       ],
+      gradient: 'from-blue-500 to-cyan-500',
     },
     {
+      icon: FaSearch,
       title: t('services.additional.seo.title'),
+      desc: t('services.additional.seo.desc'),
       price: t('services.additional.seo.price'),
       features: [
         t('services.additional.seo.analysis'),
         t('services.additional.seo.optimization'),
         t('services.additional.seo.links'),
       ],
+      gradient: 'from-purple-500 to-pink-500',
     },
     {
+      icon: FaBullhorn,
       title: t('services.additional.ads.title'),
+      desc: t('services.additional.ads.desc'),
       price: t('services.additional.ads.price'),
       features: [
         t('services.additional.ads.google'),
         t('services.additional.ads.facebook'),
         t('services.additional.ads.analytics'),
       ],
+      gradient: 'from-orange-500 to-red-500',
     },
   ];
 
@@ -113,10 +122,6 @@ const Services = () => {
     "provider": {
       "@type": "Organization",
       "name": "WebPoint"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Молдова"
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
@@ -160,8 +165,8 @@ const Services = () => {
     <>
       <SEO
         title="Услуги по созданию сайтов | WebPoint - Цены от €199"
-        description="Лендинг от €199, сайт-визитка от €499, интернет-магазин от €899. Полный спектр услуг по разработке сайтов в Молдове. Сроки от 7 дней. Гарантия качества."
-        keywords="создание сайтов молдова цены, разработка лендинга, сайт визитка цена, интернет магазин молдова, веб разработка кишинев"
+        description="Лендинг от €199, сайт-визитка от €499, интернет-магазин от €899. Полный спектр услуг по разработке сайтов. Сроки от 7 дней. Гарантия качества. Работаем по всему миру."
+        keywords="создание сайтов цены, разработка лендинга, сайт визитка цена, интернет магазин, веб разработка"
         url="/services"
         structuredData={structuredData}
       />
@@ -274,19 +279,31 @@ const Services = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="glass-effect p-6 hover-lift border-white/10">
-                  <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                  <div className="text-2xl font-bold gradient-text mb-4">{service.price}</div>
-                  <ul className="space-y-2 mb-6">
+                <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
+                    <service.icon className="text-white text-2xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                    {service.desc}
+                  </p>
+                  <div className={`text-3xl font-bold mb-6 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                    {service.price}
+                  </div>
+                  <ul className="space-y-3 mb-8 flex-grow">
                     {service.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                        <span>{feature}</span>
+                      <li key={i} className="flex items-start gap-3">
+                        <div className="mt-1 flex-shrink-0">
+                          <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                            <FaCheck className="text-xs text-primary" />
+                          </div>
+                        </div>
+                        <span className="text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button asChild variant="outline" className="w-full glass-effect">
-                    <Link to="/additional-services">{t('services.additional.more')}</Link>
+                  <Button asChild variant="outline" className="w-full glass-effect border-white/20 mt-auto">
+                    <Link to="/contact">{t('services.order')}</Link>
                   </Button>
                 </Card>
               </motion.div>

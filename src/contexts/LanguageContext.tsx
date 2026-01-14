@@ -20,7 +20,7 @@ const translations = {
     // Hero
     'hero.title': 'Создаём сайты, которые',
     'hero.highlight': 'продают',
-    'hero.subtitle': 'Профессиональная разработка сайтов в Молдове. Лендинги, интернет-магазины и корпоративные сайты под ключ с гарантией результата.',
+    'hero.subtitle': 'Профессиональная разработка сайтов. Лендинги, интернет-магазины и корпоративные сайты под ключ с гарантией результата. Работаем по всему миру.',
     'hero.cta': 'Оставить заявку',
     'hero.consultation': 'Бесплатная консультация',
     
@@ -266,7 +266,7 @@ const translations = {
     
     // Footer
     'footer.about': 'О компании',
-    'footer.about.text': 'Мы создаём современные веб-решения для бизнеса в Молдове',
+    'footer.about.text': 'Мы создаём современные веб-решения для бизнеса по всему миру',
     'footer.services': 'Услуги',
     'footer.contact': 'Контакты',
     'footer.social': 'Социальные сети',
@@ -295,7 +295,7 @@ const translations = {
     // Hero
     'hero.title': 'Creăm site-uri care',
     'hero.highlight': 'vând',
-    'hero.subtitle': 'Dezvoltare profesională de site-uri în Moldova. Landing pages, magazine online și site-uri corporative la cheie cu garanție de rezultat.',
+    'hero.subtitle': 'Dezvoltare profesională de site-uri. Landing pages, magazine online și site-uri corporative la cheie cu garanție de rezultat. Lucrăm în întreaga lume.',
     'hero.cta': 'Lasă o cerere',
     'hero.consultation': 'Consultație gratuită',
     
@@ -541,7 +541,7 @@ const translations = {
     
     // Footer
     'footer.about': 'Despre companie',
-    'footer.about.text': 'Creăm soluții web moderne pentru afaceri în Moldova',
+    'footer.about.text': 'Creăm soluții web moderne pentru afaceri din întreaga lume',
     'footer.services': 'Servicii',
     'footer.contact': 'Contacte',
     'footer.social': 'Rețele sociale',
@@ -570,7 +570,7 @@ const translations = {
     // Hero
     'hero.title': 'We create websites that',
     'hero.highlight': 'sell',
-    'hero.subtitle': 'Professional website development in Moldova. Landing pages, online stores and corporate websites turnkey with guaranteed results.',
+    'hero.subtitle': 'Professional website development. Landing pages, online stores and corporate websites turnkey with guaranteed results. We work worldwide.',
     'hero.cta': 'Get a quote',
     'hero.consultation': 'Free consultation',
     
@@ -816,7 +816,7 @@ const translations = {
     
     // Footer
     'footer.about': 'About company',
-    'footer.about.text': 'We create modern web solutions for businesses in Moldova',
+    'footer.about.text': 'We create modern web solutions for businesses worldwide',
     'footer.services': 'Services',
     'footer.contact': 'Contact',
     'footer.social': 'Social networks',
