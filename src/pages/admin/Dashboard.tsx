@@ -1,21 +1,46 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaBlog, FaFolderOpen, FaEye } from 'react-icons/fa';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { blogService } from '@/lib/db';
+import { portfolioService } from '@/lib/db';
 
 const Dashboard = () => {
+  const [blogCount, setBlogCount] = useState<number>(0);
+  const [portfolioCount, setPortfolioCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const [blogArticles, portfolioProjects] = await Promise.all([
+          blogService.getAll(),
+          portfolioService.getAll(),
+        ]);
+        setBlogCount(blogArticles.length);
+        setPortfolioCount(portfolioProjects.length);
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadStats();
+  }, []);
+
   const stats = [
     {
       title: 'Статьи блога',
-      value: '6',
+      value: isLoading ? '...' : blogCount.toString(),
       icon: FaBlog,
       color: 'from-blue-500 to-cyan-500',
       link: '/admin/blog',
     },
     {
       title: 'Проекты портфолио',
-      value: '7',
+      value: isLoading ? '...' : portfolioCount.toString(),
       icon: FaFolderOpen,
       color: 'from-purple-500 to-pink-500',
       link: '/admin/portfolio',
