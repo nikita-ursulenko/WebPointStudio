@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -13,6 +14,23 @@ const Portfolio = () => {
   const [filter, setFilter] = useState<ProjectType>('all');
 
   const projects = [
+    {
+      id: 7,
+      type: 'landing' as ProjectType,
+      title: t('portfolio.project.mded.title'),
+      category: t('portfolio.project.mded.category'),
+      image: '/images/portfolio/mded/site.webp',
+      images: [
+        '/images/portfolio/mded/slide1.webp',
+        '/images/portfolio/mded/slide2.webp',
+        '/images/portfolio/mded/slide3.webp',
+        '/images/portfolio/mded/slide4.webp',
+        '/images/portfolio/mded/slide5.webp',
+      ],
+      problem: t('portfolio.project.mded.problem'),
+      solution: t('portfolio.project.mded.solution'),
+      result: t('portfolio.project.mded.result'),
+    },
     {
       id: 1,
       type: 'landing' as ProjectType,
@@ -174,9 +192,10 @@ const Portfolio = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  className="h-full"
                 >
-                  <Card className="glass-effect overflow-hidden hover-lift border-white/10 group">
-                    <div className="relative h-64 overflow-hidden">
+                  <Card className="glass-effect overflow-hidden hover-lift border-white/10 group h-full flex flex-col">
+                    <div className="relative h-64 overflow-hidden flex-shrink-0">
                       <img
                         src={project.image}
                         alt={project.title}
@@ -189,7 +208,7 @@ const Portfolio = () => {
                       </div>
                     </div>
 
-                    <div className="p-6 space-y-4">
+                    <div className="p-6 flex-grow flex flex-col gap-4">
                       <div>
                         <div className="text-sm font-semibold text-primary mb-1">{t('portfolio.problem')}</div>
                         <p className="text-sm text-muted-foreground">{project.problem}</p>
@@ -205,10 +224,14 @@ const Portfolio = () => {
                         <p className="text-sm font-medium">{project.result}</p>
                       </div>
 
-                      <Button variant="outline" className="w-full glass-effect group">
-                        {t('portfolio.view')}
-                        <FaExternalLinkAlt className="ml-2 group-hover:translate-x-1 transition-transform" />
-                      </Button>
+                      <div className="mt-auto">
+                        <Button variant="outline" asChild className="w-full glass-effect group">
+                          <Link to={`/portfolio/${project.id}`}>
+                            {t('portfolio.view')}
+                            <FaExternalLinkAlt className="ml-2 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   </Card>
                 </motion.div>

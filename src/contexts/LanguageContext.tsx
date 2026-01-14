@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'ru' | 'ro' | 'en';
 
@@ -130,12 +130,14 @@ const translations = {
     'portfolio.solution': 'Решение',
     'portfolio.result': 'Результат',
     'portfolio.view': 'Посмотреть проект',
+    'portfolio.back': 'Вернуться к портфолио',
     
     // Blog
     'blog.title': 'Блог',
     'blog.subtitle': 'Полезные статьи о создании и продвижении сайтов',
     'blog.readMore': 'Читать далее',
     'blog.readTime': 'мин чтения',
+    'blog.back': 'Вернуться к блогу',
     
     // Contact
     'contact.title': 'Свяжитесь с нами',
@@ -204,6 +206,11 @@ const translations = {
     'portfolio.project.restaurant.problem': 'Сеть ресторанов нуждалась в единой платформе',
     'portfolio.project.restaurant.solution': 'Многофункциональный сайт с онлайн-заказом и бронированием',
     'portfolio.project.restaurant.result': '+120% онлайн-заказов, экономия на колл-центре',
+    'portfolio.project.mded.title': 'Ajutor de Stat MDED',
+    'portfolio.project.mded.category': 'Государственный проект',
+    'portfolio.project.mded.problem': 'Требовался современный информационный портал о программе государственной поддержки промышленных инвестиций',
+    'portfolio.project.mded.solution': 'Многоязычный лендинг на WordPress с ACF, Timber и Twig. Современный дизайн, адаптивная верстка, удобная навигация',
+    'portfolio.project.mded.result': 'Профессиональная подача информации о программе, улучшенный UX для граждан и инвесторов',
     
     // Blog
     'blog.categories.all': 'Все статьи',
@@ -382,12 +389,14 @@ const translations = {
     'portfolio.solution': 'Soluție',
     'portfolio.result': 'Rezultat',
     'portfolio.view': 'Vezi proiectul',
+    'portfolio.back': 'Înapoi la portofoliu',
     
     // Blog
     'blog.title': 'Blog',
     'blog.subtitle': 'Articole utile despre crearea și promovarea site-urilor',
     'blog.readMore': 'Citește mai mult',
     'blog.readTime': 'min citire',
+    'blog.back': 'Înapoi la blog',
     
     // Contact
     'contact.title': 'Contactează-ne',
@@ -456,6 +465,11 @@ const translations = {
     'portfolio.project.restaurant.problem': 'Lanțul de restaurante avea nevoie de o platformă unificată',
     'portfolio.project.restaurant.solution': 'Site multifuncțional cu comandă online și rezervare',
     'portfolio.project.restaurant.result': '+120% comenzi online, economie la call-center',
+    'portfolio.project.mded.title': 'Ajutor de Stat MDED',
+    'portfolio.project.mded.category': 'Proiect guvernamental',
+    'portfolio.project.mded.problem': 'Era necesar un portal informativ modern despre programul de sprijin de stat pentru investițiile industriale',
+    'portfolio.project.mded.solution': 'Landing multilingv pe WordPress cu ACF, Timber și Twig. Design modern, layout adaptiv, navigare intuitivă',
+    'portfolio.project.mded.result': 'Prezentare profesională a informațiilor despre program, UX îmbunătățit pentru cetățeni și investitori',
     
     // Blog
     'blog.categories.all': 'Toate articolele',
@@ -634,12 +648,14 @@ const translations = {
     'portfolio.solution': 'Solution',
     'portfolio.result': 'Result',
     'portfolio.view': 'View project',
+    'portfolio.back': 'Back to portfolio',
     
     // Blog
     'blog.title': 'Blog',
     'blog.subtitle': 'Useful articles about website creation and promotion',
     'blog.readMore': 'Read more',
     'blog.readTime': 'min read',
+    'blog.back': 'Back to blog',
     
     // Contact
     'contact.title': 'Contact us',
@@ -708,6 +724,11 @@ const translations = {
     'portfolio.project.restaurant.problem': 'Restaurant chain needed a unified platform',
     'portfolio.project.restaurant.solution': 'Multifunctional website with online ordering and booking',
     'portfolio.project.restaurant.result': '+120% online orders, savings on call center',
+    'portfolio.project.mded.title': 'State Aid MDED',
+    'portfolio.project.mded.category': 'Government project',
+    'portfolio.project.mded.problem': 'A modern information portal was needed about the state support program for industrial investments',
+    'portfolio.project.mded.solution': 'Multilingual landing page on WordPress with ACF, Timber and Twig. Modern design, responsive layout, intuitive navigation',
+    'portfolio.project.mded.result': 'Professional presentation of program information, improved UX for citizens and investors',
     
     // Blog
     'blog.categories.all': 'All articles',
@@ -769,8 +790,31 @@ const translations = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const LANGUAGE_STORAGE_KEY = 'webpoint-language';
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('ru');
+  // Загружаем язык из localStorage при инициализации
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
+      if (savedLanguage && (savedLanguage === 'ru' || savedLanguage === 'ro' || savedLanguage === 'en')) {
+        return savedLanguage;
+      }
+    }
+    return 'ru';
+  });
+
+  // Сохраняем язык в localStorage при изменении
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    }
+  }, [language]);
+
+  // Обертка для setLanguage, чтобы сохранять в localStorage
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+  };
 
   const t = (key: string): string => {
     const langTranslations = translations[language];

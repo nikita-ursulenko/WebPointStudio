@@ -210,7 +210,7 @@ const Services = () => {
                     </div>
                   </div>
                 )}
-                <Card className={`glass-effect p-8 h-full border-white/10 ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
                   <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${pkg.gradient} flex items-center justify-center mb-6 glow-effect`}>
                     <pkg.icon className="text-3xl text-white" />
                   </div>
@@ -225,7 +225,7 @@ const Services = () => {
                     <div className="text-sm text-muted-foreground">Срок: {pkg.time}</div>
                   </div>
 
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-3 mb-8 flex-grow">
                     {pkg.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <div className="mt-1 flex-shrink-0">
@@ -238,7 +238,7 @@ const Services = () => {
                     ))}
                   </ul>
 
-                  <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90">
+                  <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto">
                     <Link to="/contact">{t('services.order')}</Link>
                   </Button>
                 </Card>

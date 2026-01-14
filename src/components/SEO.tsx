@@ -29,7 +29,6 @@ const SEO = ({
   return (
     <Helmet>
       {/* Основные мета-теги */}
-      <html lang="ru" />
       <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
