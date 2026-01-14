@@ -79,7 +79,11 @@ All colors MUST be HSL.
   }
 
   .glass-effect {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-white/5 border border-white/10;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
   }
 
   .glow-effect {
@@ -87,15 +91,20 @@ All colors MUST be HSL.
   }
 
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-2;
+    @apply transition-transform duration-300;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
   }
 
   .hover-lift:hover {
+    transform: translate3d(0, -8px, 0);
     box-shadow: var(--shadow-elegant);
   }
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
   }
 
   .animate-pulse-slow {
@@ -106,14 +115,33 @@ All colors MUST be HSL.
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
+
+  /* Оптимизированные анимации для Safari */
+  .animate-float-glow {
+    animation: float-glow 15s ease-in-out infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .animate-float-glow-slow {
+    animation: float-glow-slow 20s ease-in-out infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* Оптимизация для всех анимаций */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
 }
 
@@ -126,5 +154,28 @@ All colors MUST be HSL.
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+/* Легкие анимации фоновых элементов - только transform, без blur */
+@keyframes float-glow {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(20px, -30px, 0) scale(1.1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes float-glow-slow {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(-20px, 30px, 0) scale(1.15);
+    opacity: 0.5;
   }
 }

@@ -91,11 +91,7 @@ const Portfolio = () => {
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }}
-            transition={{ duration: 20, repeat: Infinity }}
-            className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl"
-          />
+          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-2xl animate-float-glow-slow" />
         </div>
 
         <div className="container mx-auto px-4">
