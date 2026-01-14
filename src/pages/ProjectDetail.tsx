@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle, FaExternalLinkAlt } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,29 +12,133 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { portfolioService } from '@/lib/db';
 import SEO from '@/components/SEO';
 
 type ProjectType = 'landing' | 'business' | 'shop';
 
-interface Project {
+interface ProjectFromAdmin {
   id: number;
   type: ProjectType;
   title: string;
   category: string;
   image: string;
-  images?: string[]; // Массив изображений для слайдера
+  images?: string[];
   problem: string;
   solution: string;
   result: string;
+  website?: string;
+  technologies?: string[];
+  client?: string;
+  date?: string;
+  translations?: {
+    ro?: {
+      title: string;
+      category: string;
+      problem: string;
+      solution: string;
+      result: string;
+    };
+    en?: {
+      title: string;
+      category: string;
+      problem: string;
+      solution: string;
+      result: string;
+    };
+  };
+}
+
+interface DisplayProject {
+  id: number;
+  type: ProjectType;
+  title: string;
+  category: string;
+  image: string;
+  images?: string[];
+  problem: string;
+  solution: string;
+  result: string;
+  website?: string;
+  technologies?: string[];
+  client?: string;
+  date?: string;
 }
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [adminProjects, setAdminProjects] = useState<ProjectFromAdmin[]>([]);
 
-  // Данные проектов (в будущем можно вынести в отдельный файл)
-  const projects: Project[] = [
+  // Загрузка проектов из БД
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const data = await portfolioService.getAll();
+        setAdminProjects(data as ProjectFromAdmin[]);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        // Fallback to localStorage
+        const stored = localStorage.getItem('portfolio_projects');
+        if (stored) {
+          try {
+            setAdminProjects(JSON.parse(stored));
+          } catch (e) {
+            console.error('Error parsing localStorage:', e);
+          }
+        }
+      }
+    };
+    loadProjects();
+  }, []);
+
+  // Преобразование проектов из админ-панели в формат для отображения
+  const getProjectDisplayData = (project: ProjectFromAdmin): DisplayProject => {
+    const translations = project.translations;
+    
+    let title = project.title;
+    let category = project.category;
+    let problem = project.problem;
+    let solution = project.solution;
+    let result = project.result;
+
+    // Используем переводы в зависимости от текущего языка
+    if (translations) {
+      if (language === 'ro' && translations.ro) {
+        title = translations.ro.title || title;
+        category = translations.ro.category || category;
+        problem = translations.ro.problem || problem;
+        solution = translations.ro.solution || solution;
+        result = translations.ro.result || result;
+      } else if (language === 'en' && translations.en) {
+        title = translations.en.title || title;
+        category = translations.en.category || category;
+        problem = translations.en.problem || problem;
+        solution = translations.en.solution || solution;
+        result = translations.en.result || result;
+      }
+    }
+
+    return {
+      id: project.id,
+      type: project.type,
+      title,
+      category,
+      image: project.image,
+      images: project.images,
+      problem,
+      solution,
+      result,
+      website: project.website,
+      technologies: project.technologies,
+      client: project.client,
+      date: project.date,
+    };
+  };
+
+  // Статические проекты из LanguageContext
+  const staticProjects: DisplayProject[] = [
     {
       id: 7,
       type: 'landing',
@@ -113,8 +218,14 @@ const ProjectDetail = () => {
     },
   ];
 
+  // Объединяем статические проекты с проектами из админ-панели
+  const allProjects: DisplayProject[] = [
+    ...staticProjects.filter(sp => !adminProjects.some(ap => ap.id === sp.id)),
+    ...adminProjects.map(getProjectDisplayData),
+  ];
+
   const projectId = id ? parseInt(id, 10) : null;
-  const project = projectId ? projects.find(p => p.id === projectId) : null;
+  const project = projectId ? allProjects.find(p => p.id === projectId) : null;
 
   if (!project) {
     return (
@@ -273,12 +384,12 @@ const ProjectDetail = () => {
                 >
                   <Card className="glass-effect p-6 border-white/10 space-y-6">
                     <div>
-                      <div className="text-sm text-muted-foreground mb-2">Категория</div>
+                      <div className="text-sm text-muted-foreground mb-2">{t('projectDetail.category')}</div>
                       <div className="text-lg font-semibold">{project.category}</div>
                     </div>
 
                     <div>
-                      <div className="text-sm text-muted-foreground mb-2">Тип проекта</div>
+                      <div className="text-sm text-muted-foreground mb-2">{t('projectDetail.type')}</div>
                       <div className="text-lg font-semibold">
                         {project.type === 'landing' && t('services.landing')}
                         {project.type === 'business' && t('services.business')}
@@ -286,8 +397,55 @@ const ProjectDetail = () => {
                       </div>
                     </div>
 
-                    <div className="pt-6 border-t border-white/10">
-                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mb-4">
+                    {project.client && (
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-2">Клиент</div>
+                        <div className="text-lg font-semibold">{project.client}</div>
+                      </div>
+                    )}
+
+                    {project.date && (
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-2">Дата</div>
+                        <div className="text-lg font-semibold">{project.date}</div>
+                      </div>
+                    )}
+
+                    {project.technologies && project.technologies.length > 0 && (
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-2">Технологии</div>
+                        <div className="flex flex-wrap gap-2">
+                          {project.technologies.map((tech, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 rounded-full glass-effect text-sm border border-white/10"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-6 border-t border-white/10 space-y-3">
+                      {project.website && (
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="w-full glass-effect"
+                        >
+                          <a
+                            href={project.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2"
+                          >
+                            Посмотреть сайт
+                            <FaExternalLinkAlt className="h-3 w-3" />
+                          </a>
+                        </Button>
+                      )}
+                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90">
                         <Link to="/contact">
                           {t('services.order')}
                         </Link>

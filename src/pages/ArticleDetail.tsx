@@ -1,81 +1,153 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaArrowLeft, FaClock, FaCalendar } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
+import { blogService } from '@/lib/db';
 import SEO from '@/components/SEO';
+
+type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
+
+interface ArticleTranslations {
+  ro?: {
+    title: string;
+    excerpt: string;
+    content: string;
+    category: string;
+  };
+  en?: {
+    title: string;
+    excerpt: string;
+    content: string;
+    category: string;
+  };
+}
+
+interface ArticleFromAdmin {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  category: string;
+  categoryKey: ArticleCategory;
+  readTime: number;
+  date: string;
+  translations?: ArticleTranslations;
+}
+
+interface DisplayArticle {
+  id: number;
+  title: string;
+  excerpt: string;
+  image: string;
+  category: string;
+  readTime: number;
+  date: string;
+  content: string;
+}
 
 const ArticleDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [adminArticles, setAdminArticles] = useState<ArticleFromAdmin[]>([]);
 
-  // Данные статей (в будущем можно вынести в отдельный файл)
-  const articles = [
-    {
-      id: 1,
-      title: t('blog.article1.title'),
-      excerpt: t('blog.article1.excerpt'),
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80',
-      category: t('blog.article1.category'),
-      readTime: 8,
-      date: '15 января 2025',
-      content: t('blog.article1.content') || 'Полное содержание статьи будет здесь...',
-    },
-    {
-      id: 2,
-      title: t('blog.article2.title'),
-      excerpt: t('blog.article2.excerpt'),
-      image: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=1200&q=80',
-      category: t('blog.article2.category'),
-      readTime: 6,
-      date: '12 января 2025',
-      content: t('blog.article2.content') || 'Полное содержание статьи будет здесь...',
-    },
-    {
-      id: 3,
-      title: t('blog.article3.title'),
-      excerpt: t('blog.article3.excerpt'),
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&q=80',
-      category: t('blog.article3.category'),
-      readTime: 7,
-      date: '10 января 2025',
-      content: t('blog.article3.content') || 'Полное содержание статьи будет здесь...',
-    },
-    {
-      id: 4,
-      title: t('blog.article4.title'),
-      excerpt: t('blog.article4.excerpt'),
-      image: 'https://images.unsplash.com/photo-1562577309-2592ab84b1bc?w=1200&q=80',
-      category: t('blog.article4.category'),
-      readTime: 10,
-      date: '8 января 2025',
-      content: t('blog.article4.content') || 'Полное содержание статьи будет здесь...',
-    },
-    {
-      id: 5,
-      title: t('blog.article5.title'),
-      excerpt: t('blog.article5.excerpt'),
-      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200&q=80',
-      category: t('blog.article5.category'),
-      readTime: 5,
-      date: '5 января 2025',
-      content: t('blog.article5.content') || 'Полное содержание статьи будет здесь...',
-    },
-    {
-      id: 6,
-      title: t('blog.article6.title'),
-      excerpt: t('blog.article6.excerpt'),
-      image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1200&q=80',
-      category: t('blog.article6.category'),
-      readTime: 9,
-      date: '3 января 2025',
-      content: t('blog.article6.content') || 'Полное содержание статьи будет здесь...',
-    },
-  ];
+  // Загрузка статей из БД
+  useEffect(() => {
+    const loadArticles = async () => {
+      try {
+        const data = await blogService.getAll();
+        setAdminArticles(data as ArticleFromAdmin[]);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        // Fallback to localStorage
+        const stored = localStorage.getItem('blog_articles');
+        if (stored) {
+          try {
+            setAdminArticles(JSON.parse(stored));
+          } catch (e) {
+            console.error('Error parsing localStorage:', e);
+          }
+        }
+      }
+    };
+    loadArticles();
+  }, []);
+
+  // Преобразование статей из админ-панели в формат для отображения
+  const getArticleDisplayData = (article: ArticleFromAdmin): DisplayArticle => {
+    const translations = article.translations;
+    
+    let title = article.title;
+    let excerpt = article.excerpt;
+    let content = article.content;
+    let category = article.category;
+
+    // Используем переводы в зависимости от текущего языка
+    if (translations) {
+      if (language === 'ro' && translations.ro) {
+        title = translations.ro.title || title;
+        excerpt = translations.ro.excerpt || excerpt;
+        content = translations.ro.content || content;
+        category = translations.ro.category || category;
+      } else if (language === 'en' && translations.en) {
+        title = translations.en.title || title;
+        excerpt = translations.en.excerpt || excerpt;
+        content = translations.en.content || content;
+        category = translations.en.category || category;
+      }
+    }
+
+    return {
+      id: article.id,
+      title,
+      excerpt,
+      image: article.image,
+      category,
+      readTime: article.readTime,
+      date: article.date,
+      content,
+    };
+  };
+
+  // Используем только статьи из БД
+  const allArticles: DisplayArticle[] = adminArticles.map(getArticleDisplayData).sort((a, b) => (b.id || 0) - (a.id || 0)); // Сортировка по ID, чтобы новые были сверху
 
   const articleId = id ? parseInt(id, 10) : null;
-  const article = articleId ? articles.find(a => a.id === articleId) : null;
+  const [currentArticle, setCurrentArticle] = useState<DisplayArticle | null>(null);
+
+  // Загрузка конкретной статьи из БД
+  useEffect(() => {
+    const loadArticle = async () => {
+      if (!articleId) return;
+
+      // Сначала пробуем найти в уже загруженных статьях
+      const foundArticle = allArticles.find(a => a.id === articleId);
+      if (foundArticle) {
+        setCurrentArticle(foundArticle);
+        return;
+      }
+
+      // Если не найдено, загружаем из БД напрямую
+      try {
+        const article = await blogService.getById(articleId);
+        if (article) {
+          const articleFromAdmin = article as ArticleFromAdmin;
+          const displayData = getArticleDisplayData(articleFromAdmin);
+          setCurrentArticle(displayData);
+        }
+      } catch (error) {
+        console.error('Error loading article:', error);
+      }
+    };
+
+    loadArticle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [articleId, adminArticles.length, language]);
+
+  const article = currentArticle || (articleId ? allArticles.find(a => a.id === articleId) : null);
 
   if (!article) {
     return (

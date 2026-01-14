@@ -1,19 +1,128 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { portfolioService } from '@/lib/db';
 import SEO from '@/components/SEO';
 
 type ProjectType = 'all' | 'landing' | 'business' | 'shop';
 
-const Portfolio = () => {
-  const { t } = useLanguage();
-  const [filter, setFilter] = useState<ProjectType>('all');
+interface ProjectFromAdmin {
+  id: number;
+  type: 'landing' | 'business' | 'shop';
+  title: string;
+  category: string;
+  image: string;
+  images?: string[];
+  problem: string;
+  solution: string;
+  result: string;
+  website?: string;
+  technologies?: string[];
+  client?: string;
+  date?: string;
+  translations?: {
+    ro?: {
+      title: string;
+      category: string;
+      problem: string;
+      solution: string;
+      result: string;
+    };
+    en?: {
+      title: string;
+      category: string;
+      problem: string;
+      solution: string;
+      result: string;
+    };
+  };
+}
 
-  const projects = [
+interface DisplayProject {
+  id: number;
+  type: ProjectType;
+  title: string;
+  category: string;
+  image: string;
+  images?: string[];
+  problem: string;
+  solution: string;
+  result: string;
+}
+
+const Portfolio = () => {
+  const { t, language } = useLanguage();
+  const [filter, setFilter] = useState<ProjectType>('all');
+  const [adminProjects, setAdminProjects] = useState<ProjectFromAdmin[]>([]);
+
+  // Загрузка проектов из БД
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const data = await portfolioService.getAll();
+        setAdminProjects(data as ProjectFromAdmin[]);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        // Fallback to localStorage
+        const stored = localStorage.getItem('portfolio_projects');
+        if (stored) {
+          try {
+            setAdminProjects(JSON.parse(stored));
+          } catch (e) {
+            console.error('Error parsing localStorage:', e);
+          }
+        }
+      }
+    };
+    loadProjects();
+  }, []);
+
+  // Преобразование проектов из админ-панели в формат для отображения
+  const getProjectDisplayData = (project: ProjectFromAdmin): DisplayProject => {
+    const translations = project.translations;
+    
+    let title = project.title;
+    let category = project.category;
+    let problem = project.problem;
+    let solution = project.solution;
+    let result = project.result;
+
+    // Используем переводы в зависимости от текущего языка
+    if (translations) {
+      if (language === 'ro' && translations.ro) {
+        title = translations.ro.title || title;
+        category = translations.ro.category || category;
+        problem = translations.ro.problem || problem;
+        solution = translations.ro.solution || solution;
+        result = translations.ro.result || result;
+      } else if (language === 'en' && translations.en) {
+        title = translations.en.title || title;
+        category = translations.en.category || category;
+        problem = translations.en.problem || problem;
+        solution = translations.en.solution || solution;
+        result = translations.en.result || result;
+      }
+    }
+
+    return {
+      id: project.id,
+      type: project.type as ProjectType,
+      title,
+      category,
+      image: project.image,
+      images: project.images,
+      problem,
+      solution,
+      result,
+    };
+  };
+
+  // Статические проекты из LanguageContext
+  const staticProjects: DisplayProject[] = [
     {
       id: 7,
       type: 'landing' as ProjectType,
@@ -93,6 +202,13 @@ const Portfolio = () => {
     },
   ];
 
+  // Объединяем статические проекты с проектами из админ-панели
+  // Проекты из админ-панели имеют приоритет (перезаписывают статические с таким же ID)
+  const allProjects: DisplayProject[] = [
+    ...staticProjects.filter(sp => !adminProjects.some(ap => ap.id === sp.id)),
+    ...adminProjects.map(getProjectDisplayData),
+  ].sort((a, b) => b.id - a.id); // Сортируем по ID (новые сверху)
+
   const filters: { value: ProjectType; label: string }[] = [
     { value: 'all', label: t('portfolio.all') },
     { value: 'landing', label: t('portfolio.landing') },
@@ -101,15 +217,15 @@ const Portfolio = () => {
   ];
 
   const filteredProjects = filter === 'all' 
-    ? projects 
-    : projects.filter(project => project.type === filter);
+    ? allProjects 
+    : allProjects.filter(project => project.type === filter);
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Портфолио проектов WebPoint",
     "description": "Примеры успешно реализованных проектов: лендинги, корпоративные сайты, интернет-магазины",
-    "itemListElement": projects.map((project, index) => ({
+    "itemListElement": allProjects.map((project, index) => ({
       "@type": "ListItem",
       "position": index + 1,
       "item": {

@@ -222,7 +222,7 @@ const Services = () => {
                     <div className={`text-4xl font-bold bg-gradient-to-r ${pkg.gradient} bg-clip-text text-transparent mb-1`}>
                       {pkg.price}
                     </div>
-                    <div className="text-sm text-muted-foreground">Срок: {pkg.time}</div>
+                    <div className="text-sm text-muted-foreground">{t('services.duration')}: {pkg.time}</div>
                   </div>
 
                   <ul className="space-y-3 mb-8 flex-grow">

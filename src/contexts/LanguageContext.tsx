@@ -45,6 +45,7 @@ const translations = {
     'services.time.landing': '7-10 дней',
     'services.time.business': '14-21 день',
     'services.time.shop': '30-45 дней',
+    'services.duration': 'Срок',
     'services.features.landing.design': 'Современный дизайн',
     'services.features.landing.responsive': 'Адаптивная верстка',
     'services.features.landing.seo': 'SEO-оптимизация',
@@ -267,6 +268,18 @@ const translations = {
     'footer.contact': 'Контакты',
     'footer.social': 'Социальные сети',
     'footer.rights': 'Все права защищены',
+    
+    // Project Detail
+    'projectDetail.category': 'Категория',
+    'projectDetail.type': 'Тип проекта',
+    'projectDetail.client': 'Клиент',
+    'projectDetail.date': 'Дата',
+    'projectDetail.technologies': 'Технологии',
+    
+    // Admin Portfolio
+    'admin.portfolio.category': 'Категория',
+    'admin.portfolio.type': 'Тип проекта',
+    'admin.portfolio.typeLabel': 'Тип',
   },
   ro: {
     // Navigation
@@ -304,6 +317,7 @@ const translations = {
     'services.time.landing': '7-10 zile',
     'services.time.business': '14-21 zile',
     'services.time.shop': '30-45 zile',
+    'services.duration': 'Termen',
     'services.features.landing.design': 'Design modern',
     'services.features.landing.responsive': 'Design responsive',
     'services.features.landing.seo': 'Optimizare SEO',
@@ -526,6 +540,18 @@ const translations = {
     'footer.contact': 'Contacte',
     'footer.social': 'Rețele sociale',
     'footer.rights': 'Toate drepturile rezervate',
+    
+    // Project Detail
+    'projectDetail.category': 'Categorie',
+    'projectDetail.type': 'Tipul proiectului',
+    'projectDetail.client': 'Client',
+    'projectDetail.date': 'Data',
+    'projectDetail.technologies': 'Tehnologii',
+    
+    // Admin Portfolio
+    'admin.portfolio.category': 'Categorie',
+    'admin.portfolio.type': 'Tipul proiectului',
+    'admin.portfolio.typeLabel': 'Tip',
   },
   en: {
     // Navigation
@@ -563,6 +589,7 @@ const translations = {
     'services.time.landing': '7-10 days',
     'services.time.business': '14-21 days',
     'services.time.shop': '30-45 days',
+    'services.duration': 'Duration',
     'services.features.landing.design': 'Modern design',
     'services.features.landing.responsive': 'Responsive design',
     'services.features.landing.seo': 'SEO optimization',
@@ -785,6 +812,18 @@ const translations = {
     'footer.contact': 'Contact',
     'footer.social': 'Social networks',
     'footer.rights': 'All rights reserved',
+    
+    // Project Detail
+    'projectDetail.category': 'Category',
+    'projectDetail.type': 'Project Type',
+    'projectDetail.client': 'Client',
+    'projectDetail.date': 'Date',
+    'projectDetail.technologies': 'Technologies',
+    
+    // Admin Portfolio
+    'admin.portfolio.category': 'Category',
+    'admin.portfolio.type': 'Project Type',
+    'admin.portfolio.typeLabel': 'Type',
   },
 };
 

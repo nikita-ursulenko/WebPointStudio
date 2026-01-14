@@ -1,78 +1,116 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaClock, FaArrowRight } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { blogService } from '@/lib/db';
 import SEO from '@/components/SEO';
 
-const Blog = () => {
-  const { t } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
-  const articles = [
-    {
-      id: 1,
-      title: t('blog.article1.title'),
-      excerpt: t('blog.article1.excerpt'),
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-      category: t('blog.article1.category'),
-      categoryKey: 'prices',
-      readTime: 8,
-      date: '15 января 2025',
-    },
-    {
-      id: 2,
-      title: t('blog.article2.title'),
-      excerpt: t('blog.article2.excerpt'),
-      image: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&q=80',
-      category: t('blog.article2.category'),
-      categoryKey: 'tips',
-      readTime: 6,
-      date: '12 января 2025',
-    },
-    {
-      id: 3,
-      title: t('blog.article3.title'),
-      excerpt: t('blog.article3.excerpt'),
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80',
-      category: t('blog.article3.category'),
-      categoryKey: 'tips',
-      readTime: 7,
-      date: '10 января 2025',
-    },
-    {
-      id: 4,
-      title: t('blog.article4.title'),
-      excerpt: t('blog.article4.excerpt'),
-      image: 'https://images.unsplash.com/photo-1562577309-2592ab84b1bc?w=800&q=80',
-      category: t('blog.article4.category'),
-      categoryKey: 'seo',
-      readTime: 10,
-      date: '8 января 2025',
-    },
-    {
-      id: 5,
-      title: t('blog.article5.title'),
-      excerpt: t('blog.article5.excerpt'),
-      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80',
-      category: t('blog.article5.category'),
-      categoryKey: 'design',
-      readTime: 5,
-      date: '5 января 2025',
-    },
-    {
-      id: 6,
-      title: t('blog.article6.title'),
-      excerpt: t('blog.article6.excerpt'),
-      image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80',
-      category: t('blog.article6.category'),
-      categoryKey: 'ecommerce',
-      readTime: 9,
-      date: '3 января 2025',
-    },
-  ];
+interface ArticleTranslations {
+  ro?: {
+    title: string;
+    excerpt: string;
+    content: string;
+    category: string;
+  };
+  en?: {
+    title: string;
+    excerpt: string;
+    content: string;
+    category: string;
+  };
+}
+
+interface ArticleFromAdmin {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  category: string;
+  categoryKey: ArticleCategory;
+  readTime: number;
+  date: string;
+  translations?: ArticleTranslations;
+}
+
+interface DisplayArticle {
+  id: number;
+  title: string;
+  excerpt: string;
+  image: string;
+  category: string;
+  categoryKey: ArticleCategory;
+  readTime: number;
+  date: string;
+}
+
+const Blog = () => {
+  const { t, language } = useLanguage();
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [adminArticles, setAdminArticles] = useState<ArticleFromAdmin[]>([]);
+
+  // Загрузка статей из БД
+  useEffect(() => {
+    const loadArticles = async () => {
+      try {
+        const data = await blogService.getAll();
+        setAdminArticles(data as ArticleFromAdmin[]);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        // Fallback to localStorage
+        const stored = localStorage.getItem('blog_articles');
+        if (stored) {
+          try {
+            setAdminArticles(JSON.parse(stored));
+          } catch (e) {
+            console.error('Error parsing localStorage:', e);
+          }
+        }
+      }
+    };
+    loadArticles();
+  }, []);
+
+  // Преобразование статей из админ-панели в формат для отображения
+  const getArticleDisplayData = (article: ArticleFromAdmin): DisplayArticle => {
+    const translations = article.translations;
+    
+    let title = article.title;
+    let excerpt = article.excerpt;
+    let category = article.category;
+
+    // Используем переводы в зависимости от текущего языка
+    if (translations) {
+      if (language === 'ro' && translations.ro) {
+        title = translations.ro.title || title;
+        excerpt = translations.ro.excerpt || excerpt;
+        category = translations.ro.category || category;
+      } else if (language === 'en' && translations.en) {
+        title = translations.en.title || title;
+        excerpt = translations.en.excerpt || excerpt;
+        category = translations.en.category || category;
+      }
+    }
+
+    return {
+      id: article.id,
+      title,
+      excerpt,
+      image: article.image,
+      category,
+      categoryKey: article.categoryKey,
+      readTime: article.readTime,
+      date: article.date,
+    };
+  };
+
+  // Используем только статьи из БД
+  const articles: DisplayArticle[] = adminArticles.map(getArticleDisplayData).sort((a, b) => (b.id || 0) - (a.id || 0)); // Сортировка по ID, чтобы новые были сверху
 
   const categories = [
     { value: 'all', label: t('blog.categories.all') },
@@ -175,7 +213,7 @@ const Blog = () => {
                     />
                     <div className="absolute top-4 left-4">
                       <div className="bg-primary px-4 py-1 rounded-full text-sm font-semibold">
-                        Рекомендуем
+                        {t('blog.recommended')}
                       </div>
                     </div>
                   </div>
