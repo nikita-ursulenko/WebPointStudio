@@ -2,9 +2,20 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaHome } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const NotFound = () => {
+  const { t } = useLanguage();
+  
   return (
+    <>
+      <SEO
+        title="404 - Страница не найдена | WebPoint"
+        description={t('notfound.subtitle')}
+        url="/404"
+        noindex={true}
+      />
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
@@ -18,19 +29,20 @@ const NotFound = () => {
           className="max-w-2xl mx-auto"
         >
           <div className="text-9xl font-bold gradient-text mb-4">404</div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Страница не найдена</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">{t('notfound.title')}</h1>
           <p className="text-xl text-muted-foreground mb-8">
-            К сожалению, запрашиваемая страница не существует или была перемещена.
+            {t('notfound.subtitle')}
           </p>
           <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
             <Link to="/">
               <FaHome className="mr-2" />
-              Вернуться на главную
+              {t('notfound.button')}
             </Link>
           </Button>
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

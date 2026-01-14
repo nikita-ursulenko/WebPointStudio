@@ -3,6 +3,7 @@ import { FaWhatsapp, FaTelegram, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'rea
 import { useLanguage } from '@/contexts/LanguageContext';
 import ContactForm from '@/components/ContactForm';
 import { Card } from '@/components/ui/card';
+import SEO from '@/components/SEO';
 
 const Contact = () => {
   const { t } = useLanguage();
@@ -10,22 +11,22 @@ const Contact = () => {
   const contactMethods = [
     {
       icon: FaPhone,
-      title: 'Телефон',
+      title: t('contact.phone.label'),
       value: '+373 60 123 456',
       link: 'tel:+37360123456',
       color: 'from-blue-500 to-cyan-500',
     },
     {
       icon: FaEnvelope,
-      title: 'Email',
+      title: t('contact.email.label'),
       value: 'info@webpoint.md',
       link: 'mailto:info@webpoint.md',
       color: 'from-purple-500 to-pink-500',
     },
     {
       icon: FaMapMarkerAlt,
-      title: 'Адрес',
-      value: 'Кишинёв, ул. Пушкина 22',
+      title: t('contact.address.label'),
+      value: t('contact.address.value'),
       link: 'https://maps.google.com',
       color: 'from-orange-500 to-red-500',
     },
@@ -48,24 +49,57 @@ const Contact = () => {
 
   const faq = [
     {
-      question: 'Как долго создаётся сайт?',
-      answer: 'Лендинг - 7-10 дней, сайт-визитка - 14-21 день, интернет-магазин - 30-45 дней.',
+      question: t('contact.faq.q1'),
+      answer: t('contact.faq.a1'),
     },
     {
-      question: 'Какая форма оплаты?',
-      answer: 'Предоплата 50% для начала работ, 50% после сдачи проекта. Возможна рассрочка.',
+      question: t('contact.faq.q2'),
+      answer: t('contact.faq.a2'),
     },
     {
-      question: 'Включена ли техподдержка?',
-      answer: 'Да, гарантийная поддержка от 1 до 6 месяцев в зависимости от пакета.',
+      question: t('contact.faq.q3'),
+      answer: t('contact.faq.a3'),
     },
     {
-      question: 'Можно ли самому редактировать контент?',
-      answer: 'Да, мы предоставляем CMS-панель и обучаем работе с ней.',
+      question: t('contact.faq.q4'),
+      answer: t('contact.faq.a4'),
     },
   ];
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Контакты WebPoint",
+    "description": "Свяжитесь с нами для консультации по разработке сайта",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "WebPoint",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+373-60-123-456",
+        "contactType": "Customer Service",
+        "email": "info@webpoint.md",
+        "areaServed": "MD",
+        "availableLanguage": ["Russian", "Romanian"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Пушкина 22, офис 15",
+        "addressLocality": "Кишинёв",
+        "addressCountry": "MD"
+      }
+    }
+  };
+
   return (
+    <>
+      <SEO
+        title="Контакты | WebPoint - Связаться с нами"
+        description="Свяжитесь с WebPoint для консультации по разработке сайта. Телефон: +373 60 123 456, email: info@webpoint.md. Кишинёв, ул. Пушкина 22. Работаем Пн-Пт 9:00-18:00."
+        keywords="контакты веб студии молдова, связаться с веб разработчиком, консультация по сайту кишинев"
+        url="/contact"
+        structuredData={structuredData}
+      />
     <div className="min-h-screen pt-20">
       {/* Hero */}
       <section className="py-20 relative overflow-hidden">
@@ -124,7 +158,7 @@ const Contact = () => {
               transition={{ delay: 0.3 }}
             >
               <Card className="glass-effect p-8 border-white/10">
-                <h2 className="text-2xl font-bold mb-6">Оставьте заявку</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('contact.form.title')}</h2>
                 <ContactForm />
               </Card>
             </motion.div>
@@ -138,7 +172,7 @@ const Contact = () => {
             >
               {/* Messengers */}
               <Card className="glass-effect p-8 border-white/10">
-                <h3 className="text-xl font-bold mb-6">Быстрая связь</h3>
+                <h3 className="text-xl font-bold mb-6">{t('contact.quick.title')}</h3>
                 <div className="space-y-4">
                   {messengers.map((messenger, index) => (
                     <a
@@ -153,7 +187,7 @@ const Contact = () => {
                       </div>
                       <div>
                         <div className="font-semibold">{messenger.name}</div>
-                        <div className="text-sm text-muted-foreground">Написать сообщение</div>
+                        <div className="text-sm text-muted-foreground">{t('contact.quick.write')}</div>
                       </div>
                     </a>
                   ))}
@@ -162,19 +196,19 @@ const Contact = () => {
 
               {/* Working Hours */}
               <Card className="glass-effect p-8 border-white/10">
-                <h3 className="text-xl font-bold mb-6">Время работы</h3>
+                <h3 className="text-xl font-bold mb-6">{t('contact.hours.title')}</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Пн - Пт</span>
-                    <span className="font-semibold">09:00 - 18:00</span>
+                    <span className="text-muted-foreground">{t('contact.hours.weekdays')}</span>
+                    <span className="font-semibold">{t('contact.hours.weekdays.time')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Суббота</span>
-                    <span className="font-semibold">10:00 - 15:00</span>
+                    <span className="text-muted-foreground">{t('contact.hours.saturday')}</span>
+                    <span className="font-semibold">{t('contact.hours.saturday.time')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Воскресенье</span>
-                    <span className="font-semibold">Выходной</span>
+                    <span className="text-muted-foreground">{t('contact.hours.sunday')}</span>
+                    <span className="font-semibold">{t('contact.hours.sunday.time')}</span>
                   </div>
                 </div>
               </Card>
@@ -204,7 +238,7 @@ const Contact = () => {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Часто задаваемые <span className="gradient-text">вопросы</span>
+              {t('contact.faq.title')}
             </h2>
           </motion.div>
 
@@ -227,6 +261,7 @@ const Contact = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

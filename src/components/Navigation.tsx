@@ -94,6 +94,16 @@ const Navigation = () => {
               >
                 RO
               </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  language === 'en'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                EN
+              </button>
             </div>
             <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90 glow-effect">
               <Link to="/contact">{t('hero.cta')}</Link>
@@ -154,6 +164,16 @@ const Navigation = () => {
                   }`}
                 >
                   RO
+                </button>
+                <button
+                  onClick={() => setLanguage('en')}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                    language === 'en'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'glass-effect text-foreground'
+                  }`}
+                >
+                  EN
                 </button>
               </div>
               <Button asChild className="w-full bg-gradient-to-r from-primary to-accent">

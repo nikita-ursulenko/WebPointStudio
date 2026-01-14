@@ -4,6 +4,7 @@ import { FaCheck, FaRocket, FaStore, FaBriefcase } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import SEO from '@/components/SEO';
 
 const Services = () => {
   const { t } = useLanguage();
@@ -15,16 +16,16 @@ const Services = () => {
       title: t('services.landing'),
       desc: t('services.landing.desc'),
       price: '€199',
-      time: '7-10 дней',
+      time: t('services.time.landing'),
       features: [
-        'Уникальный современный дизайн',
-        'Адаптивная верстка для всех устройств',
-        'SEO-оптимизация и настройка метатегов',
-        'Форма заявки с email-уведомлениями',
-        'Интеграция с Google Analytics',
-        'Настройка хостинга и домена',
-        'Месяц технической поддержки',
-        'Обучение по управлению контентом',
+        t('services.features.landing.full.design'),
+        t('services.features.landing.full.responsive'),
+        t('services.features.landing.full.seo'),
+        t('services.features.landing.full.form'),
+        t('services.features.landing.full.analytics'),
+        t('services.features.landing.full.hosting'),
+        t('services.features.landing.full.support'),
+        t('services.features.landing.full.training'),
       ],
       gradient: 'from-blue-500 to-cyan-500',
     },
@@ -34,18 +35,18 @@ const Services = () => {
       title: t('services.business'),
       desc: t('services.business.desc'),
       price: '€499',
-      time: '14-21 день',
+      time: t('services.time.business'),
       features: [
-        'До 10 информационных страниц',
-        'Уникальный дизайн под ваш бренд',
-        'Административная панель (CMS)',
-        'Форма обратной связи',
-        'Интеграция с социальными сетями',
-        'Блог или новостной раздел',
-        'Мультиязычность (RU/RO)',
-        'Google Maps интеграция',
-        'SEO-оптимизация всех страниц',
-        '3 месяца технической поддержки',
+        t('services.features.business.full.pages'),
+        t('services.features.business.full.design'),
+        t('services.features.business.full.cms'),
+        t('services.features.business.full.contact'),
+        t('services.features.business.full.social'),
+        t('services.features.business.full.blog'),
+        t('services.features.business.full.multilang'),
+        t('services.features.business.full.maps'),
+        t('services.features.business.full.seo'),
+        t('services.features.business.full.support'),
       ],
       gradient: 'from-purple-500 to-pink-500',
       popular: true,
@@ -56,20 +57,20 @@ const Services = () => {
       title: t('services.shop'),
       desc: t('services.shop.desc'),
       price: '€899',
-      time: '30-45 дней',
+      time: t('services.time.shop'),
       features: [
-        'Каталог товаров с фильтрацией',
-        'Корзина и оформление заказа',
-        'Интеграция платежных систем',
-        'Личный кабинет клиента',
-        'Административная панель управления',
-        'Система скидок и промокодов',
-        'Интеграция служб доставки',
-        'Email-уведомления о заказах',
-        'Отзывы и рейтинг товаров',
-        'Мультиязычность и мультивалютность',
-        'SEO-оптимизация товаров',
-        '6 месяцев технической поддержки',
+        t('services.features.shop.full.catalog'),
+        t('services.features.shop.full.cart'),
+        t('services.features.shop.full.payment'),
+        t('services.features.shop.full.account'),
+        t('services.features.shop.full.admin'),
+        t('services.features.shop.full.discounts'),
+        t('services.features.shop.full.delivery'),
+        t('services.features.shop.full.notifications'),
+        t('services.features.shop.full.reviews'),
+        t('services.features.shop.full.multilang'),
+        t('services.features.shop.full.seo'),
+        t('services.features.shop.full.support'),
       ],
       gradient: 'from-orange-500 to-red-500',
     },
@@ -77,23 +78,93 @@ const Services = () => {
 
   const additionalServices = [
     {
-      title: 'Поддержка и развитие',
-      price: '€50/мес',
-      features: ['Обновление контента', 'Техническая поддержка', 'Мониторинг безопасности'],
+      title: t('services.additional.support.title'),
+      price: t('services.additional.support.price'),
+      features: [
+        t('services.additional.support.content'),
+        t('services.additional.support.tech'),
+        t('services.additional.support.monitoring'),
+      ],
     },
     {
-      title: 'SEO-продвижение',
-      price: '€200/мес',
-      features: ['Анализ конкурентов', 'Оптимизация контента', 'Работа со ссылками'],
+      title: t('services.additional.seo.title'),
+      price: t('services.additional.seo.price'),
+      features: [
+        t('services.additional.seo.analysis'),
+        t('services.additional.seo.optimization'),
+        t('services.additional.seo.links'),
+      ],
     },
     {
-      title: 'Контекстная реклама',
-      price: '€150/мес',
-      features: ['Настройка Google Ads', 'Facebook Ads', 'Аналитика и отчеты'],
+      title: t('services.additional.ads.title'),
+      price: t('services.additional.ads.price'),
+      features: [
+        t('services.additional.ads.google'),
+        t('services.additional.ads.facebook'),
+        t('services.additional.ads.analytics'),
+      ],
     },
   ];
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Веб-разработка",
+    "provider": {
+      "@type": "Organization",
+      "name": "WebPoint"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Молдова"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Услуги по созданию сайтов",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Лендинг",
+            "description": "Продающая одностраничная страница для привлечения клиентов"
+          },
+          "price": "199",
+          "priceCurrency": "EUR"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Сайт-визитка",
+            "description": "Многостраничный корпоративный сайт с полной информацией о компании"
+          },
+          "price": "499",
+          "priceCurrency": "EUR"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Интернет-магазин",
+            "description": "Полнофункциональный онлайн-магазин с каталогом, корзиной и системой оплаты"
+          },
+          "price": "899",
+          "priceCurrency": "EUR"
+        }
+      ]
+    }
+  };
+
   return (
+    <>
+      <SEO
+        title="Услуги по созданию сайтов | WebPoint - Цены от €199"
+        description="Лендинг от €199, сайт-визитка от €499, интернет-магазин от €899. Полный спектр услуг по разработке сайтов в Молдове. Сроки от 7 дней. Гарантия качества."
+        keywords="создание сайтов молдова цены, разработка лендинга, сайт визитка цена, интернет магазин молдова, веб разработка кишинев"
+        url="/services"
+        structuredData={structuredData}
+      />
     <div className="min-h-screen pt-20">
       {/* Hero */}
       <section className="py-20 relative overflow-hidden">
@@ -187,10 +258,10 @@ const Services = () => {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Дополнительные <span className="gradient-text">услуги</span>
+              {t('services.additional.title')}
             </h2>
             <p className="text-xl text-muted-foreground">
-              Расширьте возможности вашего сайта
+              {t('services.additional.subtitle')}
             </p>
           </motion.div>
 
@@ -215,7 +286,7 @@ const Services = () => {
                     ))}
                   </ul>
                   <Button asChild variant="outline" className="w-full glass-effect">
-                    <Link to="/contact">Узнать подробнее</Link>
+                    <Link to="/contact">{t('services.additional.more')}</Link>
                   </Button>
                 </Card>
               </motion.div>
@@ -234,18 +305,19 @@ const Services = () => {
             className="glass-effect p-12 rounded-3xl text-center border border-primary/20 glow-effect"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Не нашли подходящий пакет?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Мы создадим индивидуальное предложение под ваши задачи и бюджет
-            </p>
-            <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
-              <Link to="/contact">Получить консультацию</Link>
-            </Button>
+            {t('services.cta.title')}
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            {t('services.cta.subtitle')}
+          </p>
+          <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+            <Link to="/contact">{t('services.cta.button')}</Link>
+          </Button>
           </motion.div>
         </div>
       </section>
     </div>
+    </>
   );
 };
 

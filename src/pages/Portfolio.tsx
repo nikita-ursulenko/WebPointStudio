@@ -4,6 +4,7 @@ import { FaExternalLinkAlt } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import SEO from '@/components/SEO';
 
 type ProjectType = 'all' | 'landing' | 'business' | 'shop';
 
@@ -15,62 +16,62 @@ const Portfolio = () => {
     {
       id: 1,
       type: 'landing' as ProjectType,
-      title: 'Beauty Salon Premium',
-      category: 'Салон красоты',
+      title: t('portfolio.project.beauty.title'),
+      category: t('portfolio.project.beauty.category'),
       image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80',
-      problem: 'Салон терял клиентов из-за отсутствия онлайн-записи',
-      solution: 'Создали лендинг с формой записи и интеграцией WhatsApp',
-      result: '+150% онлайн-записей за первый месяц',
+      problem: t('portfolio.project.beauty.problem'),
+      solution: t('portfolio.project.beauty.solution'),
+      result: t('portfolio.project.beauty.result'),
     },
     {
       id: 2,
       type: 'shop' as ProjectType,
-      title: 'TechStore Moldova',
-      category: 'Электроника',
+      title: t('portfolio.project.tech.title'),
+      category: t('portfolio.project.tech.category'),
       image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&q=80',
-      problem: 'Низкая конверсия продаж онлайн',
-      solution: 'Разработали интуитивный интернет-магазин с быстрой оплатой',
-      result: '+200% онлайн-продаж, средний чек вырос на 40%',
+      problem: t('portfolio.project.tech.problem'),
+      solution: t('portfolio.project.tech.solution'),
+      result: t('portfolio.project.tech.result'),
     },
     {
       id: 3,
       type: 'business' as ProjectType,
-      title: 'Law Firm Pro',
-      category: 'Юридические услуги',
+      title: t('portfolio.project.law.title'),
+      category: t('portfolio.project.law.category'),
       image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80',
-      problem: 'Устаревший сайт не привлекал новых клиентов',
-      solution: 'Создали современный корпоративный сайт с блогом',
-      result: '+85% входящих заявок, улучшение имиджа компании',
+      problem: t('portfolio.project.law.problem'),
+      solution: t('portfolio.project.law.solution'),
+      result: t('portfolio.project.law.result'),
     },
     {
       id: 4,
       type: 'landing' as ProjectType,
-      title: 'Fitness Club Launch',
-      category: 'Фитнес-клуб',
+      title: t('portfolio.project.fitness.title'),
+      category: t('portfolio.project.fitness.category'),
       image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
-      problem: 'Новый клуб нуждался в быстром привлечении членов',
-      solution: 'Яркий лендинг с акциями и онлайн-регистрацией',
-      result: '300+ новых членов за 2 месяца',
+      problem: t('portfolio.project.fitness.problem'),
+      solution: t('portfolio.project.fitness.solution'),
+      result: t('portfolio.project.fitness.result'),
     },
     {
       id: 5,
       type: 'shop' as ProjectType,
-      title: 'Fashion Boutique',
-      category: 'Мода',
+      title: t('portfolio.project.fashion.title'),
+      category: t('portfolio.project.fashion.category'),
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
-      problem: 'Бутик хотел выйти в онлайн-продажи',
-      solution: 'Элегантный интернет-магазин одежды с примеркой AR',
-      result: '€50K+ оборот в первые 3 месяца',
+      problem: t('portfolio.project.fashion.problem'),
+      solution: t('portfolio.project.fashion.solution'),
+      result: t('portfolio.project.fashion.result'),
     },
     {
       id: 6,
       type: 'business' as ProjectType,
-      title: 'Restaurant Chain',
-      category: 'Ресторанный бизнес',
+      title: t('portfolio.project.restaurant.title'),
+      category: t('portfolio.project.restaurant.category'),
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
-      problem: 'Сеть ресторанов нуждалась в единой платформе',
-      solution: 'Многофункциональный сайт с онлайн-заказом и бронированием',
-      result: '+120% онлайн-заказов, экономия на колл-центре',
+      problem: t('portfolio.project.restaurant.problem'),
+      solution: t('portfolio.project.restaurant.solution'),
+      result: t('portfolio.project.restaurant.result'),
     },
   ];
 
@@ -85,7 +86,31 @@ const Portfolio = () => {
     ? projects 
     : projects.filter(project => project.type === filter);
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Портфолио проектов WebPoint",
+    "description": "Примеры успешно реализованных проектов: лендинги, корпоративные сайты, интернет-магазины",
+    "itemListElement": projects.map((project, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "CreativeWork",
+        "name": project.title,
+        "description": `${project.problem} ${project.solution}. Результат: ${project.result}`
+      }
+    }))
+  };
+
   return (
+    <>
+      <SEO
+        title="Портфолио работ | WebPoint - Примеры созданных сайтов"
+        description="Портфолио успешных проектов: лендинги, корпоративные сайты, интернет-магазины. Более 150 реализованных проектов в Молдове. Реальные результаты и кейсы."
+        keywords="портфолио сайтов молдова, примеры лендингов, кейсы веб разработки, создание интернет магазинов кишинев"
+        url="/portfolio"
+        structuredData={structuredData}
+      />
     <div className="min-h-screen pt-20">
       {/* Hero */}
       <section className="py-20 relative overflow-hidden">
@@ -193,6 +218,7 @@ const Portfolio = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

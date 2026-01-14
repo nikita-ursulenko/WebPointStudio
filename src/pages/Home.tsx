@@ -4,9 +4,61 @@ import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset } from 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import SEO from '@/components/SEO';
 
 const Home = () => {
   const { t } = useLanguage();
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "WebPoint",
+    "description": "Профессиональная разработка сайтов в Молдове. Лендинги, интернет-магазины и корпоративные сайты под ключ.",
+    "url": "https://webpoint.md",
+    "logo": "https://webpoint.md/og-image.jpg",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+373-60-123-456",
+      "contactType": "Customer Service",
+      "email": "info@webpoint.md",
+      "availableLanguage": ["Russian", "Romanian"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Кишинёв",
+      "addressCountry": "MD"
+    },
+    "sameAs": [
+      "https://wa.me/37360123456",
+      "https://t.me/webpoint",
+      "https://facebook.com/webpoint",
+      "https://instagram.com/webpoint"
+    ],
+    "areaServed": {
+      "@type": "Country",
+      "name": "Молдова"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Лендинг",
+        "price": "199",
+        "priceCurrency": "EUR"
+      },
+      {
+        "@type": "Offer",
+        "name": "Сайт-визитка",
+        "price": "499",
+        "priceCurrency": "EUR"
+      },
+      {
+        "@type": "Offer",
+        "name": "Интернет-магазин",
+        "price": "899",
+        "priceCurrency": "EUR"
+      }
+    ]
+  };
 
   const features = [
     { icon: FaRocket, title: t('features.design'), desc: t('features.design.desc') },
@@ -20,14 +72,24 @@ const Home = () => {
       title: t('services.landing'),
       desc: t('services.landing.desc'),
       price: '€199',
-      features: ['Современный дизайн', 'Адаптивная верстка', 'SEO-оптимизация', 'Форма заявки'],
+      features: [
+        t('services.features.landing.design'),
+        t('services.features.landing.responsive'),
+        t('services.features.landing.seo'),
+        t('services.features.landing.form'),
+      ],
       gradient: 'from-blue-500 to-cyan-500',
     },
     {
       title: t('services.business'),
       desc: t('services.business.desc'),
       price: '€499',
-      features: ['До 10 страниц', 'CMS админ-панель', 'Интеграция с соцсетями', 'Аналитика'],
+      features: [
+        t('services.features.business.pages'),
+        t('services.features.business.cms'),
+        t('services.features.business.social'),
+        t('services.features.business.analytics'),
+      ],
       gradient: 'from-purple-500 to-pink-500',
       popular: true,
     },
@@ -35,7 +97,12 @@ const Home = () => {
       title: t('services.shop'),
       desc: t('services.shop.desc'),
       price: '€899',
-      features: ['Каталог товаров', 'Корзина и оплата', 'Личный кабинет', 'Интеграция доставки'],
+      features: [
+        t('services.features.shop.catalog'),
+        t('services.features.shop.cart'),
+        t('services.features.shop.account'),
+        t('services.features.shop.delivery'),
+      ],
       gradient: 'from-orange-500 to-red-500',
     },
   ];
@@ -47,6 +114,14 @@ const Home = () => {
   ];
 
   return (
+    <>
+      <SEO
+        title="WebPoint - Создание Сайтов в Молдове | Лендинги, Интернет-магазины"
+        description="Профессиональная разработка сайтов в Молдове. Лендинги от €199, сайты-визитки от €499, интернет-магазины от €899. Современный дизайн, SEO-оптимизация, техническая поддержка. Более 150 реализованных проектов."
+        keywords="создание сайтов молдова, разработка сайтов кишинев, лендинг пейдж, интернет-магазин, сайт-визитка, веб-дизайн молдова, разработка сайтов под ключ"
+        url="/"
+        structuredData={structuredData}
+      />
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -71,7 +146,7 @@ const Home = () => {
               className="inline-block mb-6"
             >
               <div className="glass-effect px-6 py-2 rounded-full border border-primary/30">
-                <span className="text-sm font-medium gradient-text">🚀 Профессиональная разработка сайтов</span>
+                <span className="text-sm font-medium gradient-text">{t('home.hero.badge')}</span>
               </div>
             </motion.div>
 
@@ -150,10 +225,10 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Почему выбирают <span className="gradient-text">нас</span>
+              {t('home.why.title')} <span className="gradient-text">{t('home.why.highlight')}</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Мы предлагаем полный спектр услуг для создания успешного веб-присутствия вашего бизнеса
+              {t('home.why.subtitle')}
             </p>
           </motion.div>
 
@@ -188,8 +263,8 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('services.title')}</h2>
-            <p className="text-xl text-muted-foreground">{t('services.subtitle')}</p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('home.services.title')}</h2>
+            <p className="text-xl text-muted-foreground">{t('home.services.subtitle')}</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -205,7 +280,7 @@ const Home = () => {
                 {service.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                     <div className="bg-gradient-to-r from-primary to-accent px-4 py-1 rounded-full text-sm font-semibold">
-                      Популярный
+                      {t('home.services.popular')}
                     </div>
                   </div>
                 )}
@@ -245,10 +320,10 @@ const Home = () => {
             className="glass-effect p-12 md:p-16 rounded-3xl text-center border border-primary/20 glow-effect"
           >
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Готовы начать <span className="gradient-text">свой проект?</span>
+              {t('home.cta.title')} <span className="gradient-text">{t('home.cta.highlight')}</span>
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Свяжитесь с нами сегодня и получите бесплатную консультацию по вашему проекту
+              {t('home.cta.subtitle')}
             </p>
             <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg px-8 py-6">
               <Link to="/contact">{t('hero.cta')}</Link>
@@ -257,6 +332,7 @@ const Home = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

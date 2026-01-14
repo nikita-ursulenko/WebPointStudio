@@ -4,6 +4,7 @@ import { FaClock, FaArrowRight } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import SEO from '@/components/SEO';
 
 const Blog = () => {
   const { t } = useLanguage();
@@ -11,63 +12,90 @@ const Blog = () => {
   const articles = [
     {
       id: 1,
-      title: 'Сколько стоит создание сайта в Молдове в 2025 году',
-      excerpt: 'Подробный разбор цен на разработку сайтов: от лендингов до интернет-магазинов. Что влияет на стоимость и как не переплатить.',
+      title: t('blog.article1.title'),
+      excerpt: t('blog.article1.excerpt'),
       image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-      category: 'Цены',
+      category: t('blog.article1.category'),
       readTime: 8,
       date: '15 января 2025',
     },
     {
       id: 2,
-      title: '10 ошибок при создании сайта для бизнеса',
-      excerpt: 'Типичные ошибки, которые совершают предприниматели при заказе сайта. Как их избежать и сэкономить деньги.',
+      title: t('blog.article2.title'),
+      excerpt: t('blog.article2.excerpt'),
       image: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&q=80',
-      category: 'Советы',
+      category: t('blog.article2.category'),
       readTime: 6,
       date: '12 января 2025',
     },
     {
       id: 3,
-      title: 'Лендинг или интернет-магазин: что выбрать для старта',
-      excerpt: 'Сравнение типов сайтов для малого бизнеса. Когда нужен лендинг, а когда стоит сразу делать магазин.',
+      title: t('blog.article3.title'),
+      excerpt: t('blog.article3.excerpt'),
       image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80',
-      category: 'Выбор решения',
+      category: t('blog.article3.category'),
       readTime: 7,
       date: '10 января 2025',
     },
     {
       id: 4,
-      title: 'SEO-оптимизация сайта: руководство для новичков',
-      excerpt: 'Базовые принципы SEO, которые должен знать каждый владелец сайта. Как подняться в топ Google без больших бюджетов.',
+      title: t('blog.article4.title'),
+      excerpt: t('blog.article4.excerpt'),
       image: 'https://images.unsplash.com/photo-1562577309-2592ab84b1bc?w=800&q=80',
-      category: 'SEO',
+      category: t('blog.article4.category'),
       readTime: 10,
       date: '8 января 2025',
     },
     {
       id: 5,
-      title: 'Адаптивный дизайн: почему это критично в 2025',
-      excerpt: 'Статистика мобильного трафика в Молдове и почему ваш сайт должен идеально работать на смартфонах.',
+      title: t('blog.article5.title'),
+      excerpt: t('blog.article5.excerpt'),
       image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80',
-      category: 'Дизайн',
+      category: t('blog.article5.category'),
       readTime: 5,
       date: '5 января 2025',
     },
     {
       id: 6,
-      title: 'Интеграция платежных систем для интернет-магазина',
-      excerpt: 'Обзор популярных платежных систем в Молдове: комиссии, особенности подключения и безопасность.',
+      title: t('blog.article6.title'),
+      excerpt: t('blog.article6.excerpt'),
       image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80',
-      category: 'E-commerce',
+      category: t('blog.article6.category'),
       readTime: 9,
       date: '3 января 2025',
     },
   ];
 
-  const categories = ['Все статьи', 'Цены', 'Советы', 'SEO', 'Дизайн', 'E-commerce'];
+  const categories = [
+    t('blog.categories.all'),
+    t('blog.categories.prices'),
+    t('blog.categories.tips'),
+    t('blog.categories.seo'),
+    t('blog.categories.design'),
+    t('blog.categories.ecommerce'),
+  ];
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Блог WebPoint",
+    "description": "Полезные статьи о создании и продвижении сайтов",
+    "url": "https://webpoint.md/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "WebPoint"
+    }
+  };
 
   return (
+    <>
+      <SEO
+        title="Блог о веб-разработке | WebPoint - Полезные статьи о создании сайтов"
+        description="Полезные статьи о создании и продвижении сайтов в Молдове. Советы по SEO, дизайну, ценам на разработку. Экспертные материалы от команды WebPoint."
+        keywords="блог веб разработки, статьи о создании сайтов, seo советы молдова, дизайн сайтов, интернет магазин"
+        url="/blog"
+        structuredData={structuredData}
+      />
     <div className="min-h-screen pt-20">
       {/* Hero */}
       <section className="py-20 relative overflow-hidden">
@@ -246,6 +274,7 @@ const Blog = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 
