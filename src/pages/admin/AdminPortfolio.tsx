@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaImage } from 'react-icons/fa';
+import { format, parse } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -95,6 +97,7 @@ interface ProjectFormData {
   technologies: string;
   client: string;
   date: string;
+  dateInput?: string; // Для HTML5 date input (формат yyyy-MM-dd)
 }
 
 const AdminPortfolio = () => {
@@ -125,6 +128,7 @@ const AdminPortfolio = () => {
     technologies: '',
     client: '',
     date: '',
+    dateInput: format(new Date(), 'yyyy-MM-dd'),
   });
 
   // Загрузка проектов из БД
@@ -151,6 +155,9 @@ const AdminPortfolio = () => {
 
   const handleAdd = () => {
     setEditingProject(null);
+    // Автоматически устанавливаем текущую дату
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const formattedDate = format(new Date(), 'd MMMM yyyy', { locale: ru });
     setFormData({
       type: 'landing',
       title: '',
@@ -165,7 +172,8 @@ const AdminPortfolio = () => {
       website: '',
       technologies: '',
       client: '',
-      date: '',
+      date: formattedDate,
+      dateInput: today, // Для HTML5 date input
     });
     setImagePreview('');
     setImagesPreview([]);
@@ -174,6 +182,19 @@ const AdminPortfolio = () => {
 
   const handleEdit = (project: Project) => {
     setEditingProject(project);
+    // Преобразуем дату из формата "15 января 2025" в формат для date input
+    let dateInput = '';
+    if (project.date) {
+      try {
+        const parsedDate = parse(project.date, 'd MMMM yyyy', new Date(), { locale: ru });
+        dateInput = format(parsedDate, 'yyyy-MM-dd');
+      } catch (e) {
+        // Если не удалось распарсить, используем текущую дату
+        dateInput = format(new Date(), 'yyyy-MM-dd');
+      }
+    } else {
+      dateInput = format(new Date(), 'yyyy-MM-dd');
+    }
     setFormData({
       type: project.type,
       title: project.title,
@@ -189,6 +210,7 @@ const AdminPortfolio = () => {
       technologies: project.technologies?.join(', ') || '',
       client: project.client || '',
       date: project.date || '',
+      dateInput: dateInput,
     });
     setImagePreview(project.image ? getBlogImageUrl(project.image) : '');
     setImagesPreview(project.images?.map(img => getBlogImageUrl(img)) || []);
@@ -731,11 +753,14 @@ const AdminPortfolio = () => {
                 <Label htmlFor="date">Дата</Label>
                 <Input
                   id="date"
-                  value={formData.date}
-                  onChange={(e) =>
-                    setFormData({ ...formData, date: e.target.value })
-                  }
-                  placeholder="Январь 2024"
+                  type="date"
+                  value={formData.dateInput || format(new Date(), 'yyyy-MM-dd')}
+                  onChange={(e) => {
+                    const selectedDate = e.target.value;
+                    const parsedDate = parse(selectedDate, 'yyyy-MM-dd', new Date());
+                    const formattedDate = format(parsedDate, 'd MMMM yyyy', { locale: ru });
+                    setFormData({ ...formData, dateInput: selectedDate, date: formattedDate });
+                  }}
                 />
               </div>
             </div>
