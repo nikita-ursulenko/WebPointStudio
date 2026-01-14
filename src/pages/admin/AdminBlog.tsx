@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaImage } from 'react-icons/fa';
+import { format, parse } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -42,6 +44,7 @@ import {
 import { toast } from 'sonner';
 import { translateBlogArticle } from '@/lib/groq';
 import { blogService, type BlogArticle as DBBlogArticle } from '@/lib/db';
+import { uploadBlogImage, getBlogImageUrl } from '@/lib/storage';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -78,9 +81,11 @@ interface ArticleFormData {
   excerpt: string;
   content: string;
   image: string;
+  imageFile: File | null; // Файл для загрузки
   categoryKey: ArticleCategory;
   readTime: string;
   date: string;
+  dateInput?: string; // Для HTML5 date input (формат yyyy-MM-dd)
 }
 
 const AdminBlog = () => {
@@ -92,15 +97,19 @@ const AdminBlog = () => {
   const [articleToDelete, setArticleToDelete] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [formData, setFormData] = useState<ArticleFormData>({
     title: '',
     excerpt: '',
     content: '',
     image: '',
+    imageFile: null,
     categoryKey: 'tips',
     readTime: '5',
     date: '',
+    dateInput: format(new Date(), 'yyyy-MM-dd'),
   });
 
   // Загрузка статей из БД
@@ -127,29 +136,48 @@ const AdminBlog = () => {
 
   const handleAddArticle = () => {
     setEditingArticle(null);
+    // Автоматически устанавливаем текущую дату
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const formattedDate = format(new Date(), 'd MMMM yyyy', { locale: ru });
     setFormData({
       title: '',
       excerpt: '',
       content: '',
       image: '',
+      imageFile: null,
       categoryKey: 'tips',
       readTime: '5',
-      date: '',
+      date: formattedDate,
+      dateInput: today, // Для HTML5 date input
     });
+    setImagePreview('');
     setIsDialogOpen(true);
   };
 
   const handleEditArticle = (article: Article) => {
     setEditingArticle(article);
+    // Преобразуем дату из формата "15 января 2025" в формат для date input
+    let dateInput = '';
+    try {
+      const parsedDate = parse(article.date, 'd MMMM yyyy', new Date(), { locale: ru });
+      dateInput = format(parsedDate, 'yyyy-MM-dd');
+    } catch (e) {
+      // Если не удалось распарсить, используем текущую дату
+      dateInput = format(new Date(), 'yyyy-MM-dd');
+    }
     setFormData({
       title: article.title,
       excerpt: article.excerpt,
       content: article.content,
       image: article.image,
+      imageFile: null,
       categoryKey: article.categoryKey,
       readTime: article.readTime.toString(),
       date: article.date,
+      dateInput: dateInput,
     });
+    // Устанавливаем предпросмотр изображения
+    setImagePreview(article.image ? getBlogImageUrl(article.image) : '');
     setIsDialogOpen(true);
   };
 
@@ -179,16 +207,52 @@ const AdminBlog = () => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Проверяем тип файла
+      if (!file.type.startsWith('image/')) {
+        toast.error('Пожалуйста, выберите изображение');
+        return;
+      }
+
+      // Проверяем размер (макс 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Размер файла не должен превышать 5MB');
+        return;
+      }
+
+      setFormData({ ...formData, imageFile: file, image: '' }); // Очищаем image URL при загрузке файла
+      
+      // Создаем предпросмотр
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.excerpt || !formData.content || !formData.image) {
+    if (!formData.title || !formData.excerpt || !formData.content) {
       toast.error('Заполните все обязательные поля');
+      return;
+    }
+
+    // Проверяем, что есть либо изображение (файл), либо ссылка
+    if (!formData.imageFile && !formData.image) {
+      toast.error('Добавьте изображение или укажите ссылку');
       return;
     }
 
     setIsSubmitting(true);
     setIsTranslating(true);
+
+    // Пока не загружаем изображение, сохраним путь для использования после создания статьи
+    let imagePath = formData.image; // Используем существующую ссылку, если файл не загружен
+    const fileToUpload = formData.imageFile; // Сохраняем файл для загрузки после создания статьи
 
     let translations: ArticleTranslations | undefined;
     try {
@@ -228,42 +292,75 @@ const AdminBlog = () => {
         title: formData.title,
         excerpt: formData.excerpt,
         content: formData.content,
-        image: formData.image,
+        image: imagePath, // Используем загруженный путь или существующую ссылку
         category: categoryLabels[formData.categoryKey],
         categoryKey: formData.categoryKey,
         readTime: parseInt(formData.readTime, 10),
-        date: formData.date || new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
+        date: formData.date || format(new Date(), 'd MMMM yyyy', { locale: ru }),
         translations: translations,
       };
 
       try {
+        let savedArticle: Article | null = null;
+        
         if (editingArticle && editingArticle.id) {
           // Update existing article
-          const updated = await blogService.update(editingArticle.id, articleData);
-          if (updated) {
-            // Обновляем список статей из БД
-            const newArticles = await blogService.getAll();
-            setArticles(newArticles as Article[]);
-            toast.success(t('admin.blog.updatedSuccess'));
-          } else {
+          // Если загружен новый файл, загружаем его с правильным ID
+          if (fileToUpload) {
+            setIsUploadingImage(true);
+            try {
+              const correctPath = await uploadBlogImage(fileToUpload, editingArticle.id);
+              articleData.image = correctPath;
+            } catch (error: any) {
+              console.error('Error uploading image:', error);
+              toast.error(`Ошибка загрузки изображения: ${error?.message || 'Неизвестная ошибка'}`);
+              setIsSubmitting(false);
+              setIsUploadingImage(false);
+              return;
+            } finally {
+              setIsUploadingImage(false);
+            }
+          }
+          
+          const updatedArticle = await blogService.update(editingArticle.id, articleData);
+          if (!updatedArticle || !updatedArticle.id) {
             toast.error(t('admin.blog.saveError'));
             setIsSubmitting(false);
             return;
           }
+          savedArticle = updatedArticle as Article;
         } else {
-          // Create new article
-          const created = await blogService.create(articleData);
-          if (created) {
-            // Обновляем список статей из БД
-            const newArticles = await blogService.getAll();
-            setArticles(newArticles as Article[]);
-            toast.success(t('admin.blog.savedSuccess'));
-          } else {
+          // Create new article first to get ID
+          const createdArticle = await blogService.create(articleData);
+          if (!createdArticle || !createdArticle.id) {
             toast.error(t('admin.blog.saveError'));
             setIsSubmitting(false);
             return;
+          }
+          savedArticle = createdArticle as Article;
+          
+          // Если загружен файл, загружаем его с правильным ID
+          if (fileToUpload && savedArticle.id) {
+            setIsUploadingImage(true);
+            try {
+              const correctPath = await uploadBlogImage(fileToUpload, savedArticle.id);
+              // Обновляем статью с правильным путем
+              await blogService.update(savedArticle.id, { ...articleData, image: correctPath });
+              savedArticle = { ...savedArticle, image: correctPath };
+            } catch (error: any) {
+              console.error('Error uploading image with correct ID:', error);
+              toast.error(`Ошибка загрузки изображения: ${error?.message || 'Неизвестная ошибка'}`);
+              // Продолжаем, даже если не удалось загрузить
+            } finally {
+              setIsUploadingImage(false);
+            }
           }
         }
+
+        // Обновляем список статей из БД
+        const newArticles = await blogService.getAll();
+        setArticles(newArticles as Article[]);
+        toast.success(editingArticle ? t('admin.blog.updatedSuccess') : t('admin.blog.savedSuccess'));
 
         setIsDialogOpen(false);
         setEditingArticle(null);
@@ -374,12 +471,42 @@ const AdminBlog = () => {
               <Label htmlFor="image">
                 Изображение *
               </Label>
+              
+              {/* Загрузка файла */}
+              <div className="space-y-2">
+                <Input
+                  id="imageFile"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="cursor-pointer"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Или укажите ссылку на изображение
+                </p>
+              </div>
+
+              {/* Поле для ссылки */}
               <Input
                 id="image"
                 value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                onChange={(e) => {
+                  setFormData({ ...formData, image: e.target.value, imageFile: null });
+                  setImagePreview(e.target.value);
+                }}
                 placeholder="https://images.unsplash.com/photo-..."
               />
+
+              {/* Предпросмотр изображения */}
+              {(imagePreview || formData.image) && (
+                <div className="mt-4">
+                  <img
+                    src={imagePreview || getBlogImageUrl(formData.image)}
+                    alt="Preview"
+                    className="w-full h-48 object-cover rounded-lg border border-white/10"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -451,9 +578,14 @@ const AdminBlog = () => {
                 </Label>
                 <Input
                   id="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  placeholder="15 января 2025"
+                  type="date"
+                  value={formData.dateInput || format(new Date(), 'yyyy-MM-dd')}
+                  onChange={(e) => {
+                    const selectedDate = e.target.value;
+                    const parsedDate = parse(selectedDate, 'yyyy-MM-dd', new Date());
+                    const formattedDate = format(parsedDate, 'd MMMM yyyy', { locale: ru });
+                    setFormData({ ...formData, dateInput: selectedDate, date: formattedDate });
+                  }}
                 />
               </div>
             </div>

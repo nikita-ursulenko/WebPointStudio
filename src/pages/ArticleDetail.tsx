@@ -5,6 +5,7 @@ import { FaArrowLeft, FaClock, FaCalendar } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { blogService } from '@/lib/db';
+import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
@@ -167,7 +168,7 @@ const ArticleDetail = () => {
     "@type": "BlogPosting",
     "headline": article.title,
     "description": article.excerpt,
-    "image": article.image,
+    "image": getBlogImageUrl(article.image),
     "datePublished": article.date,
     "author": {
       "@type": "Organization",
@@ -193,7 +194,7 @@ const ArticleDetail = () => {
         <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
           <div className="absolute inset-0">
             <img
-              src={article.image}
+              src={getBlogImageUrl(article.image)}
               alt={article.title}
               className="w-full h-full object-cover"
             />

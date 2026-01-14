@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { blogService } from '@/lib/db';
+import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
@@ -207,7 +208,7 @@ const Blog = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                   <div className="relative h-80 lg:h-auto">
                     <img
-                      src={filteredArticles[0].image}
+                      src={getBlogImageUrl(filteredArticles[0].image)}
                       alt={filteredArticles[0].title}
                       className="w-full h-full object-cover"
                     />
@@ -268,7 +269,7 @@ const Blog = () => {
                     <Card className="glass-effect overflow-hidden hover-lift border-white/10 h-full flex flex-col group cursor-pointer">
                       <div className="relative h-48 overflow-hidden">
                         <img
-                          src={article.image}
+                          src={getBlogImageUrl(article.image)}
                           alt={article.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />

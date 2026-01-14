@@ -42,6 +42,7 @@ import {
 import { toast } from 'sonner';
 import { translatePortfolioProject } from '@/lib/groq';
 import { portfolioService, type PortfolioProject as DBPortfolioProject } from '@/lib/db';
+import { uploadBlogImage, getBlogImageUrl } from '@/lib/storage';
 
 type ProjectType = 'landing' | 'business' | 'shop';
 
@@ -84,7 +85,9 @@ interface ProjectFormData {
   title: string;
   category: string;
   image: string;
+  imageFile: File | null; // Файл для загрузки главного изображения
   images: string;
+  imagesFiles: File[]; // Файлы для загрузки дополнительных изображений
   problem: string;
   solution: string;
   result: string;
@@ -103,13 +106,18 @@ const AdminPortfolio = () => {
   const [projectToDelete, setProjectToDelete] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imagesPreview, setImagesPreview] = useState<string[]>([]);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [formData, setFormData] = useState<ProjectFormData>({
     type: 'landing',
     title: '',
     category: '',
     image: '',
+    imageFile: null,
     images: '',
+    imagesFiles: [],
     problem: '',
     solution: '',
     result: '',
@@ -148,7 +156,9 @@ const AdminPortfolio = () => {
       title: '',
       category: '',
       image: '',
+      imageFile: null,
       images: '',
+      imagesFiles: [],
       problem: '',
       solution: '',
       result: '',
@@ -157,6 +167,8 @@ const AdminPortfolio = () => {
       client: '',
       date: '',
     });
+    setImagePreview('');
+    setImagesPreview([]);
     setIsDialogOpen(true);
   };
 
@@ -167,7 +179,9 @@ const AdminPortfolio = () => {
       title: project.title,
       category: project.category,
       image: project.image,
+      imageFile: null,
       images: project.images?.join('\n') || '',
+      imagesFiles: [],
       problem: project.problem,
       solution: project.solution,
       result: project.result,
@@ -176,6 +190,8 @@ const AdminPortfolio = () => {
       client: project.client || '',
       date: project.date || '',
     });
+    setImagePreview(project.image ? getBlogImageUrl(project.image) : '');
+    setImagesPreview(project.images?.map(img => getBlogImageUrl(img)) || []);
     setIsDialogOpen(true);
   };
 
@@ -189,61 +205,126 @@ const AdminPortfolio = () => {
       try {
         const success = await portfolioService.delete(projectToDelete);
         if (success) {
-          const newProjects = projects.filter((p) => p.id !== projectToDelete);
-          setProjects(newProjects);
+          // Обновляем список проектов из БД
+          const newProjects = await portfolioService.getAll();
+          setProjects(newProjects as Project[]);
           toast.success('Проект удален');
         } else {
           toast.error('Ошибка при удалении проекта');
         }
       } catch (error) {
         console.error('Error deleting project:', error);
-        // Fallback to localStorage
-        const newProjects = projects.filter((p) => p.id !== projectToDelete);
-        setProjects(newProjects);
-        localStorage.setItem('portfolio_projects', JSON.stringify(newProjects));
-        toast.success('Проект удален (localStorage)');
+        toast.error('Ошибка при удалении проекта');
       }
       setIsDeleteDialogOpen(false);
       setProjectToDelete(null);
     }
   };
 
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error('Пожалуйста, выберите изображение');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Размер файла не должен превышать 5MB');
+        return;
+      }
+      setFormData({ ...formData, imageFile: file, image: '' });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImagesFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      const validFiles = files.filter(file => {
+        if (!file.type.startsWith('image/')) {
+          toast.error(`Файл ${file.name} не является изображением`);
+          return false;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`Файл ${file.name} превышает 5MB`);
+          return false;
+        }
+        return true;
+      });
+      setFormData({ ...formData, imagesFiles: [...formData.imagesFiles, ...validFiles], images: '' });
+      const readers = validFiles.map(file => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        return new Promise<string>((resolve) => {
+          reader.onloadend = () => resolve(reader.result as string);
+        });
+      });
+      Promise.all(readers).then(previews => {
+        setImagesPreview([...imagesPreview, ...previews]);
+      });
+    }
+  };
+
+  const removeImagePreview = (index: number) => {
+    const newFiles = formData.imagesFiles.filter((_, i) => i !== index);
+    const newPreviews = imagesPreview.filter((_, i) => i !== index);
+    setFormData({ ...formData, imagesFiles: newFiles });
+    setImagesPreview(newPreviews);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.category || !formData.image || !formData.problem || !formData.solution || !formData.result) {
+    if (!formData.title || !formData.category || !formData.problem || !formData.solution || !formData.result) {
       toast.error('Заполните все обязательные поля');
       return;
     }
 
+    // Проверяем, что есть либо главное изображение (файл), либо ссылка
+    if (!formData.imageFile && !formData.image) {
+      toast.error('Добавьте главное изображение или укажите ссылку');
+      return;
+    }
+
     setIsSubmitting(true);
+    setIsTranslating(true);
+
+    let imagePath = formData.image;
+    const fileToUpload = formData.imageFile;
+    const additionalFilesToUpload = formData.imagesFiles;
+
+    let translations: ProjectTranslations;
+    try {
+      translations = await translatePortfolioProject({
+        title: formData.title,
+        category: formData.category,
+        problem: formData.problem,
+        solution: formData.solution,
+        result: formData.result,
+      });
+      toast.success('Переводы созданы автоматически');
+    } catch (translationError) {
+      console.error('Translation failed:', translationError);
+      toast.error('Не удалось перевести через Groq. Проект НЕ сохранен. Проверь модель/ключ.');
+      setIsSubmitting(false);
+      setIsTranslating(false);
+      return;
+    } finally {
+      setIsTranslating(false);
+    }
 
     try {
-      // Сначала переводим (обязательный шаг), потом сохраняем
-      setIsTranslating(true);
-      let translations: ProjectTranslations;
-      try {
-        translations = await translatePortfolioProject({
-          title: formData.title,
-          category: formData.category,
-          problem: formData.problem,
-          solution: formData.solution,
-          result: formData.result,
-        });
-      } catch (translationError) {
-        console.error('Translation failed:', translationError);
-        toast.error('Не удалось перевести через Groq. Проект НЕ сохранен. Проверь модель/ключ.');
-        return;
-      } finally {
-        setIsTranslating(false);
-      }
+      let savedProject: Project | null = null;
 
       const projectData: DBPortfolioProject = {
-        id: editingProject?.id,
         type: formData.type,
         title: formData.title,
         category: formData.category,
-        image: formData.image,
+        image: imagePath,
         images: formData.images ? formData.images.split('\n').filter(img => img.trim()) : [],
         problem: formData.problem,
         solution: formData.solution,
@@ -255,39 +336,105 @@ const AdminPortfolio = () => {
         translations,
       };
 
-      try {
-        if (editingProject && editingProject.id) {
-          // Update existing project
-          const updated = await portfolioService.update(editingProject.id, projectData);
-          if (updated) {
-            const newProjects = projects.map((p) => (p.id === editingProject.id ? updated as Project : p));
-            setProjects(newProjects);
-            toast.success('Проект обновлен');
-          } else {
-            toast.error('Ошибка при обновлении проекта');
+      if (editingProject && editingProject.id) {
+        // Update existing project
+        if (fileToUpload) {
+          setIsUploadingImage(true);
+          try {
+            const correctPath = await uploadBlogImage(fileToUpload, editingProject.id);
+            projectData.image = correctPath;
+          } catch (error: any) {
+            console.error('Error uploading image:', error);
+            toast.error(`Ошибка загрузки изображения: ${error?.message || 'Неизвестная ошибка'}`);
+            setIsSubmitting(false);
+            setIsUploadingImage(false);
             return;
-          }
-        } else {
-          // Create new project
-          const created = await portfolioService.create(projectData);
-          if (created) {
-            setProjects([created as Project, ...projects]);
-            toast.success('Проект создан');
-          } else {
-            toast.error('Ошибка при создании проекта');
-            return;
+          } finally {
+            setIsUploadingImage(false);
           }
         }
 
-        setIsDialogOpen(false);
-        setEditingProject(null);
-      } catch (error) {
-        console.error('Error saving project:', error);
-        toast.error('Ошибка при сохранении проекта');
+        // Загружаем дополнительные изображения
+        if (additionalFilesToUpload.length > 0) {
+          setIsUploadingImage(true);
+          try {
+            const uploadedImages = await Promise.all(
+              additionalFilesToUpload.map(file => uploadBlogImage(file, editingProject.id))
+            );
+            projectData.images = [...(projectData.images || []), ...uploadedImages];
+          } catch (error: any) {
+            console.error('Error uploading additional images:', error);
+            toast.error(`Ошибка загрузки дополнительных изображений: ${error?.message || 'Неизвестная ошибка'}`);
+          } finally {
+            setIsUploadingImage(false);
+          }
+        }
+
+        const updated = await portfolioService.update(editingProject.id, projectData);
+        if (!updated) {
+          toast.error('Ошибка при обновлении проекта');
+          setIsSubmitting(false);
+          return;
+        }
+        savedProject = updated as Project;
+      } else {
+        // Create new project first to get ID
+        const created = await portfolioService.create(projectData);
+        if (!created || !created.id) {
+          toast.error('Ошибка при создании проекта');
+          setIsSubmitting(false);
+          return;
+        }
+        savedProject = created as Project;
+
+        // Если загружен файл главного изображения, загружаем его с правильным ID
+        if (fileToUpload && savedProject.id) {
+          setIsUploadingImage(true);
+          try {
+            const correctPath = await uploadBlogImage(fileToUpload, savedProject.id);
+            await portfolioService.update(savedProject.id, { ...projectData, image: correctPath });
+            savedProject = { ...savedProject, image: correctPath };
+          } catch (error: any) {
+            console.error('Error uploading image with correct ID:', error);
+            toast.error(`Ошибка загрузки изображения: ${error?.message || 'Неизвестная ошибка'}`);
+          } finally {
+            setIsUploadingImage(false);
+          }
+        }
+
+        // Загружаем дополнительные изображения
+        if (additionalFilesToUpload.length > 0 && savedProject.id) {
+          setIsUploadingImage(true);
+          try {
+            const uploadedImages = await Promise.all(
+              additionalFilesToUpload.map(file => uploadBlogImage(file, savedProject.id))
+            );
+            await portfolioService.update(savedProject.id, {
+              ...projectData,
+              images: [...(projectData.images || []), ...uploadedImages],
+            });
+            savedProject = { ...savedProject, images: [...(savedProject.images || []), ...uploadedImages] };
+          } catch (error: any) {
+            console.error('Error uploading additional images:', error);
+            toast.error(`Ошибка загрузки дополнительных изображений: ${error?.message || 'Неизвестная ошибка'}`);
+          } finally {
+            setIsUploadingImage(false);
+          }
+        }
       }
+
+      // Обновляем список проектов из БД
+      const newProjects = await portfolioService.getAll();
+      setProjects(newProjects as Project[]);
+      toast.success(editingProject ? 'Проект обновлен' : 'Проект создан');
+
+      setIsDialogOpen(false);
+      setEditingProject(null);
+      setIsSubmitting(false);
     } catch (error) {
-      console.error('Save error:', error);
+      console.error('Error saving project:', error);
       toast.error('Ошибка при сохранении проекта');
+      setIsSubmitting(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -437,28 +584,95 @@ const AdminPortfolio = () => {
             </div>
 
             <div>
-              <Label htmlFor="image">Главное изображение (URL) *</Label>
+              <Label htmlFor="image">Главное изображение *</Label>
+              
+              {/* Загрузка файла */}
+              <div className="space-y-2">
+                <Input
+                  id="imageFile"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageFileChange}
+                  className="cursor-pointer"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Или укажите ссылку на изображение
+                </p>
+              </div>
+
+              {/* Поле для ссылки */}
               <Input
                 id="image"
                 value={formData.image}
-                onChange={(e) =>
-                  setFormData({ ...formData, image: e.target.value })
-                }
-                placeholder="/images/portfolio/project.jpg"
+                onChange={(e) => {
+                  setFormData({ ...formData, image: e.target.value, imageFile: null });
+                  setImagePreview(e.target.value);
+                }}
+                placeholder="https://images.unsplash.com/photo-..."
               />
+
+              {/* Предпросмотр изображения */}
+              {(imagePreview || formData.image) && (
+                <div className="mt-4">
+                  <img
+                    src={imagePreview || getBlogImageUrl(formData.image)}
+                    alt="Preview"
+                    className="w-full h-48 object-cover rounded-lg border border-white/10"
+                  />
+                </div>
+              )}
             </div>
 
             <div>
-              <Label htmlFor="images">Дополнительные изображения (по одному на строку)</Label>
+              <Label htmlFor="images">Дополнительные изображения</Label>
+              
+              {/* Загрузка файлов */}
+              <div className="space-y-2">
+                <Input
+                  id="imagesFiles"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImagesFilesChange}
+                  className="cursor-pointer"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Или укажите ссылки на изображения (по одному на строку)
+                </p>
+              </div>
+
+              {/* Поле для ссылок */}
               <Textarea
                 id="images"
                 value={formData.images}
                 onChange={(e) =>
-                  setFormData({ ...formData, images: e.target.value })
+                  setFormData({ ...formData, images: e.target.value, imagesFiles: [] })
                 }
                 placeholder="/images/portfolio/slide1.jpg&#10;/images/portfolio/slide2.jpg"
                 rows={4}
               />
+
+              {/* Предпросмотр дополнительных изображений */}
+              {imagesPreview.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                  {imagesPreview.map((preview, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-white/10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImagePreview(index)}
+                        className="absolute top-2 right-2 bg-destructive text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-destructive/90"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
