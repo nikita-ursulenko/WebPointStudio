@@ -286,7 +286,7 @@ const Services = () => {
                     ))}
                   </ul>
                   <Button asChild variant="outline" className="w-full glass-effect">
-                    <Link to="/contact">{t('services.additional.more')}</Link>
+                    <Link to="/additional-services">{t('services.additional.more')}</Link>
                   </Button>
                 </Card>
               </motion.div>

@@ -1,13 +1,31 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { contactService } from '@/lib/db';
 import SEO from '@/components/SEO';
 
 const Home = () => {
   const { t } = useLanguage();
+  const [contact, setContact] = useState<{
+    whatsapp_link?: string;
+    telegram_link?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const loadContact = async () => {
+      try {
+        const data = await contactService.get();
+        setContact(data);
+      } catch (error) {
+        console.error('Error loading contact:', error);
+      }
+    };
+    loadContact();
+  }, []);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -170,26 +188,32 @@ const Home = () => {
             </div>
 
             {/* Quick Contact Buttons */}
-            <div className="flex items-center justify-center gap-4">
-              <a
-                href="https://wa.me/37360123456"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 glass-effect px-6 py-3 rounded-full hover-lift"
-              >
-                <FaWhatsapp className="text-xl text-green-500" />
-                <span className="text-sm font-medium">WhatsApp</span>
-              </a>
-              <a
-                href="https://t.me/webpoint"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 glass-effect px-6 py-3 rounded-full hover-lift"
-              >
-                <FaTelegram className="text-xl text-blue-500" />
-                <span className="text-sm font-medium">Telegram</span>
-              </a>
-            </div>
+            {(contact?.whatsapp_link || contact?.telegram_link) && (
+              <div className="flex items-center justify-center gap-4">
+                {contact?.whatsapp_link && (
+                  <a
+                    href={contact.whatsapp_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 glass-effect px-6 py-3 rounded-full hover-lift"
+                  >
+                    <FaWhatsapp className="text-xl text-green-500" />
+                    <span className="text-sm font-medium">WhatsApp</span>
+                  </a>
+                )}
+                {contact?.telegram_link && (
+                  <a
+                    href={contact.telegram_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 glass-effect px-6 py-3 rounded-full hover-lift"
+                  >
+                    <FaTelegram className="text-xl text-blue-500" />
+                    <span className="text-sm font-medium">Telegram</span>
+                  </a>
+                )}
+              </div>
+            )}
           </motion.div>
 
           {/* Stats */}

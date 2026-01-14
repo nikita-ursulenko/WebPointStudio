@@ -1,10 +1,32 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaWhatsapp, FaTelegram, FaFacebook, FaInstagram } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { contactService } from '@/lib/db';
 
 const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
+  const [contact, setContact] = useState<{
+    email?: string;
+    phone?: string;
+    whatsapp_link?: string;
+    telegram_link?: string;
+    facebook_link?: string;
+    instagram_link?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const loadContact = async () => {
+      try {
+        const data = await contactService.get();
+        setContact(data);
+      } catch (error) {
+        console.error('Error loading contact:', error);
+      }
+    };
+    loadContact();
+  }, []);
 
   const serviceLinks = [
     { path: '/services#landing', label: t('services.landing') },
@@ -79,41 +101,53 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <div className="space-y-3">
-              <p className="text-muted-foreground text-sm">info@webpoint.md</p>
-              <p className="text-muted-foreground text-sm">+373 60 123 456</p>
+              {contact?.email && (
+                <p className="text-muted-foreground text-sm">{contact.email}</p>
+              )}
+              {contact?.phone && (
+                <p className="text-muted-foreground text-sm">{contact.phone}</p>
+              )}
               <div className="flex space-x-3 pt-2">
-                <a
-                  href="https://wa.me/37360123456"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
-                >
-                  <FaWhatsapp />
-                </a>
-                <a
-                  href="https://t.me/webpoint"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
-                >
-                  <FaTelegram />
-                </a>
-                <a
-                  href="https://facebook.com/webpoint"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
-                >
-                  <FaFacebook />
-                </a>
-                <a
-                  href="https://instagram.com/webpoint"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
-                >
-                  <FaInstagram />
-                </a>
+                {contact?.whatsapp_link && (
+                  <a
+                    href={contact.whatsapp_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
+                  >
+                    <FaWhatsapp />
+                  </a>
+                )}
+                {contact?.telegram_link && (
+                  <a
+                    href={contact.telegram_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
+                  >
+                    <FaTelegram />
+                  </a>
+                )}
+                {contact?.facebook_link && (
+                  <a
+                    href={contact.facebook_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
+                  >
+                    <FaFacebook />
+                  </a>
+                )}
+                {contact?.instagram_link && (
+                  <a
+                    href={contact.instagram_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-lg glass-effect flex items-center justify-center text-xl hover:text-primary transition-all hover-lift"
+                  >
+                    <FaInstagram />
+                  </a>
+                )}
               </div>
             </div>
           </div>

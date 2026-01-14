@@ -320,3 +320,69 @@ export const blogService = {
     return newArticle;
   },
 };
+
+// ============ CONTACTS ============
+
+export interface Contact {
+  id?: number;
+  phone: string;
+  email: string;
+  address: string;
+  whatsapp_link: string;
+  telegram_link: string;
+  facebook_link?: string;
+  instagram_link?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export const contactService = {
+  // Get contact (только одна запись контактов)
+  async get(): Promise<Contact | null> {
+    const { data, error } = await supabase
+      .from('contacts')
+      .select('*')
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.error('Error fetching contact:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  // Update contact
+  async update(id: number, contact: Partial<Contact>): Promise<Contact | null> {
+    const { data, error } = await supabase
+      .from('contacts')
+      .update({ ...contact, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating contact:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  // Create contact (если нет записи)
+  async create(contact: Contact): Promise<Contact | null> {
+    const { data, error } = await supabase
+      .from('contacts')
+      .insert([contact])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating contact:', error);
+      return null;
+    }
+
+    return data;
+  },
+};

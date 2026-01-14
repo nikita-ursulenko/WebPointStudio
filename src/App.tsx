@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import PublicLayout from "@/components/PublicLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminLayout from "@/components/admin/AdminLayout";
+import ScrollToTop from "@/components/ScrollToTop";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Portfolio from "./pages/Portfolio";
@@ -16,11 +17,13 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Blog from "./pages/Blog";
 import ArticleDetail from "./pages/ArticleDetail";
 import Contact from "./pages/Contact";
+import AdditionalServices from "./pages/AdditionalServices";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminPortfolio from "./pages/admin/AdminPortfolio";
 import AdminBlog from "./pages/admin/AdminBlog";
+import AdminContacts from "./pages/admin/AdminContacts";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +51,7 @@ const AppContent = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           {/* Public Routes with Navigation and Footer */}
           <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
@@ -57,6 +61,7 @@ const AppContent = () => (
           <Route path="/blog" element={<PublicLayout><Blog /></PublicLayout>} />
           <Route path="/blog/:id" element={<PublicLayout><ArticleDetail /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+          <Route path="/additional-services" element={<PublicLayout><AdditionalServices /></PublicLayout>} />
           
           {/* Admin Routes without Navigation and Footer */}
           <Route path="/admin/login" element={<Login />} />
@@ -86,6 +91,16 @@ const AppContent = () => (
               <ProtectedRoute>
                 <AdminLayout>
                   <AdminPortfolio />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contacts"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminContacts />
                 </AdminLayout>
               </ProtectedRoute>
             }

@@ -1,51 +1,72 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaWhatsapp, FaTelegram, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ContactForm from '@/components/ContactForm';
 import { Card } from '@/components/ui/card';
+import { contactService } from '@/lib/db';
 import SEO from '@/components/SEO';
 
 const Contact = () => {
   const { t } = useLanguage();
+  const [contact, setContact] = useState<{
+    phone?: string;
+    email?: string;
+    address?: string;
+    whatsapp_link?: string;
+    telegram_link?: string;
+  } | null>(null);
 
-  const contactMethods = [
+  useEffect(() => {
+    const loadContact = async () => {
+      try {
+        const data = await contactService.get();
+        setContact(data);
+      } catch (error) {
+        console.error('Error loading contact:', error);
+      }
+    };
+    loadContact();
+  }, []);
+
+  const contactMethods = contact ? [
     {
       icon: FaPhone,
       title: t('contact.phone.label'),
-      value: '+373 60 123 456',
-      link: 'tel:+37360123456',
+      value: contact.phone || '',
+      link: contact.phone ? `tel:${contact.phone.replace(/\s/g, '')}` : '#',
       color: 'from-blue-500 to-cyan-500',
     },
     {
       icon: FaEnvelope,
       title: t('contact.email.label'),
-      value: 'info@webpoint.md',
-      link: 'mailto:info@webpoint.md',
+      value: contact.email || '',
+      link: contact.email ? `mailto:${contact.email}` : '#',
       color: 'from-purple-500 to-pink-500',
     },
     {
       icon: FaMapMarkerAlt,
       title: t('contact.address.label'),
-      value: t('contact.address.value'),
+      value: contact.address || '',
       link: 'https://maps.google.com',
       color: 'from-orange-500 to-red-500',
     },
-  ];
+  ] : [];
 
-  const messengers = [
-    {
+  const messengers = contact ? [
+    contact.whatsapp_link && {
       icon: FaWhatsapp,
       name: 'WhatsApp',
-      link: 'https://wa.me/37360123456',
+      link: contact.whatsapp_link,
       color: 'text-green-500',
     },
-    {
+    contact.telegram_link && {
       icon: FaTelegram,
       name: 'Telegram',
-      link: 'https://t.me/webpoint',
+      link: contact.telegram_link,
       color: 'text-blue-500',
     },
-  ];
+  ].filter(Boolean) : [];
 
   const faq = [
     {
