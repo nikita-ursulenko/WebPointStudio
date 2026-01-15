@@ -313,7 +313,7 @@ const Blog = () => {
               className="glass-effect p-12 rounded-3xl text-center border border-primary/20 glow-effect"
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Получайте <span className="gradient-text">новые статьи</span>
+                {t('blog.newsletter.title.prefix')}<span className="gradient-text">{t('blog.newsletter.title.highlight')}</span>
               </h2>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Подпишитесь на рассылку и первыми узнавайте о новых материалах

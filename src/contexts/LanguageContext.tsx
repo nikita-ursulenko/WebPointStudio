@@ -16,21 +16,21 @@ const translations = {
     'nav.portfolio': 'Портфолио',
     'nav.blog': 'Блог',
     'nav.contact': 'Контакты',
-    
+
     // Hero
     'hero.title': 'Создаём сайты, которые',
     'hero.highlight': 'продают',
     'hero.subtitle': 'Профессиональная разработка сайтов. Лендинги, интернет-магазины и корпоративные сайты под ключ с гарантией результата. Работаем по всему миру.',
     'hero.cta': 'Оставить заявку',
     'hero.consultation': 'Бесплатная консультация',
-    
+
     // About
     'about.title': 'О нас',
     'about.subtitle': 'WebPoint — это команда профессионалов, которая создаёт современные веб-решения для вашего бизнеса',
     'about.experience': 'Лет опыта',
     'about.projects': 'Проектов',
     'about.clients': 'Довольных клиентов',
-    
+
     // Services
     'services.title': 'Наши услуги',
     'services.subtitle': 'Выберите подходящее решение для вашего бизнеса',
@@ -46,6 +46,7 @@ const translations = {
     'services.time.business': '14-21 день',
     'services.time.shop': '30-45 дней',
     'services.duration': 'Срок',
+    'services.popular.badge': 'Популярный выбор',
     'services.features.landing.design': 'Современный дизайн',
     'services.features.landing.responsive': 'Адаптивная верстка',
     'services.features.landing.seo': 'SEO-оптимизация',
@@ -112,7 +113,7 @@ const translations = {
     'services.cta.title': 'Не нашли подходящий пакет?',
     'services.cta.subtitle': 'Мы создадим индивидуальное предложение под ваши задачи и бюджет',
     'services.cta.button': 'Получить консультацию',
-    
+
     // Features
     'features.design': 'Современный дизайн',
     'features.design.desc': 'Уникальный дизайн, адаптированный под ваш бренд',
@@ -122,7 +123,7 @@ const translations = {
     'features.seo.desc': 'Настройка для поисковых систем и быстрой индексации',
     'features.support': 'Техподдержка',
     'features.support.desc': 'Гарантийная поддержка и обслуживание сайта',
-    
+
     // Portfolio
     'portfolio.title': 'Наши работы',
     'portfolio.subtitle': 'Примеры успешно реализованных проектов',
@@ -135,14 +136,14 @@ const translations = {
     'portfolio.result': 'Результат',
     'portfolio.view': 'Посмотреть проект',
     'portfolio.back': 'Вернуться к портфолио',
-    
+
     // Blog
     'blog.title': 'Блог',
     'blog.subtitle': 'Полезные статьи о создании и продвижении сайтов',
     'blog.readMore': 'Читать далее',
     'blog.readTime': 'мин чтения',
     'blog.back': 'Вернуться к блогу',
-    
+
     // Contact
     'contact.title': 'Свяжитесь с нами',
     'contact.subtitle': 'Готовы обсудить ваш проект? Оставьте заявку, и мы свяжемся с вами в ближайшее время',
@@ -178,7 +179,7 @@ const translations = {
     'contact.faq.q4': 'Можно ли самому редактировать контент?',
     'contact.faq.a4': 'Да, мы предоставляем CMS-панель и обучаем работе с ней.',
     'contact.form.title': 'Оставьте заявку',
-    
+
     // Portfolio
     'portfolio.project.beauty.title': 'Beauty Salon Premium',
     'portfolio.project.beauty.category': 'Салон красоты',
@@ -215,7 +216,7 @@ const translations = {
     'portfolio.project.mded.problem': 'Требовался современный информационный портал о программе государственной поддержки промышленных инвестиций',
     'portfolio.project.mded.solution': 'Многоязычный лендинг на WordPress с ACF, Timber и Twig. Современный дизайн, адаптивная верстка, удобная навигация',
     'portfolio.project.mded.result': 'Профессиональная подача информации о программе, улучшенный UX для граждан и инвесторов',
-    
+
     // Blog
     'blog.categories.all': 'Все статьи',
     'blog.categories.prices': 'Цены',
@@ -243,10 +244,12 @@ const translations = {
     'blog.article6.category': 'E-commerce',
     'blog.recommended': 'Рекомендуем',
     'blog.newsletter.title': 'Получайте новые статьи',
+    'blog.newsletter.title.prefix': 'Получайте ',
+    'blog.newsletter.title.highlight': 'новые статьи',
     'blog.newsletter.subtitle': 'Подпишитесь на рассылку и первыми узнавайте о новых материалах',
     'blog.newsletter.email': 'Ваш email',
     'blog.newsletter.subscribe': 'Подписаться',
-    
+
     // Home
     'home.hero.badge': '🚀 Профессиональная разработка сайтов',
     'home.why.title': 'Почему выбирают',
@@ -258,12 +261,12 @@ const translations = {
     'home.cta.title': 'Готовы начать',
     'home.cta.highlight': 'свой проект?',
     'home.cta.subtitle': 'Свяжитесь с нами сегодня и получите бесплатную консультацию по вашему проекту',
-    
+
     // NotFound
     'notfound.title': 'Страница не найдена',
     'notfound.subtitle': 'К сожалению, запрашиваемая страница не существует или была перемещена.',
     'notfound.button': 'Вернуться на главную',
-    
+
     // Footer
     'footer.about': 'О компании',
     'footer.about.text': 'Мы создаём современные веб-решения для бизнеса по всему миру',
@@ -271,14 +274,14 @@ const translations = {
     'footer.contact': 'Контакты',
     'footer.social': 'Социальные сети',
     'footer.rights': 'Все права защищены',
-    
+
     // Project Detail
     'projectDetail.category': 'Категория',
     'projectDetail.type': 'Тип проекта',
     'projectDetail.client': 'Клиент',
     'projectDetail.date': 'Дата',
     'projectDetail.technologies': 'Технологии',
-    
+
     // Admin Portfolio
     'admin.portfolio.category': 'Категория',
     'admin.portfolio.type': 'Тип проекта',
@@ -291,21 +294,21 @@ const translations = {
     'nav.portfolio': 'Portofoliu',
     'nav.blog': 'Blog',
     'nav.contact': 'Contacte',
-    
+
     // Hero
     'hero.title': 'Creăm site-uri care',
     'hero.highlight': 'vând',
     'hero.subtitle': 'Dezvoltare profesională de site-uri. Landing pages, magazine online și site-uri corporative la cheie cu garanție de rezultat. Lucrăm în întreaga lume.',
     'hero.cta': 'Lasă o cerere',
     'hero.consultation': 'Consultație gratuită',
-    
+
     // About
     'about.title': 'Despre noi',
     'about.subtitle': 'WebPoint — o echipă de profesioniști care creează soluții web moderne pentru afacerea ta',
     'about.experience': 'Ani de experiență',
     'about.projects': 'Proiecte',
     'about.clients': 'Clienți mulțumiți',
-    
+
     // Services
     'services.title': 'Serviciile noastre',
     'services.subtitle': 'Alege soluția potrivită pentru afacerea ta',
@@ -321,6 +324,7 @@ const translations = {
     'services.time.business': '14-21 zile',
     'services.time.shop': '30-45 zile',
     'services.duration': 'Termen',
+    'services.popular.badge': 'Alegere populară',
     'services.features.landing.design': 'Design modern',
     'services.features.landing.responsive': 'Design responsive',
     'services.features.landing.seo': 'Optimizare SEO',
@@ -387,7 +391,7 @@ const translations = {
     'services.cta.title': 'Nu ai găsit pachetul potrivit?',
     'services.cta.subtitle': 'Vom crea o ofertă personalizată pentru nevoile și bugetul tău',
     'services.cta.button': 'Obține consultație',
-    
+
     // Features
     'features.design': 'Design modern',
     'features.design.desc': 'Design unic adaptat brandului tău',
@@ -397,7 +401,7 @@ const translations = {
     'features.seo.desc': 'Configurare pentru motoarele de căutare și indexare rapidă',
     'features.support': 'Suport tehnic',
     'features.support.desc': 'Suport și întreținere sub garanție',
-    
+
     // Portfolio
     'portfolio.title': 'Lucrările noastre',
     'portfolio.subtitle': 'Exemple de proiecte realizate cu succes',
@@ -410,14 +414,14 @@ const translations = {
     'portfolio.result': 'Rezultat',
     'portfolio.view': 'Vezi proiectul',
     'portfolio.back': 'Înapoi la portofoliu',
-    
+
     // Blog
     'blog.title': 'Blog',
     'blog.subtitle': 'Articole utile despre crearea și promovarea site-urilor',
     'blog.readMore': 'Citește mai mult',
     'blog.readTime': 'min citire',
     'blog.back': 'Înapoi la blog',
-    
+
     // Contact
     'contact.title': 'Contactează-ne',
     'contact.subtitle': 'Pregătit să discutăm proiectul tău? Lasă o cerere și te vom contacta în curând',
@@ -453,7 +457,7 @@ const translations = {
     'contact.faq.q4': 'Pot edita conținutul singur?',
     'contact.faq.a4': 'Da, oferim panou CMS și instruire pentru lucrul cu el.',
     'contact.form.title': 'Lasă o cerere',
-    
+
     // Portfolio
     'portfolio.project.beauty.title': 'Beauty Salon Premium',
     'portfolio.project.beauty.category': 'Salon de frumusețe',
@@ -490,7 +494,7 @@ const translations = {
     'portfolio.project.mded.problem': 'Era necesar un portal informativ modern despre programul de sprijin de stat pentru investițiile industriale',
     'portfolio.project.mded.solution': 'Landing multilingv pe WordPress cu ACF, Timber și Twig. Design modern, layout adaptiv, navigare intuitivă',
     'portfolio.project.mded.result': 'Prezentare profesională a informațiilor despre program, UX îmbunătățit pentru cetățeni și investitori',
-    
+
     // Blog
     'blog.categories.all': 'Toate articolele',
     'blog.categories.prices': 'Prețuri',
@@ -518,10 +522,12 @@ const translations = {
     'blog.article6.category': 'E-commerce',
     'blog.recommended': 'Recomandăm',
     'blog.newsletter.title': 'Primește articole noi',
+    'blog.newsletter.title.prefix': 'Primește ',
+    'blog.newsletter.title.highlight': 'articole noi',
     'blog.newsletter.subtitle': 'Abonează-te la newsletter și află primul despre materialele noi',
     'blog.newsletter.email': 'Email-ul tău',
     'blog.newsletter.subscribe': 'Abonează-te',
-    
+
     // Home
     'home.hero.badge': '🚀 Dezvoltare profesională de site-uri',
     'home.why.title': 'De ce ne aleg',
@@ -533,12 +539,12 @@ const translations = {
     'home.cta.title': 'Gata să începi',
     'home.cta.highlight': 'proiectul tău?',
     'home.cta.subtitle': 'Contactează-ne astăzi și obține o consultație gratuită pentru proiectul tău',
-    
+
     // NotFound
     'notfound.title': 'Pagină negăsită',
     'notfound.subtitle': 'Din păcate, pagina solicitată nu există sau a fost mutată.',
     'notfound.button': 'Înapoi la pagina principală',
-    
+
     // Footer
     'footer.about': 'Despre companie',
     'footer.about.text': 'Creăm soluții web moderne pentru afaceri din întreaga lume',
@@ -546,14 +552,14 @@ const translations = {
     'footer.contact': 'Contacte',
     'footer.social': 'Rețele sociale',
     'footer.rights': 'Toate drepturile rezervate',
-    
+
     // Project Detail
     'projectDetail.category': 'Categorie',
     'projectDetail.type': 'Tipul proiectului',
     'projectDetail.client': 'Client',
     'projectDetail.date': 'Data',
     'projectDetail.technologies': 'Tehnologii',
-    
+
     // Admin Portfolio
     'admin.portfolio.category': 'Categorie',
     'admin.portfolio.type': 'Tipul proiectului',
@@ -566,21 +572,21 @@ const translations = {
     'nav.portfolio': 'Portfolio',
     'nav.blog': 'Blog',
     'nav.contact': 'Contact',
-    
+
     // Hero
     'hero.title': 'We create websites that',
     'hero.highlight': 'sell',
     'hero.subtitle': 'Professional website development. Landing pages, online stores and corporate websites turnkey with guaranteed results. We work worldwide.',
     'hero.cta': 'Get a quote',
     'hero.consultation': 'Free consultation',
-    
+
     // About
     'about.title': 'About us',
     'about.subtitle': 'WebPoint is a team of professionals creating modern web solutions for your business',
     'about.experience': 'Years of experience',
     'about.projects': 'Projects',
     'about.clients': 'Satisfied clients',
-    
+
     // Services
     'services.title': 'Our services',
     'services.subtitle': 'Choose the right solution for your business',
@@ -596,6 +602,7 @@ const translations = {
     'services.time.business': '14-21 days',
     'services.time.shop': '30-45 days',
     'services.duration': 'Duration',
+    'services.popular.badge': 'Popular choice',
     'services.features.landing.design': 'Modern design',
     'services.features.landing.responsive': 'Responsive design',
     'services.features.landing.seo': 'SEO optimization',
@@ -662,7 +669,7 @@ const translations = {
     'services.cta.title': 'Didn\'t find the right package?',
     'services.cta.subtitle': 'We will create a custom offer for your needs and budget',
     'services.cta.button': 'Get consultation',
-    
+
     // Features
     'features.design': 'Modern design',
     'features.design.desc': 'Unique design adapted to your brand',
@@ -672,7 +679,7 @@ const translations = {
     'features.seo.desc': 'Setup for search engines and fast indexing',
     'features.support': 'Technical support',
     'features.support.desc': 'Guaranteed support and website maintenance',
-    
+
     // Portfolio
     'portfolio.title': 'Our works',
     'portfolio.subtitle': 'Examples of successfully completed projects',
@@ -685,14 +692,14 @@ const translations = {
     'portfolio.result': 'Result',
     'portfolio.view': 'View project',
     'portfolio.back': 'Back to portfolio',
-    
+
     // Blog
     'blog.title': 'Blog',
     'blog.subtitle': 'Useful articles about website creation and promotion',
     'blog.readMore': 'Read more',
     'blog.readTime': 'min read',
     'blog.back': 'Back to blog',
-    
+
     // Contact
     'contact.title': 'Contact us',
     'contact.subtitle': 'Ready to discuss your project? Leave a request and we will contact you shortly',
@@ -728,7 +735,7 @@ const translations = {
     'contact.faq.q4': 'Can I edit content myself?',
     'contact.faq.a4': 'Yes, we provide a CMS panel and train you to work with it.',
     'contact.form.title': 'Leave a request',
-    
+
     // Portfolio
     'portfolio.project.beauty.title': 'Beauty Salon Premium',
     'portfolio.project.beauty.category': 'Beauty salon',
@@ -765,7 +772,7 @@ const translations = {
     'portfolio.project.mded.problem': 'A modern information portal was needed about the state support program for industrial investments',
     'portfolio.project.mded.solution': 'Multilingual landing page on WordPress with ACF, Timber and Twig. Modern design, responsive layout, intuitive navigation',
     'portfolio.project.mded.result': 'Professional presentation of program information, improved UX for citizens and investors',
-    
+
     // Blog
     'blog.categories.all': 'All articles',
     'blog.categories.prices': 'Prices',
@@ -793,10 +800,12 @@ const translations = {
     'blog.article6.category': 'E-commerce',
     'blog.recommended': 'Recommended',
     'blog.newsletter.title': 'Get new articles',
+    'blog.newsletter.title.prefix': 'Get ',
+    'blog.newsletter.title.highlight': 'new articles',
     'blog.newsletter.subtitle': 'Subscribe to newsletter and be the first to know about new materials',
     'blog.newsletter.email': 'Your email',
     'blog.newsletter.subscribe': 'Subscribe',
-    
+
     // Home
     'home.hero.badge': '🚀 Professional website development',
     'home.why.title': 'Why choose',
@@ -808,12 +817,12 @@ const translations = {
     'home.cta.title': 'Ready to start',
     'home.cta.highlight': 'your project?',
     'home.cta.subtitle': 'Contact us today and get a free consultation for your project',
-    
+
     // NotFound
     'notfound.title': 'Page not found',
     'notfound.subtitle': 'Unfortunately, the requested page does not exist or has been moved.',
     'notfound.button': 'Back to home',
-    
+
     // Footer
     'footer.about': 'About company',
     'footer.about.text': 'We create modern web solutions for businesses worldwide',
@@ -821,14 +830,14 @@ const translations = {
     'footer.contact': 'Contact',
     'footer.social': 'Social networks',
     'footer.rights': 'All rights reserved',
-    
+
     // Project Detail
     'projectDetail.category': 'Category',
     'projectDetail.type': 'Project Type',
     'projectDetail.client': 'Client',
     'projectDetail.date': 'Date',
     'projectDetail.technologies': 'Technologies',
-    
+
     // Admin Portfolio
     'admin.portfolio.category': 'Category',
     'admin.portfolio.type': 'Project Type',
