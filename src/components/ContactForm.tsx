@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { contactRequestService } from '@/lib/db';
 
 const ContactForm = () => {
   const { t } = useLanguage();
@@ -34,15 +35,26 @@ const ContactForm = () => {
       contactSchema.parse(formData);
       setIsSubmitting(true);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Save to Supabase
+      const success = await contactRequestService.create({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        project_type: formData.projectType as 'landing' | 'business' | 'shop',
+        message: formData.message,
+      });
 
-      toast.success(t('contact.success'));
-      setFormData({ name: '', email: '', phone: '', projectType: '', message: '' });
+      if (success) {
+        toast.success(t('contact.success'));
+        setFormData({ name: '', email: '', phone: '', projectType: '', message: '' });
+      } else {
+        toast.error(t('contact.error'));
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else {
+        console.error('Error submitting contact form:', error);
         toast.error(t('contact.error'));
       }
     } finally {

@@ -23,6 +23,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import AdminPortfolio from "./pages/admin/AdminPortfolio";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminContacts from "./pages/admin/AdminContacts";
+import AdminContactRequests from "./pages/admin/AdminContactRequests";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,16 @@ const AppContent = () => (
               <ProtectedRoute>
                 <AdminLayout>
                   <AdminContacts />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contact-requests"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminContactRequests />
                 </AdminLayout>
               </ProtectedRoute>
             }

@@ -10,6 +10,7 @@ import {
   FaTimes,
   FaChartLine,
   FaAddressBook,
+  FaEnvelope,
 } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: '/admin/blog', label: 'Статьи блога', icon: FaBlog },
     { path: '/admin/portfolio', label: 'Портфолио', icon: FaFolderOpen },
     { path: '/admin/contacts', label: 'Контакты', icon: FaAddressBook },
+    { path: '/admin/contact-requests', label: 'Заявки', icon: FaEnvelope },
   ];
 
   const isActive = (path: string) => {

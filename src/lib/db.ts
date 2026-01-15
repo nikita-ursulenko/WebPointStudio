@@ -5,6 +5,19 @@ import { supabase } from './supabase';
 
 // ============ PORTFOLIO ============
 
+// Helper to invoke email notification function
+async function sendNotification(type: 'contact' | 'newsletter', payload: any) {
+  try {
+    const { data, error } = await supabase.functions.invoke('resend-notification', {
+      body: { type, payload },
+    });
+    console.log('📧 Notification sent:', { data, error });
+    if (error) console.error('Error sending notification:', error);
+  } catch (e) {
+    console.error('Failed to invoke notification function:', e);
+  }
+}
+
 export interface PortfolioProject {
   id?: number;
   type: 'landing' | 'business' | 'shop';
@@ -49,8 +62,7 @@ export const portfolioService = {
 
     if (error) {
       console.error('Error fetching portfolio projects:', error);
-      // Fallback to localStorage if Supabase fails
-      return this.getFromLocalStorage();
+      return [];
     }
 
     return data || [];
@@ -82,8 +94,7 @@ export const portfolioService = {
 
     if (error) {
       console.error('Error creating project:', error);
-      // Fallback to localStorage
-      return this.saveToLocalStorage(project);
+      return null;
     }
 
     return data;
@@ -121,27 +132,10 @@ export const portfolioService = {
     return true;
   },
 
-  // Fallback methods for localStorage
-  getFromLocalStorage(): PortfolioProject[] {
-    const stored = localStorage.getItem('portfolio_projects');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch (error) {
-        console.error('Error parsing localStorage:', error);
-        return [];
-      }
-    }
-    return [];
-  },
 
-  saveToLocalStorage(project: PortfolioProject): PortfolioProject {
-    const projects = this.getFromLocalStorage();
-    const newProject = { ...project, id: project.id || Date.now() };
-    projects.push(newProject);
-    localStorage.setItem('portfolio_projects', JSON.stringify(projects));
-    return newProject;
-  },
+
+  // ============ BLOG ============
+
 };
 
 // ============ BLOG ============
@@ -185,8 +179,7 @@ export const blogService = {
 
     if (error) {
       console.error('Error fetching blog articles:', error);
-      // Fallback to localStorage if Supabase fails
-      return this.getFromLocalStorage();
+      return [];
     }
 
     // Преобразуем categorykey в categoryKey и readtime в readTime для совместимости
@@ -236,8 +229,7 @@ export const blogService = {
 
     if (error) {
       console.error('Error creating article:', error);
-      // Fallback to localStorage
-      return this.saveToLocalStorage(article);
+      return null;
     }
 
     // Преобразуем обратно для совместимости
@@ -298,27 +290,10 @@ export const blogService = {
     return true;
   },
 
-  // Fallback methods for localStorage
-  getFromLocalStorage(): BlogArticle[] {
-    const stored = localStorage.getItem('blog_articles');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch (error) {
-        console.error('Error parsing localStorage:', error);
-        return [];
-      }
-    }
-    return [];
-  },
 
-  saveToLocalStorage(article: BlogArticle): BlogArticle {
-    const articles = this.getFromLocalStorage();
-    const newArticle = { ...article, id: article.id || Date.now() };
-    articles.push(newArticle);
-    localStorage.setItem('blog_articles', JSON.stringify(articles));
-    return newArticle;
-  },
+
+  // ============ CONTACTS ============
+
 };
 
 // ============ CONTACTS ============
@@ -384,5 +359,139 @@ export const contactService = {
     }
 
     return data;
+  },
+};
+
+// ============ CONTACT REQUESTS ============
+
+export interface ContactRequest {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  project_type: 'landing' | 'business' | 'shop';
+  message: string;
+  status?: 'new' | 'read' | 'processed' | 'archived';
+  created_at?: string;
+  updated_at?: string;
+}
+
+export const contactRequestService = {
+  // Get all contact requests
+  async getAll(): Promise<ContactRequest[]> {
+    const { data, error } = await supabase
+      .from('contact_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching contact requests:', error);
+      return [];
+    }
+
+    return data || [];
+  },
+
+  // Get single contact request
+  async getById(id: number): Promise<ContactRequest | null> {
+    const { data, error } = await supabase
+      .from('contact_requests')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching contact request:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  // Create contact request
+  // Возвращает boolean, так как анонимные пользователи не имеют права на SELECT
+  async create(request: Omit<ContactRequest, 'id' | 'created_at' | 'updated_at' | 'status'>): Promise<boolean> {
+    const { error } = await supabase
+      .from('contact_requests')
+      .insert([request]);
+
+    if (error) {
+      console.error('Error creating contact request:', error);
+      return false;
+    }
+
+    // Send notification
+    await sendNotification('contact', {
+      ...request,
+      // Add a note about untracked IP if available/needed or just let the function handle defaults
+      ip_address: (request as any).ip_address // pass if available
+    });
+
+    return true;
+  },
+
+  // Update contact request (for status changes)
+  async update(id: number, request: Partial<ContactRequest>): Promise<ContactRequest | null> {
+    const { data, error } = await supabase
+      .from('contact_requests')
+      .update({ ...request, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating contact request:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  // Delete contact request
+  async delete(id: number): Promise<boolean> {
+    const { error } = await supabase
+      .from('contact_requests')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting contact request:', error);
+      return false;
+    }
+
+    return true;
+  },
+};
+
+// ============ NEWSLETTER ============
+
+export interface NewsletterSubscriber {
+  id?: number;
+  email: string;
+  status?: 'subscribed' | 'unsubscribed';
+  created_at?: string;
+  updated_at?: string;
+}
+
+export const newsletterService = {
+  // Subscribe to newsletter
+  async subscribe(email: string): Promise<{ success: boolean; message: string }> {
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .insert([{ email }]);
+
+    if (error) {
+      // Check for unique constraint violation (duplicate email)
+      if (error.code === '23505') {
+        return { success: true, message: 'already_subscribed' };
+      }
+      console.error('Error subscribing to newsletter:', error);
+      return { success: false, message: 'error' };
+    }
+
+    // Send notification
+    await sendNotification('newsletter', { email });
+
+    return { success: true, message: 'success' };
   },
 };

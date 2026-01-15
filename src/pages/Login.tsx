@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaLock, FaUser, FaSignInAlt } from 'react-icons/fa';
+import { FaLock, FaEnvelope, FaSignInAlt } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,21 +10,21 @@ import { toast } from 'sonner';
 import SEO from '@/components/SEO';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
-    const success = await login(username, password);
-    
+
+    const success = await login(email, password);
+
     if (success) {
       toast.success('Успешный вход в админ-панель');
       navigate('/admin');
     } else {
-      toast.error('Неверный логин или пароль');
+      toast.error('Ошибка входа. Проверьте Email и пароль.');
     }
   };
 
@@ -55,22 +55,22 @@ const Login = () => {
                   <span className="text-3xl font-bold text-white">W</span>
                 </div>
                 <h1 className="text-3xl font-bold mb-2">Админ-панель</h1>
-                <p className="text-muted-foreground">Войдите для управления сайтом</p>
+                <p className="text-muted-foreground">Войдите используя Supabase Auth</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="username" className="text-sm font-medium">
-                    Логин
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Email
                   </label>
                   <div className="relative">
-                    <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Введите логин"
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="admin@example.com"
                       className="pl-10"
                       required
                       disabled={isLoading}
@@ -112,10 +112,6 @@ const Login = () => {
                   )}
                 </Button>
               </form>
-
-              <div className="mt-6 text-center text-sm text-muted-foreground">
-                <p>По умолчанию: admin / admin123</p>
-              </div>
             </Card>
           </motion.div>
         </div>
