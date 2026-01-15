@@ -54,10 +54,9 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <img src="/WebPoint-Logo.webp" alt="WebPoint Logo" className="w-full h-full object-contain" />
+            <div className="h-10 w-auto flex items-center justify-center">
+              <img src="/WebPoint.webp" alt="WebPoint Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="text-2xl font-bold gradient-text">Studio</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -67,8 +66,8 @@ const Navigation = () => {
                 key={link.path}
                 to={link.path}
                 className={`relative text-sm font-medium transition-colors ${isActive(link.path)
-                    ? 'text-primary'
-                    : 'text-foreground/80 hover:text-primary'
+                  ? 'text-primary'
+                  : 'text-foreground/80 hover:text-primary'
                   }`}
               >
                 {link.label}
@@ -141,8 +140,8 @@ const Navigation = () => {
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block py-2 text-lg font-medium transition-colors ${isActive(link.path)
-                      ? 'text-primary'
-                      : 'text-foreground/80 hover:text-primary'
+                    ? 'text-primary'
+                    : 'text-foreground/80 hover:text-primary'
                     }`}
                 >
                   {link.label}
