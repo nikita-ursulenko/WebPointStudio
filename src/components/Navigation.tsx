@@ -47,18 +47,17 @@ const Navigation = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'glass-effect shadow-lg' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-effect shadow-lg' : 'bg-transparent'
+        }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center glow-effect">
-              <span className="text-2xl font-bold text-white">W</span>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img src="/WebPoint-Logo.webp" alt="WebPoint Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="text-2xl font-bold gradient-text">WebPoint</span>
+            <span className="text-2xl font-bold gradient-text">Studio</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -67,11 +66,10 @@ const Navigation = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`relative text-sm font-medium transition-colors ${
-                  isActive(link.path)
+                className={`relative text-sm font-medium transition-colors ${isActive(link.path)
                     ? 'text-primary'
                     : 'text-foreground/80 hover:text-primary'
-                }`}
+                  }`}
               >
                 {link.label}
                 {isActive(link.path) && (
@@ -103,9 +101,8 @@ const Navigation = () => {
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setLanguage(lang.code)}
-                    className={`cursor-pointer flex items-center gap-2 ${
-                      language === lang.code ? 'bg-primary/20 text-primary' : ''
-                    }`}
+                    className={`cursor-pointer flex items-center gap-2 ${language === lang.code ? 'bg-primary/20 text-primary' : ''
+                      }`}
                   >
                     <span className="text-lg">{lang.flag}</span>
                     <span>{lang.name}</span>
@@ -143,11 +140,10 @@ const Navigation = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block py-2 text-lg font-medium transition-colors ${
-                    isActive(link.path)
+                  className={`block py-2 text-lg font-medium transition-colors ${isActive(link.path)
                       ? 'text-primary'
                       : 'text-foreground/80 hover:text-primary'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -164,19 +160,18 @@ const Navigation = () => {
                       <FaChevronDown className="h-3 w-3 opacity-50 ml-auto" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    align="start" 
+                  <DropdownMenuContent
+                    align="start"
                     side="bottom"
-                    className="glass-effect border-white/20 w-[calc(100vw-2rem)] max-w-none md:w-auto md:max-w-[150px]" 
+                    className="glass-effect border-white/20 w-[calc(100vw-2rem)] max-w-none md:w-auto md:max-w-[150px]"
                     onCloseAutoFocus={(e) => e.preventDefault()}
                   >
                     {languages.map((lang) => (
                       <DropdownMenuItem
                         key={lang.code}
                         onClick={() => setLanguage(lang.code)}
-                        className={`cursor-pointer flex items-center gap-2 ${
-                          language === lang.code ? 'bg-primary/20 text-primary' : ''
-                        }`}
+                        className={`cursor-pointer flex items-center gap-2 ${language === lang.code ? 'bg-primary/20 text-primary' : ''
+                          }`}
                       >
                         <span className="text-lg">{lang.flag}</span>
                         <span>{lang.name}</span>
