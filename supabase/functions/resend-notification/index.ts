@@ -70,7 +70,7 @@ serve(async (req) => {
       `;
 
             console.log('=== DUAL EMAIL NOTIFICATION START ===');
-            console.log(`Admin email target: webpoin.development@gmail.com`);
+            console.log(`Admin email target: developmentwebpoint@gmail.com`);
             console.log(`Client email target: ${payload.email}`);
             console.log(`Project type: ${payload.project_type}`);
             console.log(`Client name: ${payload.name}`);
@@ -85,7 +85,7 @@ serve(async (req) => {
                 },
                 body: JSON.stringify({
                     from: "WebPoint Bot <onboarding@resend.dev>",
-                    to: ["webpoin.development@gmail.com"],
+                    to: ["developmentwebpoint@gmail.com"],
                     subject: adminSubject,
                     html: adminHtml,
                 }),
@@ -152,7 +152,7 @@ serve(async (req) => {
         </div>
       `;
 
-            console.log(`Sending email to webpoin.development@gmail.com for type: ${type}`);
+            console.log(`Sending email to developmentwebpoint@gmail.com for type: ${type}`);
 
             const res = await fetch("https://api.resend.com/emails", {
                 method: "POST",
@@ -162,7 +162,7 @@ serve(async (req) => {
                 },
                 body: JSON.stringify({
                     from: "WebPoint Bot <onboarding@resend.dev>",
-                    to: ["webpoin.development@gmail.com"],
+                    to: ["developmentwebpoint@gmail.com"],
                     subject: subject,
                     html: startHtml,
                 }),
