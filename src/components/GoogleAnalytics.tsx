@@ -10,6 +10,12 @@ declare global {
 
 const GA_MEASUREMENT_ID = 'G-NCED126ZZ5';
 
+export const sendGAEvent = (eventName: string, params?: Record<string, any>) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', eventName, params);
+    }
+};
+
 const GoogleAnalytics = () => {
     const location = useLocation();
 

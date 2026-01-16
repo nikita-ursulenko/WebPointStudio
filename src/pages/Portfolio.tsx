@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { portfolioService } from '@/lib/db';
 import SEO from '@/components/SEO';
+import { sendGAEvent } from '@/components/GoogleAnalytics';
 
 type ProjectType = 'all' | 'landing' | 'business' | 'shop';
 
@@ -84,7 +85,7 @@ const Portfolio = () => {
   // Преобразование проектов из админ-панели в формат для отображения
   const getProjectDisplayData = (project: ProjectFromAdmin): DisplayProject => {
     const translations = project.translations;
-    
+
     let title = project.title;
     let category = project.category;
     let problem = project.problem;
@@ -131,8 +132,8 @@ const Portfolio = () => {
     { value: 'shop', label: t('portfolio.shop') },
   ];
 
-  const filteredProjects = filter === 'all' 
-    ? allProjects 
+  const filteredProjects = filter === 'all'
+    ? allProjects
     : allProjects.filter(project => project.type === filter);
 
   const structuredData = {
@@ -160,118 +161,126 @@ const Portfolio = () => {
         url="/portfolio"
         structuredData={structuredData}
       />
-    <div className="min-h-screen pt-20">
-      {/* Hero */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-2xl animate-float-glow-slow" />
-        </div>
+      <div className="min-h-screen pt-20">
+        {/* Hero */}
+        <section className="py-20 relative overflow-hidden">
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
+            <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-2xl animate-float-glow-slow" />
+          </div>
 
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto mb-12"
-          >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              {t('portfolio.title')}
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              {t('portfolio.subtitle')}
-            </p>
-          </motion.div>
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center max-w-3xl mx-auto mb-12"
+            >
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                {t('portfolio.title')}
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                {t('portfolio.subtitle')}
+              </p>
+            </motion.div>
 
-          {/* Filter */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-4 mb-12"
-          >
-            {filters.map((item) => (
-              <button
-                key={item.value}
-                onClick={() => setFilter(item.value)}
-                className={`px-6 py-3 rounded-full font-medium transition-all ${
-                  filter === item.value
+            {/* Filter */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap justify-center gap-4 mb-12"
+            >
+              {filters.map((item) => (
+                <button
+                  key={item.value}
+                  onClick={() => setFilter(item.value)}
+                  className={`px-6 py-3 rounded-full font-medium transition-all ${filter === item.value
                     ? 'bg-gradient-to-r from-primary to-accent text-white glow-effect'
                     : 'glass-effect text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Projects Grid */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={filter}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="h-full"
+                    }`}
                 >
-                  <Card className="glass-effect overflow-hidden hover-lift border-white/10 group h-full flex flex-col">
-                    <div className="relative h-64 overflow-hidden flex-shrink-0">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <div className="text-xs text-primary font-semibold mb-1">{project.category}</div>
-                        <h3 className="text-xl font-bold">{project.title}</h3>
-                      </div>
-                    </div>
-
-                    <div className="p-6 flex-grow flex flex-col gap-4">
-                      <div>
-                        <div className="text-sm font-semibold text-primary mb-1">{t('portfolio.problem')}</div>
-                        <p className="text-sm text-muted-foreground">{project.problem}</p>
-                      </div>
-
-                      <div>
-                        <div className="text-sm font-semibold text-accent mb-1">{t('portfolio.solution')}</div>
-                        <p className="text-sm text-muted-foreground">{project.solution}</p>
-                      </div>
-
-                      <div>
-                        <div className="text-sm font-semibold gradient-text mb-1">{t('portfolio.result')}</div>
-                        <p className="text-sm font-medium">{project.result}</p>
-                      </div>
-
-                      <div className="mt-auto">
-                        <Button variant="outline" asChild className="w-full glass-effect group">
-                          <Link to={`/portfolio/${project.id}`}>
-                            {t('portfolio.view')}
-                            <FaExternalLinkAlt className="ml-2 group-hover:translate-x-1 transition-transform" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
+                  {item.label}
+                </button>
               ))}
             </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-    </div>
+          </div>
+        </section>
+
+        {/* Projects Grid */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={filter}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              >
+                {filteredProjects.map((project, index) => (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="h-full"
+                  >
+                    <Card className="glass-effect overflow-hidden hover-lift border-white/10 group h-full flex flex-col">
+                      <div className="relative h-64 overflow-hidden flex-shrink-0">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <div className="text-xs text-primary font-semibold mb-1">{project.category}</div>
+                          <h3 className="text-xl font-bold">{project.title}</h3>
+                        </div>
+                      </div>
+
+                      <div className="p-6 flex-grow flex flex-col gap-4">
+                        <div>
+                          <div className="text-sm font-semibold text-primary mb-1">{t('portfolio.problem')}</div>
+                          <p className="text-sm text-muted-foreground">{project.problem}</p>
+                        </div>
+
+                        <div>
+                          <div className="text-sm font-semibold text-accent mb-1">{t('portfolio.solution')}</div>
+                          <p className="text-sm text-muted-foreground">{project.solution}</p>
+                        </div>
+
+                        <div>
+                          <div className="text-sm font-semibold gradient-text mb-1">{t('portfolio.result')}</div>
+                          <p className="text-sm font-medium">{project.result}</p>
+                        </div>
+
+                        <div className="mt-auto">
+                          <Button
+                            variant="outline"
+                            asChild
+                            className="w-full glass-effect group"
+                            onClick={() => sendGAEvent('project_view_click', {
+                              project_id: project.id,
+                              project_title: project.title,
+                              category: project.category
+                            })}
+                          >
+                            <Link to={`/portfolio/${project.id}`}>
+                              {t('portfolio.view')}
+                              <FaExternalLinkAlt className="ml-2 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </section>
+      </div>
     </>
   );
 };

@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import SEO from '@/components/SEO';
+import { sendGAEvent } from '@/components/GoogleAnalytics';
 
 const Services = () => {
   const { t } = useLanguage();
@@ -243,14 +244,22 @@ const Services = () => {
                       ))}
                     </ul>
 
-                    <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto">
+                    <Button
+                      asChild
+                      className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto"
+                      onClick={() => sendGAEvent('service_order_click', {
+                        service_id: pkg.id,
+                        service_name: pkg.title,
+                        price: pkg.price
+                      })}
+                    >
                       <Link to="/contact">{t('services.order')}</Link>
                     </Button>
                   </Card>
                 </motion.div>
               ))}
             </div>
-          </div>
+          </div >
         </section>
 
         {/* Additional Services */}
@@ -302,7 +311,16 @@ const Services = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button asChild variant="outline" className="w-full glass-effect border-white/20 mt-auto">
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full glass-effect border-white/20 mt-auto"
+                      onClick={() => sendGAEvent('service_order_click', {
+                        service_name: service.title,
+                        price: service.price,
+                        type: 'additional'
+                      })}
+                    >
                       <Link to="/contact">{t('services.order')}</Link>
                     </Button>
                   </Card>

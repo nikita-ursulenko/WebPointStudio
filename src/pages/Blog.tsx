@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { blogService, newsletterService } from '@/lib/db';
 import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
+import { sendGAEvent } from '@/components/GoogleAnalytics';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -230,7 +231,16 @@ const Blog = () => {
                         </div>
                         <span className="text-sm text-muted-foreground">{filteredArticles[0].date}</span>
                       </div>
-                      <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90 group w-fit">
+                      <Button
+                        asChild
+                        className="bg-gradient-to-r from-primary to-accent hover:opacity-90 group w-fit"
+                        onClick={() => sendGAEvent('blog_article_click', {
+                          article_id: filteredArticles[0].id,
+                          article_title: filteredArticles[0].title,
+                          category: filteredArticles[0].category,
+                          is_featured: true
+                        })}
+                      >
                         <Link to={`/blog/${filteredArticles[0].id}`}>
                           {t('blog.readMore')}
                           <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -264,7 +274,15 @@ const Blog = () => {
                     transition={{ delay: index * 0.1 }}
                     className="h-full"
                   >
-                    <Link to={`/blog/${article.id}`} className="block h-full">
+                    <Link
+                      to={`/blog/${article.id}`}
+                      className="block h-full"
+                      onClick={() => sendGAEvent('blog_article_click', {
+                        article_id: article.id,
+                        article_title: article.title,
+                        category: article.category
+                      })}
+                    >
                       <Card className="glass-effect overflow-hidden hover-lift border-white/10 h-full flex flex-col group cursor-pointer">
                         <div className="relative h-48 overflow-hidden">
                           <img
