@@ -316,7 +316,7 @@ const Blog = () => {
                 {t('blog.newsletter.title.prefix')}<span className="gradient-text">{t('blog.newsletter.title.highlight')}</span>
               </h2>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Подпишитесь на рассылку и первыми узнавайте о новых материалах
+                {t('blog.newsletter.subtitle')}
               </p>
 
               <NewsletterForm />
@@ -329,6 +329,7 @@ const Blog = () => {
 };
 
 const NewsletterForm = () => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'already_subscribed'>('idle');
 
@@ -359,7 +360,7 @@ const NewsletterForm = () => {
   if (status === 'success') {
     return (
       <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-4 rounded-lg inline-block">
-        Спасибо за подписку! Мы свяжемся с вами, когда выйдет новая статья.
+        {t('blog.newsletter.success')}
       </div>
     );
   }
@@ -371,16 +372,16 @@ const NewsletterForm = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Ваш email"
+          placeholder={t('blog.newsletter.email')}
           disabled={status === 'loading'}
           className="w-full px-6 py-3 rounded-lg glass-effect border border-white/20 focus:outline-none focus:border-primary disabled:opacity-50"
           required
         />
         {status === 'error' && (
-          <p className="text-red-500 text-sm mt-2 ml-2">Произошла ошибка. Попробуйте позже.</p>
+          <p className="text-red-500 text-sm mt-2 ml-2">{t('blog.newsletter.error')}</p>
         )}
         {status === 'already_subscribed' && (
-          <p className="text-yellow-500 text-sm mt-2 ml-2">Вы уже подписаны!</p>
+          <p className="text-yellow-500 text-sm mt-2 ml-2">{t('blog.newsletter.exists')}</p>
         )}
       </div>
       <Button
@@ -388,7 +389,7 @@ const NewsletterForm = () => {
         disabled={status === 'loading'}
         className="bg-gradient-to-r from-primary to-accent hover:opacity-90 disabled:opacity-50"
       >
-        {status === 'loading' ? 'Тихо...' : 'Подписаться'}
+        {status === 'loading' ? t('blog.newsletter.sending') : t('blog.newsletter.subscribe')}
       </Button>
     </form>
   );

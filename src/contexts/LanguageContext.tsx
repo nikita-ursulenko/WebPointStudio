@@ -249,6 +249,10 @@ const translations = {
     'blog.newsletter.subtitle': 'Подпишитесь на рассылку и первыми узнавайте о новых материалах',
     'blog.newsletter.email': 'Ваш email',
     'blog.newsletter.subscribe': 'Подписаться',
+    'blog.newsletter.success': 'Спасибо за подписку! Мы свяжемся с вами, когда выйдет новая статья.',
+    'blog.newsletter.error': 'Произошла ошибка. Попробуйте позже.',
+    'blog.newsletter.exists': 'Вы уже подписаны!',
+    'blog.newsletter.sending': 'Отправка...',
 
     // Home
     'home.hero.badge': '🚀 Профессиональная разработка сайтов',
@@ -527,6 +531,10 @@ const translations = {
     'blog.newsletter.subtitle': 'Abonează-te la newsletter și află primul despre materialele noi',
     'blog.newsletter.email': 'Email-ul tău',
     'blog.newsletter.subscribe': 'Abonează-te',
+    'blog.newsletter.success': 'Mulțumim pentru abonare! Te vom contacta când va apărea un articol nou.',
+    'blog.newsletter.error': 'A apărut o eroare. Încearcă mai târziu.',
+    'blog.newsletter.exists': 'Ești deja abonat!',
+    'blog.newsletter.sending': 'Se trimite...',
 
     // Home
     'home.hero.badge': '🚀 Dezvoltare profesională de site-uri',
@@ -805,6 +813,10 @@ const translations = {
     'blog.newsletter.subtitle': 'Subscribe to newsletter and be the first to know about new materials',
     'blog.newsletter.email': 'Your email',
     'blog.newsletter.subscribe': 'Subscribe',
+    'blog.newsletter.success': 'Thanks for subscribing! We will contact you when a new article is released.',
+    'blog.newsletter.error': 'An error occurred. Please try again later.',
+    'blog.newsletter.exists': 'You are already subscribed!',
+    'blog.newsletter.sending': 'Sending...',
 
     // Home
     'home.hero.badge': '🚀 Professional website development',
