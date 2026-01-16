@@ -79,6 +79,7 @@ const Services = () => {
 
   const additionalServices = [
     {
+      id: 'support',
       icon: FaHeadset,
       title: t('services.additional.support.title'),
       desc: t('services.additional.support.desc'),
@@ -91,6 +92,7 @@ const Services = () => {
       gradient: 'from-blue-500 to-cyan-500',
     },
     {
+      id: 'seo',
       icon: FaSearch,
       title: t('services.additional.seo.title'),
       desc: t('services.additional.seo.desc'),
@@ -103,6 +105,7 @@ const Services = () => {
       gradient: 'from-purple-500 to-pink-500',
     },
     {
+      id: 'ads',
       icon: FaBullhorn,
       title: t('services.additional.ads.title'),
       desc: t('services.additional.ads.desc'),
@@ -316,6 +319,7 @@ const Services = () => {
                       variant="outline"
                       className="w-full glass-effect border-white/20 mt-auto"
                       onClick={() => sendGAEvent('service_order_click', {
+                        service_id: service.id,
                         service_name: service.title,
                         price: service.price,
                         type: 'additional'
