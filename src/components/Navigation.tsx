@@ -56,7 +56,7 @@ const Navigation = () => {
           <div className="justify-self-start">
             <Link to="/" className="flex items-center space-x-2 group">
               <div className="h-10 w-auto flex items-center justify-center">
-                <img src="/WebPoint.webp" alt="WebPoint Logo" className="w-full h-full object-contain" />
+                <img src="/WebPoint.webp" alt="WebPoint Logo" className="h-full object-contain" />
               </div>
             </Link>
           </div>
