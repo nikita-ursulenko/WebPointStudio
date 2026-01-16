@@ -24,19 +24,20 @@ import AdminPortfolio from "./pages/admin/AdminPortfolio";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminContacts from "./pages/admin/AdminContacts";
 import AdminContactRequests from "./pages/admin/AdminContactRequests";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const queryClient = new QueryClient();
 
 // Компонент для динамического изменения lang атрибута
 const HtmlLangSetter = () => {
   const { language } = useLanguage();
-  
+
   const langMap: Record<string, string> = {
     ru: 'ru',
     ro: 'ro',
     en: 'en',
   };
-  
+
   return (
     <Helmet>
       <html lang={langMap[language] || 'ru'} />
@@ -51,6 +52,7 @@ const AppContent = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <GoogleAnalytics />
         <ScrollToTop />
         <Routes>
           {/* Public Routes with Navigation and Footer */}
@@ -61,7 +63,7 @@ const AppContent = () => (
           <Route path="/blog" element={<PublicLayout><Blog /></PublicLayout>} />
           <Route path="/blog/:id" element={<PublicLayout><ArticleDetail /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-          
+
           {/* Admin Routes without Navigation and Footer */}
           <Route path="/admin/login" element={<Login />} />
           <Route
@@ -114,7 +116,7 @@ const AppContent = () => (
               </ProtectedRoute>
             }
           />
-          
+
           <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
         </Routes>
       </BrowserRouter>
