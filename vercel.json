@@ -1,6 +1,18 @@
 {
     "rewrites": [
         {
+            "source": "/sitemap.xml",
+            "destination": "/api/sitemap"
+        },
+        {
+            "source": "/robots.txt",
+            "destination": "/api/robots"
+        },
+        {
+            "source": "/site.webmanifest",
+            "destination": "/api/manifest"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
