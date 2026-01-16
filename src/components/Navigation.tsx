@@ -51,16 +51,16 @@ const Navigation = () => {
         }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 md:grid md:grid-cols-[1fr_auto_1fr]">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="/" className="flex items-center space-x-2 group justify-self-start">
             <div className="h-10 w-auto flex items-center justify-center">
               <img src="/WebPoint.webp" alt="WebPoint Logo" className="w-full h-full object-contain" />
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8 justify-self-center">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -83,7 +83,7 @@ const Navigation = () => {
           </div>
 
           {/* Language Switcher & CTA */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4 justify-self-end">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
