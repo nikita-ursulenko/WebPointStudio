@@ -45,13 +45,6 @@ const Dashboard = () => {
       color: 'from-purple-500 to-pink-500',
       link: '/admin/portfolio',
     },
-    {
-      title: 'Просмотры сайта',
-      value: '1,234',
-      icon: FaEye,
-      color: 'from-green-500 to-emerald-500',
-      link: '/',
-    },
   ];
 
   return (
@@ -63,7 +56,7 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
