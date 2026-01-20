@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { contactService } from '@/lib/db';
 import SEO from '@/components/SEO';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -221,8 +222,23 @@ const Home = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="py-10 bg-card/50">
+        <section className="py-20">
           <div className="container mx-auto px-4">
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12 md:mb-16 max-w-3xl mx-auto"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                <span className="gradient-text">Web</span>Point <span className="gradient-text">{t('home.stats.title_suffix')}</span>
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                {t('home.stats.subtitle')}
+              </p>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -230,16 +246,26 @@ const Home = () => {
               transition={{ duration: 0.8 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-8"
             >
-              {stats.map((stat, index) => (
+              {[
+                { value: 5, suffix: '+', label: t('about.experience') },
+                { value: 150, suffix: '+', label: t('about.projects') },
+                { value: 98, suffix: '%', label: t('about.clients') }
+              ].map((stat, index) => (
                 <motion.div
                   key={index}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ y: -5 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  style={{ willChange: 'transform' }}
-                  className="glass-effect p-8 rounded-2xl text-center hover-lift border-white/10"
+                  className="glass-effect p-10 rounded-3xl text-center border border-white/10 bg-[rgba(30,41,59,0.5)] flex flex-col items-center justify-center"
                 >
-                  <div className="text-5xl font-bold gradient-text mb-2">{stat.value}</div>
-                  <div className="text-muted-foreground">{stat.label}</div>
+                  <div
+                    className="text-5xl md:text-6xl font-bold text-primary mb-3 drop-shadow-md flex items-center justify-center font-mono"
+                    style={{ color: '#a855f7' }}
+                  >
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  </div>
+                  <div className="text-muted-foreground font-medium uppercase tracking-wide text-sm md:text-base">
+                    {stat.label}
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
