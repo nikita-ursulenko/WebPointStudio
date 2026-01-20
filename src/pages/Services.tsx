@@ -314,7 +314,7 @@ const Services = () => {
                           price: pkg.price
                         })}
                       >
-                        <Link to="/contact">{t('services.order')}</Link>
+                        <Link to={`/contact?type=${pkg.id}`}>{t('services.order')}</Link>
                       </Button>
                     </div>
                   </TiltCard>
@@ -437,7 +437,7 @@ const Services = () => {
                           type: 'additional'
                         })}
                       >
-                        <Link to="/contact">{t('services.order')}</Link>
+                        <Link to={`/contact?type=${service.id}`}>{t('services.order')}</Link>
                       </Button>
                     </div>
                   </TiltCard>

@@ -369,7 +369,7 @@ export interface ContactRequest {
   name: string;
   email: string;
   phone: string;
-  project_type: 'landing' | 'business' | 'shop';
+  project_type: 'landing' | 'business' | 'shop' | 'support' | 'seo' | 'ads';
   message: string;
   status?: 'new' | 'read' | 'processed' | 'archived';
   created_at?: string;

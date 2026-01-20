@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import { contactRequestService } from '@/lib/db';
 
 const ContactForm = () => {
   const { t } = useLanguage();
+  const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -20,11 +22,24 @@ const ContactForm = () => {
     message: '',
   });
 
+  // Read type from URL and pre-fill the form
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      const validTypes = ['landing', 'business', 'shop', 'support', 'seo', 'ads'];
+      if (validTypes.includes(typeParam)) {
+        setFormData(prev => ({ ...prev, projectType: typeParam }));
+      }
+    }
+  }, [searchParams]);
+
   const contactSchema = z.object({
     name: z.string().min(2, 'Минимум 2 символа').max(100),
     email: z.string().email('Неверный email'),
     phone: z.string().min(6, 'Неверный номер телефона'),
-    projectType: z.string().min(1, 'Выберите тип проекта'),
+    projectType: z.enum(['landing', 'business', 'shop', 'support', 'seo', 'ads'], {
+      errorMap: () => ({ message: 'Выберите тип проекта' })
+    }),
     message: z.string().min(10, 'Минимум 10 символов').max(1000),
   });
 
@@ -40,7 +55,7 @@ const ContactForm = () => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        project_type: formData.projectType as 'landing' | 'business' | 'shop',
+        project_type: formData.projectType as 'landing' | 'business' | 'shop' | 'support' | 'seo' | 'ads',
         message: formData.message,
       });
 
@@ -116,6 +131,9 @@ const ContactForm = () => {
               <SelectItem value="landing">{t('services.landing')}</SelectItem>
               <SelectItem value="business">{t('services.business')}</SelectItem>
               <SelectItem value="shop">{t('services.shop')}</SelectItem>
+              <SelectItem value="support">{t('services.additional.support.title')}</SelectItem>
+              <SelectItem value="seo">{t('services.additional.seo.title')}</SelectItem>
+              <SelectItem value="ads">{t('services.additional.ads.title')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
