@@ -55,7 +55,7 @@ const Navigation = () => {
           {/* Logo */}
           <div className="justify-self-start">
             <Link to="/" className="flex items-center space-x-2 group">
-              <div className="h-10 w-auto flex items-center justify-center">
+              <div className="h-8 md:h-10 w-auto flex items-center justify-center">
                 <img src="/WebPoint.webp" alt="WebPoint Logo" className="h-full object-contain" />
               </div>
             </Link>
@@ -90,11 +90,10 @@ const Navigation = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="glass-effect border-white/20 hover:bg-white/10 gap-2 focus-visible:outline-none focus-visible:ring-0"
+                  className="glass-effect border-white/20 hover:bg-white/10 gap-1 px-2 h-8 min-w-0 focus-visible:outline-none focus-visible:ring-0"
                 >
-                  <span className="text-lg">{currentLanguage.flag}</span>
-                  <span className="font-medium">{currentLanguage.code.toUpperCase()}</span>
-                  <FaChevronDown className="h-3 w-3 opacity-50" />
+                  <span className="text-base">{currentLanguage.flag}</span>
+                  <span className="text-sm font-bold uppercase">{currentLanguage.code}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="glass-effect border-white/20 min-w-[150px]" onCloseAutoFocus={(e) => e.preventDefault()}>
@@ -102,7 +101,7 @@ const Navigation = () => {
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setLanguage(lang.code)}
-                    className={`cursor-pointer flex items-center gap-2 ${language === lang.code ? 'bg-primary/20 text-primary' : ''
+                    className={`cursor-pointer flex items-center gap-2 ${language === lang.code ? 'bg-primary text-white font-medium focus:bg-primary focus:text-white' : ''
                       }`}
                   >
                     <span className="text-lg">{lang.flag}</span>
@@ -150,37 +149,20 @@ const Navigation = () => {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4">
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full glass-effect border-white/20 hover:bg-white/10 gap-2 focus-visible:outline-none focus-visible:ring-0"
-                    >
-                      <span className="text-lg">{currentLanguage.flag}</span>
-                      <span className="font-medium">{currentLanguage.name}</span>
-                      <FaChevronDown className="h-3 w-3 opacity-50 ml-auto" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    side="bottom"
-                    className="glass-effect border-white/20 w-[calc(100vw-2rem)] max-w-none md:w-auto md:max-w-[150px]"
-                    onCloseAutoFocus={(e) => e.preventDefault()}
+              <div className="flex items-center gap-2 pt-4">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-all duration-300 ${language === lang.code
+                      ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-105'
+                      : 'glass-effect border-white/10 text-foreground/70 hover:bg-white/5'
+                      }`}
                   >
-                    {languages.map((lang) => (
-                      <DropdownMenuItem
-                        key={lang.code}
-                        onClick={() => setLanguage(lang.code)}
-                        className={`cursor-pointer flex items-center gap-2 ${language === lang.code ? 'bg-primary/20 text-primary' : ''
-                          }`}
-                      >
-                        <span className="text-lg">{lang.flag}</span>
-                        <span>{lang.name}</span>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    <span className="text-lg">{lang.flag}</span>
+                    <span className="font-medium uppercase">{lang.code}</span>
+                  </button>
+                ))}
               </div>
               <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-105 hover:shadow-xl active:scale-95">
                 <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>

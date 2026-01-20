@@ -37,15 +37,15 @@ const Footer = () => {
   return (
     <footer className="bg-card border-t border-white/10">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* About */}
-          <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">W</span>
+          <div className="col-span-2 md:col-span-1">
+            <Link to="/" className="flex items-center space-x-2 mb-4 group">
+              <div className="h-10 w-auto flex items-center">
+                <img src="/WebPoint.webp" alt="WebPoint Logo" className="h-full object-contain" />
               </div>
               <span className="text-xl font-bold gradient-text">WebPoint</span>
-            </div>
+            </Link>
             <p className="text-muted-foreground text-sm">{t('footer.about.text')}</p>
           </div>
 
@@ -98,7 +98,7 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div>
+          <div className="col-span-1 md:col-span-1">
             <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <div className="space-y-3">
               {contact?.email && (
