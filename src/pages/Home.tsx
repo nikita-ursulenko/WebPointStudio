@@ -365,13 +365,20 @@ const Home = () => {
                       <service.icon className="text-3xl text-white" />
                     </div>
 
+                    {/* Floating 3D Price */}
+                    <div
+                      className="absolute top-8 right-8 z-20"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                        {service.price}
+                      </div>
+                    </div>
+
                     <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
 
-                      <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent mb-2`}>
-                        {service.price}
-                      </div>
                       <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
                       <p className="text-muted-foreground mb-6">{service.desc}</p>
                       <ul className="space-y-3 mb-8 flex-grow">
@@ -384,10 +391,20 @@ const Home = () => {
                           </li>
                         ))}
                       </ul>
-                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto">
+
+                      {/* Spacer for button */}
+                      <div className="h-12 mt-auto" />
+                    </Card>
+
+                    {/* Floating 3D Button */}
+                    <div
+                      className="absolute bottom-8 left-8 right-8 z-20"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg">
                         <Link to="/services">{t('services.additional.more')}</Link>
                       </Button>
-                    </Card>
+                    </div>
                   </TiltCard>
                 </motion.div>
               ))}

@@ -234,19 +234,25 @@ const Services = () => {
                       <pkg.icon className="text-3xl text-white" />
                     </div>
 
+                    {/* Floating 3D Price */}
+                    <div
+                      className="absolute top-8 right-8 z-20 text-right"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <div className={`text-4xl font-bold bg-gradient-to-r ${pkg.gradient} bg-clip-text text-transparent mb-1`}>
+                        {pkg.price}
+                      </div>
+                      <div className="text-sm text-muted-foreground bg-white/10 backdrop-blur-md px-2 py-1 rounded-md inline-block">
+                        {pkg.time}
+                      </div>
+                    </div>
+
                     <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col hover-lift ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
 
                       <h3 className="text-2xl font-bold mb-2">{pkg.title}</h3>
                       <p className="text-muted-foreground mb-4">{pkg.desc}</p>
-
-                      <div className="mb-6">
-                        <div className={`text-4xl font-bold bg-gradient-to-r ${pkg.gradient} bg-clip-text text-transparent mb-1`}>
-                          {pkg.price}
-                        </div>
-                        <div className="text-sm text-muted-foreground">{t('services.duration')}: {pkg.time}</div>
-                      </div>
 
                       <ul className="space-y-3 mb-8 flex-grow">
                         {pkg.features.map((feature, i) => (
@@ -261,9 +267,18 @@ const Services = () => {
                         ))}
                       </ul>
 
+                      {/* Spacer for button */}
+                      <div className="h-12 mt-auto" />
+                    </Card>
+
+                    {/* Floating 3D Button */}
+                    <div
+                      className="absolute bottom-8 left-8 right-8 z-20"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
                       <Button
                         asChild
-                        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto"
+                        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
                         onClick={() => sendGAEvent('service_order_click', {
                           service_id: pkg.id,
                           service_name: pkg.title,
@@ -272,7 +287,7 @@ const Services = () => {
                       >
                         <Link to="/contact">{t('services.order')}</Link>
                       </Button>
-                    </Card>
+                    </div>
                   </TiltCard>
                 </motion.div>
               ))}
@@ -315,6 +330,16 @@ const Services = () => {
                       <service.icon className="text-white text-2xl" />
                     </div>
 
+                    {/* Floating 3D Price */}
+                    <div
+                      className="absolute top-8 right-8 z-20"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                        {service.price}
+                      </div>
+                    </div>
+
                     <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col">
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
@@ -323,9 +348,6 @@ const Services = () => {
                       <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                         {service.desc}
                       </p>
-                      <div className={`text-3xl font-bold mb-6 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
-                        {service.price}
-                      </div>
                       <ul className="space-y-3 mb-8 flex-grow">
                         {service.features.map((feature, i) => (
                           <li key={i} className="flex items-start gap-3">
@@ -338,10 +360,19 @@ const Services = () => {
                           </li>
                         ))}
                       </ul>
+                      {/* Spacer for button */}
+                      <div className="h-12 mt-auto" />
+                    </Card>
+
+                    {/* Floating 3D Button */}
+                    <div
+                      className="absolute bottom-8 left-8 right-8 z-20"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
                       <Button
                         asChild
                         variant="outline"
-                        className="w-full glass-effect border-white/20 mt-auto"
+                        className="w-full glass-effect border-white/20 shadow-lg"
                         onClick={() => sendGAEvent('service_order_click', {
                           service_id: service.id,
                           service_name: service.title,
@@ -351,7 +382,7 @@ const Services = () => {
                       >
                         <Link to="/contact">{t('services.order')}</Link>
                       </Button>
-                    </Card>
+                    </div>
                   </TiltCard>
                 </motion.div>
               ))}
