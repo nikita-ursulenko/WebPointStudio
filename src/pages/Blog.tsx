@@ -11,6 +11,7 @@ import SEO from '@/components/SEO';
 import { sendGAEvent } from '@/components/GoogleAnalytics';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 import { formatArticleDate } from '@/lib/utils';
+import { trackEvent } from '@/lib/analytics';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -368,6 +369,7 @@ const NewsletterForm = () => {
         if (message === 'already_subscribed') {
           setStatus('already_subscribed');
         } else {
+          trackEvent('Подписка на новости', 'Блог', 'submit');
           setStatus('success');
           setEmail('');
         }

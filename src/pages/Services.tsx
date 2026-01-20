@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import SEO from '@/components/SEO';
 import { sendGAEvent } from '@/components/GoogleAnalytics';
+import { trackEvent } from '@/lib/analytics';
 
 const Services = () => {
   const { t } = useLanguage();
@@ -308,11 +309,14 @@ const Services = () => {
                       <Button
                         asChild
                         className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95"
-                        onClick={() => sendGAEvent('service_order_click', {
-                          service_id: pkg.id,
-                          service_name: pkg.title,
-                          price: pkg.price
-                        })}
+                        onClick={() => {
+                          sendGAEvent('service_order_click', {
+                            service_id: pkg.id,
+                            service_name: pkg.title,
+                            price: pkg.price
+                          });
+                          trackEvent('Начало заказа', `Услуги - Пакет - ${pkg.title}`, 'click');
+                        }}
                       >
                         <Link to={`/contact?type=${pkg.id}`}>{t('services.order')}</Link>
                       </Button>
@@ -430,12 +434,15 @@ const Services = () => {
                       <Button
                         asChild
                         className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95"
-                        onClick={() => sendGAEvent('service_order_click', {
-                          service_id: service.id,
-                          service_name: service.title,
-                          price: service.price,
-                          type: 'additional'
-                        })}
+                        onClick={() => {
+                          sendGAEvent('service_order_click', {
+                            service_id: service.id,
+                            service_name: service.title,
+                            price: service.price,
+                            type: 'additional'
+                          });
+                          trackEvent('Начало заказа', `Услуги - Доп. услуга - ${service.title}`, 'click');
+                        }}
                       >
                         <Link to={`/contact?type=${service.id}`}>{t('services.order')}</Link>
                       </Button>
@@ -462,7 +469,7 @@ const Services = () => {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 {t('services.cta.subtitle')}
               </p>
-              <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Клик по кнопке', 'Услуги - Подвал - Связаться с нами', 'click')}>
                 <Link to="/contact">{t('services.cta.button')}</Link>
               </Button>
             </motion.div>

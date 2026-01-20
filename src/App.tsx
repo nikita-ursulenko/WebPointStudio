@@ -24,7 +24,9 @@ import AdminPortfolio from "./pages/admin/AdminPortfolio";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminContacts from "./pages/admin/AdminContacts";
 import AdminContactRequests from "./pages/admin/AdminContactRequests";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -45,13 +47,16 @@ const HtmlLangSetter = () => {
   );
 };
 
-const AppContent = () => (
-  <>
-    <HtmlLangSetter />
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+const AppContent = () => {
+  // Enable automatic page tracking
+  useAnalytics();
+
+  return (
+    <>
+      <HtmlLangSetter />
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <GoogleAnalytics />
         <ScrollToTop />
         <Routes>
@@ -116,20 +121,32 @@ const AppContent = () => (
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/analytics"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminAnalytics />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </>
-);
+      </TooltipProvider>
+    </>
+  );
+};
 
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthProvider>
-          <AppContent />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
         </AuthProvider>
       </LanguageProvider>
     </QueryClientProvider>

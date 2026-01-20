@@ -38,6 +38,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: '/admin/portfolio', label: 'Портфолио', icon: FaFolderOpen },
     { path: '/admin/contacts', label: 'Контакты', icon: FaAddressBook },
     { path: '/admin/contact-requests', label: 'Заявки', icon: FaEnvelope },
+    { path: '/admin/analytics', label: 'Статистика', icon: FaChartLine },
   ];
 
   const isActive = (path: string) => {
@@ -97,8 +98,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   to={item.path}
                   onClick={() => setIsSidebarOpen(false)}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${isActive(item.path)
-                      ? 'bg-gradient-to-r from-primary/20 to-accent/20 text-primary border border-primary/30'
-                      : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
+                    ? 'bg-gradient-to-r from-primary/20 to-accent/20 text-primary border border-primary/30'
+                    : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
                     }`}
                 >
                   <Icon />

@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { trackEvent } from '@/lib/analytics';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -111,7 +112,7 @@ const Navigation = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button asChild className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
+            <Button asChild className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Клик по кнопке', 'Меню - Оставить заявку (Десктоп)', 'click')}>
               <Link to="/contact">{t('hero.cta')}</Link>
             </Button>
           </div>
@@ -164,10 +165,9 @@ const Navigation = () => {
                   </button>
                 ))}
               </div>
-              <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-105 hover:shadow-xl active:scale-95">
+              <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-105 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Клик по кнопке', 'Меню - Оставить заявку (Мобильное)', 'click')}>
                 <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('hero.cta')}
-                </Link>
+                  {t('hero.cta')}</Link>
               </Button>
             </div>
           </motion.div>

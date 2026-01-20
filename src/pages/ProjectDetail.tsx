@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/carousel';
 import { portfolioService } from '@/lib/db';
 import SEO from '@/components/SEO';
+import { trackEvent } from '@/lib/analytics';
 
 type ProjectType = 'landing' | 'business' | 'shop';
 
@@ -93,10 +94,12 @@ const ProjectDetail = () => {
     loadProjects();
   }, []);
 
+
+
   // Преобразование проектов из админ-панели в формат для отображения
   const getProjectDisplayData = (project: ProjectFromAdmin): DisplayProject => {
     const translations = project.translations;
-    
+
     let title = project.title;
     let category = project.category;
     let problem = project.problem;
@@ -137,95 +140,20 @@ const ProjectDetail = () => {
     };
   };
 
-  // Статические проекты из LanguageContext
-  const staticProjects: DisplayProject[] = [
-    {
-      id: 7,
-      type: 'landing',
-      title: t('portfolio.project.mded.title'),
-      category: t('portfolio.project.mded.category'),
-      image: '/images/portfolio/mded/site.webp',
-      images: [
-        '/images/portfolio/mded/slide1.webp',
-        '/images/portfolio/mded/slide2.webp',
-        '/images/portfolio/mded/slide3.webp',
-        '/images/portfolio/mded/slide4.webp',
-        '/images/portfolio/mded/slide5.webp',
-      ],
-      problem: t('portfolio.project.mded.problem'),
-      solution: t('portfolio.project.mded.solution'),
-      result: t('portfolio.project.mded.result'),
-    },
-    {
-      id: 1,
-      type: 'landing',
-      title: t('portfolio.project.beauty.title'),
-      category: t('portfolio.project.beauty.category'),
-      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80',
-      problem: t('portfolio.project.beauty.problem'),
-      solution: t('portfolio.project.beauty.solution'),
-      result: t('portfolio.project.beauty.result'),
-    },
-    {
-      id: 2,
-      type: 'shop',
-      title: t('portfolio.project.tech.title'),
-      category: t('portfolio.project.tech.category'),
-      image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&q=80',
-      problem: t('portfolio.project.tech.problem'),
-      solution: t('portfolio.project.tech.solution'),
-      result: t('portfolio.project.tech.result'),
-    },
-    {
-      id: 3,
-      type: 'business',
-      title: t('portfolio.project.law.title'),
-      category: t('portfolio.project.law.category'),
-      image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80',
-      problem: t('portfolio.project.law.problem'),
-      solution: t('portfolio.project.law.solution'),
-      result: t('portfolio.project.law.result'),
-    },
-    {
-      id: 4,
-      type: 'landing',
-      title: t('portfolio.project.fitness.title'),
-      category: t('portfolio.project.fitness.category'),
-      image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=80',
-      problem: t('portfolio.project.fitness.problem'),
-      solution: t('portfolio.project.fitness.solution'),
-      result: t('portfolio.project.fitness.result'),
-    },
-    {
-      id: 5,
-      type: 'shop',
-      title: t('portfolio.project.fashion.title'),
-      category: t('portfolio.project.fashion.category'),
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80',
-      problem: t('portfolio.project.fashion.problem'),
-      solution: t('portfolio.project.fashion.solution'),
-      result: t('portfolio.project.fashion.result'),
-    },
-    {
-      id: 6,
-      type: 'business',
-      title: t('portfolio.project.restaurant.title'),
-      category: t('portfolio.project.restaurant.category'),
-      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
-      problem: t('portfolio.project.restaurant.problem'),
-      solution: t('portfolio.project.restaurant.solution'),
-      result: t('portfolio.project.restaurant.result'),
-    },
-  ];
-
   // Объединяем статические проекты с проектами из админ-панели
-  const allProjects: DisplayProject[] = [
-    ...staticProjects.filter(sp => !adminProjects.some(ap => ap.id === sp.id)),
-    ...adminProjects.map(getProjectDisplayData),
-  ];
+  const allProjects: DisplayProject[] = adminProjects.map(getProjectDisplayData);
 
   const projectId = id ? parseInt(id, 10) : null;
   const project = projectId ? allProjects.find(p => p.id === projectId) : null;
+
+  // Track project view
+  useEffect(() => {
+    if (project) {
+      trackEvent('Просмотр проекта', `Портфолио - ${project.title}`, 'view');
+    }
+  }, [project]);
+
+
 
   if (!project) {
     return (
@@ -439,13 +367,14 @@ const ProjectDetail = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2"
+                            onClick={() => trackEvent('Переход на сайт проекта', `Портфолио - ${project.title} - Посмотреть сайт`, 'click')}
                           >
                             Посмотреть сайт
                             <FaExternalLinkAlt className="h-3 w-3" />
                           </a>
                         </Button>
                       )}
-                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90">
+                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90" onClick={() => trackEvent('Начало заказа', `Портфолио - ${project.title} - Хочу такой сайт`, 'click')}>
                         <Link to="/contact">
                           {t('services.order')}
                         </Link>

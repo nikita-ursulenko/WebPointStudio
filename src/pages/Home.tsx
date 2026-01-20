@@ -10,6 +10,7 @@ import SEO from '@/components/SEO';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { TiltCard } from '@/components/TiltCard';
+import { trackEvent } from '@/lib/analytics';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -86,6 +87,7 @@ const Home = () => {
 
   const services = [
     {
+      id: 'landing',
       icon: FaRocket,
       title: t('services.landing'),
       desc: t('services.landing.desc'),
@@ -99,6 +101,7 @@ const Home = () => {
       gradient: 'from-blue-500 to-cyan-500',
     },
     {
+      id: 'business',
       icon: FaBriefcase,
       title: t('services.business'),
       desc: t('services.business.desc'),
@@ -113,6 +116,7 @@ const Home = () => {
       popular: true,
     },
     {
+      id: 'shop',
       icon: FaStore,
       title: t('services.shop'),
       desc: t('services.shop.desc'),
@@ -187,10 +191,10 @@ const Home = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 md:mb-12 max-w-[310px] sm:max-w-none mx-auto">
-                  <Button asChild size="lg" className="w-full sm:w-auto bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect text-base md:text-lg px-8 py-4 md:py-6 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
+                  <Button asChild size="lg" className="w-full sm:w-auto bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect text-base md:text-lg px-8 py-4 md:py-6 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Клик по кнопке', 'Главная - Первый экран - Заказать сайт', 'click')}>
                     <Link to="/contact">{t('hero.cta')}</Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="w-full sm:w-auto glass-effect border-white/20 text-base md:text-lg px-8 py-4 md:py-6">
+                  <Button asChild size="lg" variant="outline" className="w-full sm:w-auto glass-effect border-white/20 text-base md:text-lg px-8 py-4 md:py-6" onClick={() => trackEvent('Клик по кнопке', 'Главная - Первый экран - Консультация', 'click')}>
                     <Link to="/portfolio">{t('hero.consultation')}</Link>
                   </Button>
                 </div>
@@ -445,7 +449,7 @@ const Home = () => {
                       className="absolute bottom-8 left-8 right-8 z-20"
                       style={{ transform: 'translateZ(50px)' }}
                     >
-                      <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
+                      <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Переход к услуге', `Главная - Услуги - ${service.title}`, 'click')}>
                         <Link to="/services">{t('services.additional.more')}</Link>
                       </Button>
                     </div>
@@ -471,7 +475,7 @@ const Home = () => {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 {t('home.cta.subtitle')}
               </p>
-              <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 text-lg px-8 py-6 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 text-lg px-8 py-6 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Клик по кнопке', 'Главная - Подвал - Заказать сайт', 'click')}>
                 <Link to="/contact">{t('hero.cta')}</Link>
               </Button>
             </motion.div>

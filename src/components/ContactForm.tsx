@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { contactRequestService } from '@/lib/db';
+import { trackEvent } from '@/lib/analytics';
 
 const ContactForm = () => {
   const { t } = useLanguage();
@@ -60,6 +61,7 @@ const ContactForm = () => {
       });
 
       if (success) {
+        trackEvent('Отправка формы', `Контактная форма - ${formData.projectType}`, 'submit');
         toast.success(t('contact.success'));
         setFormData({ name: '', email: '', phone: '', projectType: '', message: '' });
       } else {

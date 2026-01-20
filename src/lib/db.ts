@@ -495,3 +495,217 @@ export const newsletterService = {
     return { success: true, message: 'success' };
   },
 };
+
+// ============ ANALYTICS ============
+
+export interface AnalyticsStats {
+  totalSessions: number;
+  uniqueVisitors: number;
+  avgDuration: number;
+  totalEvents: number;
+  totalConversions: number;
+}
+
+export interface EventStat {
+  event_name: string;
+  event_label: string | null;
+  count: number;
+}
+
+export const analyticsService = {
+  async getStats(timeRange: '24h' | '7d' | '30d'): Promise<AnalyticsStats> {
+    const now = new Date();
+    let startDate: Date;
+
+    switch (timeRange) {
+      case '24h':
+        startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case '7d':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+    }
+
+    try {
+      // Get session stats
+      const { data: sessions, error: sessionsError } = await supabase
+        .from('analytics_sessions')
+        .select('visitor_id, duration')
+        .gte('created_at', startDate.toISOString());
+
+      if (sessionsError) {
+        console.error('Error fetching sessions:', sessionsError);
+        return { totalSessions: 0, uniqueVisitors: 0, avgDuration: 0, totalEvents: 0, totalConversions: 0 };
+      }
+
+      const totalSessions = sessions?.length || 0;
+      const uniqueVisitors = new Set(sessions?.map(s => s.visitor_id) || []).size;
+      const totalDuration = sessions?.reduce((sum, s) => sum + (s.duration || 0), 0) || 0;
+      const avgDuration = totalSessions > 0 ? Math.floor(totalDuration / totalSessions) : 0;
+
+      // Get event count
+      const { count: totalEvents } = await supabase
+        .from('analytics_events')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', startDate.toISOString());
+
+      // Get conversions count
+      const { count: totalConversions } = await supabase
+        .from('analytics_events')
+        .select('*', { count: 'exact', head: true })
+        .eq('event_type', 'submit')
+        .gte('created_at', startDate.toISOString());
+
+      return {
+        totalSessions,
+        uniqueVisitors,
+        avgDuration,
+        totalEvents: totalEvents || 0,
+        totalConversions: totalConversions || 0,
+      };
+    } catch (error) {
+      console.error('Error getting analytics stats:', error);
+      return { totalSessions: 0, uniqueVisitors: 0, avgDuration: 0, totalEvents: 0, totalConversions: 0 };
+    }
+  },
+
+  async getTopEvents(limit: number = 10, timeRange: '24h' | '7d' | '30d' = '7d', type: 'general' | 'articles' | 'projects' = 'general'): Promise<EventStat[]> {
+    const now = new Date();
+    let startDate: Date;
+
+    switch (timeRange) {
+      case '24h':
+        startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case '7d':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+    }
+
+    try {
+      let query = supabase
+        .from('analytics_events')
+        .select('event_name, event_label')
+        .gte('created_at', startDate.toISOString());
+
+      if (type === 'articles') {
+        query = query.eq('event_name', 'Просмотр статьи');
+      } else if (type === 'projects') {
+        query = query.eq('event_name', 'Просмотр проекта');
+      } else {
+        // General actions - exclude views
+        query = query.neq('event_name', 'Просмотр статьи').neq('event_name', 'Просмотр проекта');
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Error fetching events:', error);
+        return [];
+      }
+
+      // Group and count events
+      const eventCounts = new Map<string, number>();
+      const eventLabels = new Map<string, string | null>();
+
+      data?.forEach(event => {
+        const key = type === 'general'
+          ? `${event.event_name}::${event.event_label || ''}`
+          : event.event_label || 'Unknown'; // For content views, just show the title label
+
+        eventCounts.set(key, (eventCounts.get(key) || 0) + 1);
+        eventLabels.set(key, event.event_label);
+      });
+
+      // Convert to array and sort
+      const topEvents: EventStat[] = Array.from(eventCounts.entries())
+        .map(([key, count]) => {
+          if (type === 'general') {
+            const event_name = key.split('::')[0];
+            const event_label = eventLabels.get(key) || null;
+            return { event_name, event_label, count };
+          } else {
+            // For content views, label is the title
+            return { event_name: type === 'articles' ? 'Статья' : 'Проект', event_label: key, count };
+          }
+        })
+        .sort((a, b) => b.count - a.count)
+        .slice(0, limit);
+
+      return topEvents;
+    } catch (error) {
+      console.error('Error getting top events:', error);
+      return [];
+    }
+  },
+
+
+  async getPageVisits(timeRange: '24h' | '7d' | '30d'): Promise<{ category: string; count: number }[]> {
+    const now = new Date();
+    let startDate: Date;
+
+    switch (timeRange) {
+      case '24h':
+        startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case '7d':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('analytics_sessions')
+        .select('page_path')
+        .gte('created_at', startDate.toISOString());
+
+      if (error) {
+        console.error('Error fetching page visits:', error);
+        return [];
+      }
+
+      const categories: Record<string, number> = {
+        'Главная': 0,
+        'Услуги': 0,
+        'Портфолио': 0,
+        'Блог': 0,
+        'Контакты': 0,
+      };
+
+      data?.forEach(session => {
+        const path = session.page_path;
+
+        // Skip admin paths
+        if (path.startsWith('/admin')) return;
+
+        if (path === '/' || path === '/en' || path === '/ro') {
+          categories['Главная']++;
+        } else if (path.startsWith('/services')) {
+          categories['Услуги']++;
+        } else if (path.startsWith('/portfolio')) {
+          categories['Портфолио']++;
+        } else if (path.startsWith('/blog')) {
+          categories['Блог']++;
+        } else if (path.startsWith('/contact')) {
+          categories['Контакты']++;
+        }
+      });
+
+      return Object.entries(categories)
+        .map(([category, count]) => ({ category, count }))
+        .sort((a, b) => b.count - a.count);
+    } catch (error) {
+      console.error('Error getting page visits:', error);
+      return [];
+    }
+  },
+};

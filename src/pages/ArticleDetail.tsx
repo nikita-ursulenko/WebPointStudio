@@ -8,6 +8,7 @@ import { blogService } from '@/lib/db';
 import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
 import { formatArticleDate } from '@/lib/utils';
+import { trackEvent } from '@/lib/analytics';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -150,6 +151,13 @@ const ArticleDetail = () => {
   }, [articleId, adminArticles.length, language]);
 
   const article = currentArticle || (articleId ? allArticles.find(a => a.id === articleId) : null);
+
+  // Track article view
+  useEffect(() => {
+    if (article) {
+      trackEvent('Просмотр статьи', `Блог - ${article.title}`, 'view');
+    }
+  }, [article]);
 
   if (!article) {
     return (
