@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
+import { TiltCard } from '@/components/TiltCard';
 import { FaCheck, FaRocket, FaStore, FaBriefcase, FaHeadset, FaSearch, FaBullhorn } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -216,53 +217,55 @@ const Services = () => {
                   transition={{ delay: index * 0.1 }}
                   className="relative"
                 >
-                  {pkg.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                      <div className="bg-gradient-to-r from-primary to-accent px-4 py-1 rounded-full text-sm font-semibold">
-                        {t('services.popular.badge')}
+                  <TiltCard className="h-full">
+                    {pkg.popular && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10" style={{ transform: 'translateZ(30px)' }}>
+                        <div className="bg-gradient-to-r from-primary to-accent px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                          {t('services.popular.badge')}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${pkg.gradient} flex items-center justify-center mb-6 glow-effect`}>
-                      <pkg.icon className="text-3xl text-white" />
-                    </div>
-
-                    <h3 className="text-2xl font-bold mb-2">{pkg.title}</h3>
-                    <p className="text-muted-foreground mb-4">{pkg.desc}</p>
-
-                    <div className="mb-6">
-                      <div className={`text-4xl font-bold bg-gradient-to-r ${pkg.gradient} bg-clip-text text-transparent mb-1`}>
-                        {pkg.price}
+                    )}
+                    <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col hover-lift ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${pkg.gradient} flex items-center justify-center mb-6 glow-effect`}>
+                        <pkg.icon className="text-3xl text-white" />
                       </div>
-                      <div className="text-sm text-muted-foreground">{t('services.duration')}: {pkg.time}</div>
-                    </div>
 
-                    <ul className="space-y-3 mb-8 flex-grow">
-                      {pkg.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0">
-                            <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
-                              <FaCheck className="text-xs text-primary" />
+                      <h3 className="text-2xl font-bold mb-2">{pkg.title}</h3>
+                      <p className="text-muted-foreground mb-4">{pkg.desc}</p>
+
+                      <div className="mb-6">
+                        <div className={`text-4xl font-bold bg-gradient-to-r ${pkg.gradient} bg-clip-text text-transparent mb-1`}>
+                          {pkg.price}
+                        </div>
+                        <div className="text-sm text-muted-foreground">{t('services.duration')}: {pkg.time}</div>
+                      </div>
+
+                      <ul className="space-y-3 mb-8 flex-grow">
+                        {pkg.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-3">
+                            <div className="mt-1 flex-shrink-0">
+                              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                                <FaCheck className="text-xs text-primary" />
+                              </div>
                             </div>
-                          </div>
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
 
-                    <Button
-                      asChild
-                      className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto"
-                      onClick={() => sendGAEvent('service_order_click', {
-                        service_id: pkg.id,
-                        service_name: pkg.title,
-                        price: pkg.price
-                      })}
-                    >
-                      <Link to="/contact">{t('services.order')}</Link>
-                    </Button>
-                  </Card>
+                      <Button
+                        asChild
+                        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto"
+                        onClick={() => sendGAEvent('service_order_click', {
+                          service_id: pkg.id,
+                          service_name: pkg.title,
+                          price: pkg.price
+                        })}
+                      >
+                        <Link to="/contact">{t('services.order')}</Link>
+                      </Button>
+                    </Card>
+                  </TiltCard>
                 </motion.div>
               ))}
             </div>
@@ -295,43 +298,45 @@ const Services = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
-                      <service.icon className="text-white text-2xl" />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
-                      {service.desc}
-                    </p>
-                    <div className={`text-3xl font-bold mb-6 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
-                      {service.price}
-                    </div>
-                    <ul className="space-y-3 mb-8 flex-grow">
-                      {service.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0">
-                            <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
-                              <FaCheck className="text-xs text-primary" />
+                  <TiltCard className="h-full">
+                    <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col">
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
+                        <service.icon className="text-white text-2xl" />
+                      </div>
+                      <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                        {service.desc}
+                      </p>
+                      <div className={`text-3xl font-bold mb-6 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                        {service.price}
+                      </div>
+                      <ul className="space-y-3 mb-8 flex-grow">
+                        {service.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-3">
+                            <div className="mt-1 flex-shrink-0">
+                              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                                <FaCheck className="text-xs text-primary" />
+                              </div>
                             </div>
-                          </div>
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="w-full glass-effect border-white/20 mt-auto"
-                      onClick={() => sendGAEvent('service_order_click', {
-                        service_id: service.id,
-                        service_name: service.title,
-                        price: service.price,
-                        type: 'additional'
-                      })}
-                    >
-                      <Link to="/contact">{t('services.order')}</Link>
-                    </Button>
-                  </Card>
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full glass-effect border-white/20 mt-auto"
+                        onClick={() => sendGAEvent('service_order_click', {
+                          service_id: service.id,
+                          service_name: service.title,
+                          price: service.price,
+                          type: 'additional'
+                        })}
+                      >
+                        <Link to="/contact">{t('services.order')}</Link>
+                      </Button>
+                    </Card>
+                  </TiltCard>
                 </motion.div>
               ))}
             </div>

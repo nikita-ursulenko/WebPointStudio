@@ -9,6 +9,7 @@ import { contactService } from '@/lib/db';
 import SEO from '@/components/SEO';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import { TiltCard } from '@/components/TiltCard';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -301,13 +302,15 @@ const Home = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="glass-effect p-8 hover-lift h-full border-white/10">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-6 glow-effect">
-                      <feature.icon className="text-3xl text-white" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.desc}</p>
-                  </Card>
+                  <TiltCard className="h-full">
+                    <Card className="glass-effect p-8 hover-lift h-full border-white/10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-6 glow-effect">
+                        <feature.icon className="text-3xl text-white" />
+                      </div>
+                      <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                      <p className="text-muted-foreground">{feature.desc}</p>
+                    </Card>
+                  </TiltCard>
                 </motion.div>
               ))}
             </div>
@@ -337,37 +340,39 @@ const Home = () => {
                   transition={{ delay: index * 0.1 }}
                   className="relative"
                 >
-                  {service.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                      <div className="bg-gradient-to-r from-primary to-accent px-4 py-1 rounded-full text-sm font-semibold">
-                        {t('home.services.popular')}
+                  <TiltCard className="h-full">
+                    {service.popular && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10" style={{ transform: 'translateZ(30px)' }}>
+                        <div className="bg-gradient-to-r from-primary to-accent px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                          {t('home.services.popular')}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
-                      <service.icon className="text-3xl text-white" />
-                    </div>
+                    )}
+                    <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
+                        <service.icon className="text-3xl text-white" />
+                      </div>
 
-                    <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent mb-2`}>
-                      {service.price}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground mb-6">{service.desc}</p>
-                    <ul className="space-y-3 mb-8 flex-grow">
-                      {service.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                            <div className="w-2 h-2 rounded-full bg-primary" />
-                          </div>
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto">
-                      <Link to="/services">{t('services.additional.more')}</Link>
-                    </Button>
-                  </Card>
+                      <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent mb-2`}>
+                        {service.price}
+                      </div>
+                      <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                      <p className="text-muted-foreground mb-6">{service.desc}</p>
+                      <ul className="space-y-3 mb-8 flex-grow">
+                        {service.features.map((feature, i) => (
+                          <li key={i} className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                              <div className="w-2 h-2 rounded-full bg-primary" />
+                            </div>
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto">
+                        <Link to="/services">{t('services.additional.more')}</Link>
+                      </Button>
+                    </Card>
+                  </TiltCard>
                 </motion.div>
               ))}
             </div>
