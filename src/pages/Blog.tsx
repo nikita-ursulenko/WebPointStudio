@@ -9,6 +9,7 @@ import { blogService, newsletterService } from '@/lib/db';
 import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
 import { sendGAEvent } from '@/components/GoogleAnalytics';
+import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -152,8 +153,11 @@ const Blog = () => {
         {/* Hero */}
         <section className="py-20 relative overflow-hidden">
           <div className="absolute inset-0 -z-10">
-            <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
-            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-2xl animate-float-glow" />
+            <SeamlessVideoLoop
+              src="/video/hero-video.mp4"
+              className="w-full h-full"
+              overlayClassName="absolute inset-0 bg-background/80"
+            />
           </div>
 
           <div className="container mx-auto px-4">

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { portfolioService } from '@/lib/db';
 import SEO from '@/components/SEO';
 import { sendGAEvent } from '@/components/GoogleAnalytics';
+import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 
 type ProjectType = 'all' | 'landing' | 'business' | 'shop';
 
@@ -165,15 +166,18 @@ const Portfolio = () => {
         {/* Hero */}
         <section className="py-20 relative overflow-hidden">
           <div className="absolute inset-0 -z-10">
-            <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card" />
-            <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-2xl animate-float-glow-slow" />
+            <SeamlessVideoLoop
+              src="/video/hero-video.mp4"
+              className="w-full h-full"
+              overlayClassName="absolute inset-0 bg-background/80"
+            />
           </div>
 
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center max-w-3xl mx-auto mb-12"
+              className="text-center max-w-3xl mx-auto"
             >
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
                 {t('portfolio.title')}
@@ -182,27 +186,29 @@ const Portfolio = () => {
                 {t('portfolio.subtitle')}
               </p>
             </motion.div>
+          </div>
+        </section>
 
-            {/* Filter */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-wrap justify-center gap-4 mb-12"
-            >
-              {filters.map((item) => (
-                <button
+        {/* Categories */}
+        <section className="py-8 bg-card/50 border-y border-white/10">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap justify-center gap-4">
+              {filters.map((item, index) => (
+                <motion.button
                   key={item.value}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
                   onClick={() => setFilter(item.value)}
-                  className={`px-6 py-3 rounded-full font-medium transition-all ${filter === item.value
+                  className={`px-6 py-2 rounded-full font-medium transition-all ${filter === item.value
                     ? 'bg-gradient-to-r from-primary to-accent text-white glow-effect'
                     : 'glass-effect text-muted-foreground hover:text-foreground'
                     }`}
                 >
                   {item.label}
-                </button>
+                </motion.button>
               ))}
-            </motion.div>
+            </div>
           </div>
         </section>
 
