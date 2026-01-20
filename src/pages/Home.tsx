@@ -303,10 +303,18 @@ const Home = () => {
                   transition={{ delay: index * 0.1 }}
                 >
                   <TiltCard className="h-full">
+                    {/* Floating 3D Icon */}
+                    <div
+                      className="absolute top-8 left-8 z-20 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center glow-effect"
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <feature.icon className="text-3xl text-white" />
+                    </div>
+
                     <Card className="glass-effect p-8 hover-lift h-full border-white/10">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-6 glow-effect">
-                        <feature.icon className="text-3xl text-white" />
-                      </div>
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
+
                       <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
                       <p className="text-muted-foreground">{feature.desc}</p>
                     </Card>
@@ -348,10 +356,18 @@ const Home = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Floating 3D Icon */}
+                    <div
+                      className={`absolute top-8 left-8 z-20 w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center glow-effect`}
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <service.icon className="text-3xl text-white" />
+                    </div>
+
                     <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
-                        <service.icon className="text-3xl text-white" />
-                      </div>
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
 
                       <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent mb-2`}>
                         {service.price}

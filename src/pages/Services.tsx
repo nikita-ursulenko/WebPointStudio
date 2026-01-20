@@ -225,10 +225,18 @@ const Services = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Floating 3D Icon */}
+                    <div
+                      className={`absolute top-8 left-8 z-20 w-16 h-16 rounded-2xl bg-gradient-to-br ${pkg.gradient} flex items-center justify-center glow-effect`}
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <pkg.icon className="text-3xl text-white" />
+                    </div>
+
                     <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col hover-lift ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${pkg.gradient} flex items-center justify-center mb-6 glow-effect`}>
-                        <pkg.icon className="text-3xl text-white" />
-                      </div>
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
 
                       <h3 className="text-2xl font-bold mb-2">{pkg.title}</h3>
                       <p className="text-muted-foreground mb-4">{pkg.desc}</p>
@@ -299,10 +307,18 @@ const Services = () => {
                   transition={{ delay: index * 0.1 }}
                 >
                   <TiltCard className="h-full">
+                    {/* Floating 3D Icon */}
+                    <div
+                      className={`absolute top-8 left-8 z-20 w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center glow-effect`}
+                      style={{ transform: 'translateZ(50px)' }}
+                    >
+                      <service.icon className="text-white text-2xl" />
+                    </div>
+
                     <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
-                        <service.icon className="text-white text-2xl" />
-                      </div>
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
+
                       <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
                       <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                         {service.desc}
