@@ -53,8 +53,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-white/10 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-lg font-bold text-white">W</span>
+            <div className="h-8 w-auto flex items-center justify-center">
+              <img src="/WebPoint.webp" alt="WebPoint Logo" className="h-full object-contain" />
             </div>
             <span className="text-xl font-bold gradient-text">Admin</span>
           </div>
@@ -70,16 +70,15 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-card border-r border-white/10 z-40 transform transition-transform duration-300 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 pt-16 lg:pt-0`}
+        className={`fixed top-0 left-0 h-full w-64 bg-card border-r border-white/10 z-40 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 pt-16 lg:pt-0`}
       >
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-6 border-b border-white/10 hidden lg:block">
-            <Link to="/admin" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center glow-effect">
-                <span className="text-2xl font-bold text-white">W</span>
+            <Link to="/admin" className="flex items-center space-x-3 group">
+              <div className="h-10 w-auto flex items-center justify-center">
+                <img src="/WebPoint.webp" alt="WebPoint Logo" className="h-full object-contain" />
               </div>
               <div>
                 <div className="text-xl font-bold gradient-text">WebPoint</div>
@@ -97,11 +96,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsSidebarOpen(false)}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                    isActive(item.path)
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${isActive(item.path)
                       ? 'bg-gradient-to-r from-primary/20 to-accent/20 text-primary border border-primary/30'
                       : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
-                  }`}
+                    }`}
                 >
                   <Icon />
                   <span className="font-medium">{item.label}</span>

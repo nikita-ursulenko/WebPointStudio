@@ -44,7 +44,7 @@ import { toast } from 'sonner';
 import { contactRequestService, type ContactRequest } from '@/lib/db';
 
 type StatusType = 'new' | 'read' | 'processed' | 'archived';
-type ProjectType = 'landing' | 'business' | 'shop';
+type ProjectType = 'landing' | 'business' | 'shop' | 'support' | 'seo' | 'ads';
 
 const AdminContactRequests = () => {
   const [requests, setRequests] = useState<ContactRequest[]>([]);
@@ -159,6 +159,9 @@ const AdminContactRequests = () => {
       landing: 'Лендинг',
       business: 'Сайт-визитка',
       shop: 'Интернет-магазин',
+      support: 'Поддержка',
+      seo: 'SEO продвижение',
+      ads: 'Реклама',
     };
     return labels[type];
   };
@@ -364,7 +367,7 @@ const AdminContactRequests = () => {
                     <FaEnvelope className="text-primary" />
                     <span>Email</span>
                   </div>
-                  <p className="font-medium">{selectedRequest.email}</p>
+                  <p className="font-medium break-all">{selectedRequest.email}</p>
                 </div>
 
                 <div className="space-y-2">
@@ -409,8 +412,8 @@ const AdminContactRequests = () => {
 
               <div className="space-y-2">
                 <div className="text-sm text-muted-foreground">Сообщение</div>
-                <div className="p-4 bg-muted/50 rounded-lg border border-white/10">
-                  <p className="whitespace-pre-wrap">{selectedRequest.message}</p>
+                <div className="p-4 bg-muted/50 rounded-lg border border-white/10 overflow-hidden">
+                  <p className="whitespace-pre-wrap break-all">{selectedRequest.message}</p>
                 </div>
               </div>
             </div>
