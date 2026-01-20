@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { contactService } from '@/lib/db';
 import SEO from '@/components/SEO';
+import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -140,18 +141,13 @@ const Home = () => {
         {/* Hero Section */}
         <section className="relative min-h-screen py-10 flex items-center justify-center overflow-hidden">
           {/* Video Background */}
+          {/* Video Background */}
           <div className="absolute inset-0 -z-10">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src="/video/hero-video.mp4" type="video/mp4" />
-            </video>
-            {/* Dark overlay for better text readability */}
-            <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/70 to-background/80" />
+            <SeamlessVideoLoop
+              src="/video/hero-video.mp4"
+              className="w-full h-full"
+              overlayClassName="absolute inset-0 bg-gradient-to-br from-background/80 via-background/70 to-background/80"
+            />
           </div>
 
           <div className="container mx-auto px-4 pt-20">
