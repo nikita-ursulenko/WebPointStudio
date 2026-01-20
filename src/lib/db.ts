@@ -645,42 +645,63 @@ export const analyticsService = {
     }
   },
 
-  async getDailyStats(days: number = 7): Promise<{ date: string; count: number }[]> {
+  async getDailyStats(days: number = 7): Promise<{ date: string; count: number; visitors: number; events: number }[]> {
     const now = new Date();
     const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
     try {
-      const { data, error } = await supabase
-        .from('analytics_sessions')
-        .select('created_at')
-        .gte('created_at', startDate.toISOString());
+      const [{ data: sessionData, error: sessionError }, { data: eventData, error: eventError }] = await Promise.all([
+        supabase
+          .from('analytics_sessions')
+          .select('created_at, visitor_id')
+          .gte('created_at', startDate.toISOString()),
+        supabase
+          .from('analytics_events')
+          .select('created_at')
+          .gte('created_at', startDate.toISOString())
+      ]);
 
-      if (error) {
-        console.error('Error fetching daily stats:', error);
+      if (sessionError || eventError) {
+        console.error('Error fetching daily stats:', sessionError || eventError);
         return [];
       }
 
       // Group by date
-      const statsMap = new Map<string, number>();
+      const statsMap = new Map<string, { count: number; visitors: Set<string>; events: number }>();
 
       // Initialize all days with 0
       for (let i = 0; i < days; i++) {
         const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
         const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD
-        statsMap.set(dateStr, 0);
+        statsMap.set(dateStr, { count: 0, visitors: new Set(), events: 0 });
       }
 
-      // Count sessions
-      data?.forEach((session) => {
+      // Count sessions and unique visitors
+      sessionData?.forEach((session) => {
         const dateStr = new Date(session.created_at).toISOString().split('T')[0];
         if (statsMap.has(dateStr)) {
-          statsMap.set(dateStr, (statsMap.get(dateStr) || 0) + 1);
+          const entry = statsMap.get(dateStr)!;
+          entry.count += 1;
+          entry.visitors.add(session.visitor_id);
+        }
+      });
+
+      // Count events
+      eventData?.forEach((event) => {
+        const dateStr = new Date(event.created_at).toISOString().split('T')[0];
+        if (statsMap.has(dateStr)) {
+          statsMap.get(dateStr)!.events += 1;
         }
       });
 
       // Convert to array and sort by date
       return Array.from(statsMap.entries())
-        .map(([date, count]) => ({ date, count }))
+        .map(([date, data]) => ({
+          date,
+          count: data.count,
+          visitors: data.visitors.size,
+          events: data.events
+        }))
         .sort((a, b) => a.date.localeCompare(b.date));
     } catch (error) {
       console.error('Error getting daily stats:', error);

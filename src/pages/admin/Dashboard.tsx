@@ -10,7 +10,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const Dashboard = () => {
   const [blogCount, setBlogCount] = useState<number>(0);
   const [portfolioCount, setPortfolioCount] = useState<number>(0);
-  const [dailyStats, setDailyStats] = useState<{ date: string; count: number }[]>([]);
+  const [dailyStats, setDailyStats] = useState<{ date: string; count: number; visitors: number; events: number }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -101,6 +101,14 @@ const Dashboard = () => {
                       <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                     </linearGradient>
+                    <linearGradient id="colorUniques" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorEvents" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
                   <XAxis
@@ -122,7 +130,7 @@ const Dashboard = () => {
                     }}
                     itemStyle={{ color: '#fff' }}
                     labelStyle={{ color: '#aaa', marginBottom: '4px' }}
-                    formatter={(value: number) => [`${value} визитов`, 'Посетители']}
+                    // formatter={(value: number) => [`${value} визитов`, 'Посетители']} 
                     labelFormatter={(label) => {
                       return new Date(label).toLocaleDateString('ru-RU', {
                         day: 'numeric',
@@ -134,9 +142,28 @@ const Dashboard = () => {
                   <Area
                     type="monotone"
                     dataKey="count"
+                    name="Визиты"
                     stroke="#06b6d4"
                     fillOpacity={1}
                     fill="url(#colorVisits)"
+                    strokeWidth={3}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="visitors"
+                    name="Уникальные"
+                    stroke="#8b5cf6"
+                    fillOpacity={1}
+                    fill="url(#colorUniques)"
+                    strokeWidth={3}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="events"
+                    name="События"
+                    stroke="#10b981"
+                    fillOpacity={1}
+                    fill="url(#colorEvents)"
                     strokeWidth={3}
                   />
                 </AreaChart>
