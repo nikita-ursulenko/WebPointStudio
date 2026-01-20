@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset } from 'react-icons/fa';
+import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset, FaStore, FaBriefcase } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -85,6 +85,7 @@ const Home = () => {
 
   const services = [
     {
+      icon: FaRocket,
       title: t('services.landing'),
       desc: t('services.landing.desc'),
       price: '€199',
@@ -97,6 +98,7 @@ const Home = () => {
       gradient: 'from-blue-500 to-cyan-500',
     },
     {
+      icon: FaBriefcase,
       title: t('services.business'),
       desc: t('services.business.desc'),
       price: '€499',
@@ -110,6 +112,7 @@ const Home = () => {
       popular: true,
     },
     {
+      icon: FaStore,
       title: t('services.shop'),
       desc: t('services.shop.desc'),
       price: '€899',
@@ -342,6 +345,10 @@ const Home = () => {
                     </div>
                   )}
                   <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 glow-effect`}>
+                      <service.icon className="text-3xl text-white" />
+                    </div>
+
                     <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent mb-2`}>
                       {service.price}
                     </div>
@@ -358,7 +365,7 @@ const Home = () => {
                       ))}
                     </ul>
                     <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-auto">
-                      <Link to="/contact">{t('services.order')}</Link>
+                      <Link to="/services">{t('services.additional.more')}</Link>
                     </Button>
                   </Card>
                 </motion.div>
