@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { blogService } from '@/lib/db';
 import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
+import { formatArticleDate } from '@/lib/utils';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -80,7 +81,7 @@ const ArticleDetail = () => {
   // Преобразование статей из админ-панели в формат для отображения
   const getArticleDisplayData = (article: ArticleFromAdmin): DisplayArticle => {
     const translations = article.translations;
-    
+
     let title = article.title;
     let excerpt = article.excerpt;
     let content = article.content;
@@ -108,7 +109,7 @@ const ArticleDetail = () => {
       image: article.image,
       category,
       readTime: article.readTime,
-      date: article.date,
+      date: formatArticleDate(article.date, language),
       content,
     };
   };

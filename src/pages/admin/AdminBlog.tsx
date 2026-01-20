@@ -47,6 +47,7 @@ import { blogService, type BlogArticle as DBBlogArticle } from '@/lib/db';
 import { uploadBlogImage, getBlogImageUrl } from '@/lib/storage';
 import { usePagination } from '@/hooks/usePagination';
 import { PaginationControls } from '@/components/admin/PaginationControls';
+import { formatArticleDate } from '@/lib/utils';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -158,7 +159,7 @@ const AdminBlog = () => {
       imageFile: null,
       categoryKey: 'tips',
       readTime: '5',
-      date: formattedDate,
+      date: today, // Сохраняем в ISO формате
       dateInput: today, // Для HTML5 date input
     });
     setImagePreview('');
@@ -307,7 +308,7 @@ const AdminBlog = () => {
         category: categoryLabels[formData.categoryKey],
         categoryKey: formData.categoryKey,
         readTime: parseInt(formData.readTime, 10),
-        date: formData.date || format(new Date(), 'd MMMM yyyy', { locale: ru }),
+        date: formData.dateInput || format(new Date(), 'yyyy-MM-dd'),
         translations: translations,
       };
 
@@ -439,7 +440,7 @@ const AdminBlog = () => {
                         <TableCell className="font-medium">{article.id}</TableCell>
                         <TableCell className="font-medium">{article.title}</TableCell>
                         <TableCell>{getCategoryLabel(article.categoryKey)}</TableCell>
-                        <TableCell>{article.date}</TableCell>
+                        <TableCell>{formatArticleDate(article.date, 'ru')}</TableCell>
                         <TableCell className="text-right">
                           <Button variant="outline" size="sm" className="mr-2" onClick={() => handleEditArticle(article)}>
                             <FaEdit /> Редактировать
@@ -472,7 +473,7 @@ const AdminBlog = () => {
 
                 <div className="mb-4">
                   <div className="text-xs text-muted-foreground mb-1">Дата публикации</div>
-                  <div className="text-sm">{article.date}</div>
+                  <div className="text-sm">{formatArticleDate(article.date, 'ru')}</div>
                 </div>
 
                 <div className="flex gap-2">
@@ -647,8 +648,7 @@ const AdminBlog = () => {
                   onChange={(e) => {
                     const selectedDate = e.target.value;
                     const parsedDate = parse(selectedDate, 'yyyy-MM-dd', new Date());
-                    const formattedDate = format(parsedDate, 'd MMMM yyyy', { locale: ru });
-                    setFormData({ ...formData, dateInput: selectedDate, date: formattedDate });
+                    setFormData({ ...formData, dateInput: selectedDate, date: selectedDate });
                   }}
                 />
               </div>

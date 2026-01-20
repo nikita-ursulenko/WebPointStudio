@@ -10,6 +10,7 @@ import { getBlogImageUrl } from '@/lib/storage';
 import SEO from '@/components/SEO';
 import { sendGAEvent } from '@/components/GoogleAnalytics';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
+import { formatArticleDate } from '@/lib/utils';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -108,7 +109,7 @@ const Blog = () => {
       category,
       categoryKey: article.categoryKey,
       readTime: article.readTime,
-      date: article.date,
+      date: formatArticleDate(article.date, language),
     };
   };
 
