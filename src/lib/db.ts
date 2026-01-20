@@ -645,6 +645,49 @@ export const analyticsService = {
     }
   },
 
+  async getDailyStats(days: number = 7): Promise<{ date: string; count: number }[]> {
+    const now = new Date();
+    const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+    try {
+      const { data, error } = await supabase
+        .from('analytics_sessions')
+        .select('created_at')
+        .gte('created_at', startDate.toISOString());
+
+      if (error) {
+        console.error('Error fetching daily stats:', error);
+        return [];
+      }
+
+      // Group by date
+      const statsMap = new Map<string, number>();
+
+      // Initialize all days with 0
+      for (let i = 0; i < days; i++) {
+        const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD
+        statsMap.set(dateStr, 0);
+      }
+
+      // Count sessions
+      data?.forEach((session) => {
+        const dateStr = new Date(session.created_at).toISOString().split('T')[0];
+        if (statsMap.has(dateStr)) {
+          statsMap.set(dateStr, (statsMap.get(dateStr) || 0) + 1);
+        }
+      });
+
+      // Convert to array and sort by date
+      return Array.from(statsMap.entries())
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date));
+    } catch (error) {
+      console.error('Error getting daily stats:', error);
+      return [];
+    }
+  },
+
 
   async getPageVisits(timeRange: '24h' | '7d' | '30d'): Promise<{ category: string; count: number }[]> {
     const now = new Date();
