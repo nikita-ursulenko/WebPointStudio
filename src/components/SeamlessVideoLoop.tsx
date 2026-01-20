@@ -57,6 +57,7 @@ const SeamlessVideoLoop = ({ src, className, overlayClassName }: SeamlessVideoLo
                 transition={{ duration: CROSSFADE_DURATION, ease: "linear" }}
                 muted
                 playsInline
+                preload="auto"
                 onTimeUpdate={() => handleTimeUpdate(1)}
             />
 
@@ -70,6 +71,7 @@ const SeamlessVideoLoop = ({ src, className, overlayClassName }: SeamlessVideoLo
                 transition={{ duration: CROSSFADE_DURATION, ease: "linear" }}
                 muted
                 playsInline
+                preload="auto"
                 onTimeUpdate={() => handleTimeUpdate(2)}
             />
 
