@@ -79,11 +79,11 @@ All colors MUST be HSL.
   }
 
   .glass-effect {
-    @apply bg-white/5 border border-white/10;
+    @apply bg-white/10 border border-white/10;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     transform: translate3d(0, 0, 0);
-    will-change: transform;
+    will-change: transform, backdrop-filter;
   }
 
   .glow-effect {
