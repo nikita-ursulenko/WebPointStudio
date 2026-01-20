@@ -220,12 +220,19 @@ const Home = () => {
               )}
             </motion.div>
 
-            {/* Stats */}
+
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="py-10 bg-card/50">
+          <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20"
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
             >
               {stats.map((stat, index) => (
                 <motion.div
@@ -233,7 +240,7 @@ const Home = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   style={{ willChange: 'transform' }}
-                  className="glass-effect p-8 rounded-2xl text-center hover-lift"
+                  className="glass-effect p-8 rounded-2xl text-center hover-lift border-white/10"
                 >
                   <div className="text-5xl font-bold gradient-text mb-2">{stat.value}</div>
                   <div className="text-muted-foreground">{stat.label}</div>
