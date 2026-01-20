@@ -38,6 +38,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { usePagination } from '@/hooks/usePagination';
+import { PaginationControls } from '@/components/admin/PaginationControls';
 import { toast } from 'sonner';
 import { contactRequestService, type ContactRequest } from '@/lib/db';
 
@@ -53,9 +55,27 @@ const AdminContactRequests = () => {
   const [requestToDelete, setRequestToDelete] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusType | 'all'>('all');
 
+  const filteredRequests = statusFilter === 'all'
+    ? requests
+    : requests.filter(req => req.status === statusFilter);
+
+  const {
+    currentData: paginatedRequests,
+    currentPage,
+    totalPages,
+    nextPage,
+    prevPage,
+    setCurrentPage,
+  } = usePagination({ data: filteredRequests, itemsPerPage: 10 });
+
   useEffect(() => {
     loadRequests();
   }, []);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, setCurrentPage]);
 
   const loadRequests = async () => {
     try {
@@ -143,10 +163,6 @@ const AdminContactRequests = () => {
     return labels[type];
   };
 
-  const filteredRequests = statusFilter === 'all'
-    ? requests
-    : requests.filter(req => req.status === statusFilter);
-
   if (isLoading) {
     return (
       <div className="p-8">
@@ -159,16 +175,16 @@ const AdminContactRequests = () => {
 
   return (
     <div className="p-8">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
         <div>
           <h1 className="text-3xl font-bold mb-2">Заявки с сайта</h1>
           <p className="text-muted-foreground">
             Просмотр и управление заявками из контактной формы
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full md:w-auto">
           <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusType | 'all')}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full md:w-[180px]">
               <SelectValue placeholder="Фильтр по статусу" />
             </SelectTrigger>
             <SelectContent>
@@ -195,61 +211,129 @@ const AdminContactRequests = () => {
           </p>
         </Card>
       ) : (
-        <Card className="glass-effect p-0 border-white/10">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[80px]">ID</TableHead>
-                  <TableHead>Имя</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Телефон</TableHead>
-                  <TableHead>Тип проекта</TableHead>
-                  <TableHead>Статус</TableHead>
-                  <TableHead>Дата</TableHead>
-                  <TableHead className="text-right">Действия</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRequests.map((request) => (
-                  <TableRow key={request.id}>
-                    <TableCell className="font-medium">{request.id}</TableCell>
-                    <TableCell className="font-medium">{request.name}</TableCell>
-                    <TableCell>{request.email}</TableCell>
-                    <TableCell>{request.phone}</TableCell>
-                    <TableCell>{getProjectTypeLabel(request.project_type)}</TableCell>
-                    <TableCell>{getStatusBadge(request.status)}</TableCell>
-                    <TableCell>
-                      {request.created_at
-                        ? format(new Date(request.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })
-                        : '-'}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewDetails(request)}
-                        >
-                          <FaEye className="mr-1" />
-                          Детали
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteClick(request.id!)}
-                        >
-                          <FaTrash className="mr-1" />
-                          Удалить
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <>
+          {/* Desktop View - Table */}
+          <div className="hidden md:block">
+            <Card className="glass-effect p-0 border-white/10">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[80px]">ID</TableHead>
+                      <TableHead>Имя</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Телефон</TableHead>
+                      <TableHead>Тип проекта</TableHead>
+                      <TableHead>Статус</TableHead>
+                      <TableHead>Дата</TableHead>
+                      <TableHead className="text-right">Действия</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedRequests.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell className="font-medium">{request.id}</TableCell>
+                        <TableCell className="font-medium">{request.name}</TableCell>
+                        <TableCell>{request.email}</TableCell>
+                        <TableCell>{request.phone}</TableCell>
+                        <TableCell>{getProjectTypeLabel(request.project_type)}</TableCell>
+                        <TableCell>{getStatusBadge(request.status)}</TableCell>
+                        <TableCell>
+                          {request.created_at
+                            ? format(new Date(request.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })
+                            : '-'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewDetails(request)}
+                            >
+                              <FaEye className="mr-1" />
+                              Детали
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteClick(request.id!)}
+                            >
+                              <FaTrash className="mr-1" />
+                              Удалить
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
           </div>
-        </Card>
+
+          {/* Mobile View - Cards */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {paginatedRequests.map((request) => (
+              <Card key={request.id} className="glass-effect p-4 border-white/10">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <span className="text-xs text-muted-foreground block mb-1">ID: {request.id}</span>
+                    <h3 className="font-bold text-lg leading-tight">{request.name}</h3>
+                  </div>
+                  <div>
+                    {getStatusBadge(request.status)}
+                  </div>
+                </div>
+
+                <div className="space-y-2 mb-4">
+                  <div className="text-sm flex items-center gap-2">
+                    <FaEnvelope className="text-muted-foreground w-3 h-3" />
+                    <span className="truncate">{request.email}</span>
+                  </div>
+                  <div className="text-sm flex items-center gap-2">
+                    <FaPhone className="text-muted-foreground w-3 h-3" />
+                    <span>{request.phone}</span>
+                  </div>
+                  <div className="text-sm flex items-center gap-2">
+                    <FaProjectDiagram className="text-muted-foreground w-3 h-3" />
+                    <span>{getProjectTypeLabel(request.project_type)}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {request.created_at
+                      ? format(new Date(request.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })
+                      : '-'}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => handleViewDetails(request)}
+                  >
+                    <FaEye className="mr-2" /> Детали
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => handleDeleteClick(request.id!)}
+                  >
+                    <FaTrash className="mr-2" /> Удалить
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onNext={nextPage}
+            onPrev={prevPage}
+          />
+        </>
       )}
 
       {/* Dialog для просмотра деталей */}

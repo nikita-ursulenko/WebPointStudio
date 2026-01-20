@@ -45,6 +45,8 @@ import { toast } from 'sonner';
 import { translatePortfolioProject } from '@/lib/groq';
 import { portfolioService, type PortfolioProject as DBPortfolioProject } from '@/lib/db';
 import { uploadBlogImage, getBlogImageUrl } from '@/lib/storage';
+import { usePagination } from '@/hooks/usePagination';
+import { PaginationControls } from '@/components/admin/PaginationControls';
 
 type ProjectType = 'landing' | 'business' | 'shop';
 
@@ -130,6 +132,15 @@ const AdminPortfolio = () => {
     date: '',
     dateInput: format(new Date(), 'yyyy-MM-dd'),
   });
+
+  const {
+    currentData: paginatedProjects,
+    currentPage,
+    totalPages,
+    nextPage,
+    prevPage,
+    setCurrentPage,
+  } = usePagination({ data: projects, itemsPerPage: 10 });
 
   // Загрузка проектов из БД
   useEffect(() => {
@@ -300,7 +311,7 @@ const AdminPortfolio = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.category || !formData.problem || !formData.solution || !formData.result) {
       toast.error('Заполните все обязательные поля');
       return;
@@ -473,14 +484,14 @@ const AdminPortfolio = () => {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
         <div>
           <h1 className="text-3xl font-bold mb-2">Управление портфолио</h1>
           <p className="text-muted-foreground">
             Создавайте и редактируйте проекты портфолио
           </p>
         </div>
-        <Button onClick={handleAdd} className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+        <Button onClick={handleAdd} className="w-full md:w-auto bg-gradient-to-r from-primary to-accent hover:opacity-90">
           <FaPlus className="mr-2" />
           Добавить проект
         </Button>
@@ -499,52 +510,105 @@ const AdminPortfolio = () => {
           </Button>
         </Card>
       ) : (
-        <Card className="glass-effect border-white/10">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>{t('admin.portfolio.typeLabel')}</TableHead>
-                  <TableHead>Название</TableHead>
-                  <TableHead>{t('admin.portfolio.category')}</TableHead>
-                  <TableHead>Действия</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {projects.map((project) => (
-                  <TableRow key={project.id}>
-                    <TableCell>{project.id}</TableCell>
-                    <TableCell>{getTypeLabel(project.type)}</TableCell>
-                    <TableCell className="font-medium">{project.title}</TableCell>
-                    <TableCell>{project.category}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(project)}
-                        >
-                          <FaEdit className="mr-1" />
-                          Редактировать
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(project.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <FaTrash className="mr-1" />
-                          Удалить
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <>
+          {/* Desktop View - Table */}
+          <div className="hidden md:block">
+            <Card className="glass-effect border-white/10">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>{t('admin.portfolio.typeLabel')}</TableHead>
+                      <TableHead>Название</TableHead>
+                      <TableHead>{t('admin.portfolio.category')}</TableHead>
+                      <TableHead>Действия</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedProjects.map((project) => (
+                      <TableRow key={project.id}>
+                        <TableCell>{project.id}</TableCell>
+                        <TableCell>{getTypeLabel(project.type)}</TableCell>
+                        <TableCell className="font-medium">{project.title}</TableCell>
+                        <TableCell>{project.category}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(project)}
+                            >
+                              <FaEdit className="mr-1" />
+                              Редактировать
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(project.id)}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <FaTrash className="mr-1" />
+                              Удалить
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
           </div>
-        </Card>
+
+          {/* Mobile View - Cards */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {paginatedProjects.map((project) => (
+              <Card key={project.id} className="glass-effect p-4 border-white/10">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <span className="text-xs text-muted-foreground block mb-1">ID: {project.id}</span>
+                    <h3 className="font-bold text-lg leading-tight">{project.title}</h3>
+                  </div>
+                  <div className="bg-primary/20 text-primary px-2 py-1 rounded text-xs font-medium whitespace-nowrap ml-2">
+                    {getTypeLabel(project.type)}
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <div className="text-xs text-muted-foreground mb-1">{t('admin.portfolio.category')}</div>
+                  <div className="text-sm">{project.category}</div>
+                </div>
+
+                <div className="flex gap-2 mt-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => handleEdit(project)}
+                  >
+                    <FaEdit className="mr-2" /> Редактировать
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => handleDelete(project.id)}
+                  >
+                    <FaTrash className="mr-2" /> Удалить
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onNext={nextPage}
+            onPrev={prevPage}
+          />
+        </>
       )}
 
       {/* Dialog для создания/редактирования */}
@@ -607,7 +671,7 @@ const AdminPortfolio = () => {
 
             <div>
               <Label htmlFor="image">Главное изображение *</Label>
-              
+
               {/* Загрузка файла */}
               <div className="space-y-2">
                 <Input
@@ -647,7 +711,7 @@ const AdminPortfolio = () => {
 
             <div>
               <Label htmlFor="images">Дополнительные изображения</Label>
-              
+
               {/* Загрузка файлов */}
               <div className="space-y-2">
                 <Input
@@ -806,10 +870,10 @@ const AdminPortfolio = () => {
                 {isSubmitting
                   ? 'Сохранение...'
                   : isTranslating
-                  ? 'Перевод...'
-                  : editingProject
-                  ? 'Сохранить изменения'
-                  : 'Создать проект'}
+                    ? 'Перевод...'
+                    : editingProject
+                      ? 'Сохранить изменения'
+                      : 'Создать проект'}
               </Button>
             </DialogFooter>
           </form>

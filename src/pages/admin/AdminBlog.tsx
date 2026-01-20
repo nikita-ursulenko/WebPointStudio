@@ -45,6 +45,8 @@ import { toast } from 'sonner';
 import { translateBlogArticle } from '@/lib/groq';
 import { blogService, type BlogArticle as DBBlogArticle } from '@/lib/db';
 import { uploadBlogImage, getBlogImageUrl } from '@/lib/storage';
+import { usePagination } from '@/hooks/usePagination';
+import { PaginationControls } from '@/components/admin/PaginationControls';
 
 type ArticleCategory = 'prices' | 'tips' | 'seo' | 'design' | 'ecommerce';
 
@@ -111,6 +113,15 @@ const AdminBlog = () => {
     date: '',
     dateInput: format(new Date(), 'yyyy-MM-dd'),
   });
+
+  const {
+    currentData: paginatedArticles,
+    currentPage,
+    totalPages,
+    nextPage,
+    prevPage,
+    setCurrentPage,
+  } = usePagination({ data: articles, itemsPerPage: 10 });
 
   // Загрузка статей из БД
   useEffect(() => {
@@ -223,7 +234,7 @@ const AdminBlog = () => {
       }
 
       setFormData({ ...formData, imageFile: file, image: '' }); // Очищаем image URL при загрузке файла
-      
+
       // Создаем предпросмотр
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -261,10 +272,10 @@ const AdminBlog = () => {
         excerpt: formData.excerpt,
         content: formData.content,
         category: formData.categoryKey === 'prices' ? 'Цены' :
-                 formData.categoryKey === 'tips' ? 'Советы' :
-                 formData.categoryKey === 'seo' ? 'SEO' :
-                 formData.categoryKey === 'design' ? 'Дизайн' :
-                 'E-commerce',
+          formData.categoryKey === 'tips' ? 'Советы' :
+            formData.categoryKey === 'seo' ? 'SEO' :
+              formData.categoryKey === 'design' ? 'Дизайн' :
+                'E-commerce',
       });
       translations = translated;
       toast.success('Переводы созданы автоматически');
@@ -302,7 +313,7 @@ const AdminBlog = () => {
 
       try {
         let savedArticle: Article | null = null;
-        
+
         if (editingArticle && editingArticle.id) {
           // Update existing article
           // Если загружен новый файл, загружаем его с правильным ID
@@ -321,7 +332,7 @@ const AdminBlog = () => {
               setIsUploadingImage(false);
             }
           }
-          
+
           const updatedArticle = await blogService.update(editingArticle.id, articleData);
           if (!updatedArticle || !updatedArticle.id) {
             toast.error(t('admin.blog.saveError'));
@@ -338,7 +349,7 @@ const AdminBlog = () => {
             return;
           }
           savedArticle = createdArticle as Article;
-          
+
           // Если загружен файл, загружаем его с правильным ID
           if (fileToUpload && savedArticle.id) {
             setIsUploadingImage(true);
@@ -392,9 +403,9 @@ const AdminBlog = () => {
 
   return (
     <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 mb-6">
         <h1 className="text-3xl font-bold">Управление блогом</h1>
-        <Button onClick={handleAddArticle} className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+        <Button onClick={handleAddArticle} className="w-full md:w-auto bg-gradient-to-r from-primary to-accent hover:opacity-90">
           <FaPlus className="mr-2" /> Добавить статью
         </Button>
       </div>
@@ -407,39 +418,92 @@ const AdminBlog = () => {
           </Button>
         </Card>
       ) : (
-        <Card className="glass-effect p-0 border-white/10">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[80px]">ID</TableHead>
-                  <TableHead>Название</TableHead>
-                  <TableHead>Категория</TableHead>
-                  <TableHead>Дата</TableHead>
-                  <TableHead className="text-right">Действия</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {articles.map((article) => (
-                  <TableRow key={article.id}>
-                    <TableCell className="font-medium">{article.id}</TableCell>
-                    <TableCell className="font-medium">{article.title}</TableCell>
-                    <TableCell>{getCategoryLabel(article.categoryKey)}</TableCell>
-                    <TableCell>{article.date}</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="outline" size="sm" className="mr-2" onClick={() => handleEditArticle(article)}>
-                        <FaEdit /> Редактировать
-                      </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDelete(article.id)}>
-                        <FaTrash /> Удалить
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <>
+          {/* Desktop View - Table */}
+          <div className="hidden md:block">
+            <Card className="glass-effect p-0 border-white/10">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[80px]">ID</TableHead>
+                      <TableHead>Название</TableHead>
+                      <TableHead>Категория</TableHead>
+                      <TableHead>Дата</TableHead>
+                      <TableHead className="text-right">Действия</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedArticles.map((article) => (
+                      <TableRow key={article.id}>
+                        <TableCell className="font-medium">{article.id}</TableCell>
+                        <TableCell className="font-medium">{article.title}</TableCell>
+                        <TableCell>{getCategoryLabel(article.categoryKey)}</TableCell>
+                        <TableCell>{article.date}</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="outline" size="sm" className="mr-2" onClick={() => handleEditArticle(article)}>
+                            <FaEdit /> Редактировать
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDelete(article.id)}>
+                            <FaTrash /> Удалить
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
           </div>
-        </Card>
+
+          {/* Mobile View - Cards */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {paginatedArticles.map((article) => (
+              <Card key={article.id} className="glass-effect p-4 border-white/10">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <span className="text-xs text-muted-foreground block mb-1">ID: {article.id}</span>
+                    <h3 className="font-bold text-lg leading-tight">{article.title}</h3>
+                  </div>
+                  <div className="bg-primary/20 text-primary px-2 py-1 rounded text-xs font-medium whitespace-nowrap ml-2">
+                    {getCategoryLabel(article.categoryKey)}
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <div className="text-xs text-muted-foreground mb-1">Дата публикации</div>
+                  <div className="text-sm">{article.date}</div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => handleEditArticle(article)}
+                  >
+                    <FaEdit className="mr-2" /> Редактировать
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => handleDelete(article.id)}
+                  >
+                    <FaTrash className="mr-2" /> Удалить
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onNext={nextPage}
+            onPrev={prevPage}
+          />
+        </>
       )}
 
       {/* Dialog для создания/редактирования */}
@@ -471,7 +535,7 @@ const AdminBlog = () => {
               <Label htmlFor="image">
                 Изображение *
               </Label>
-              
+
               {/* Загрузка файла */}
               <div className="space-y-2">
                 <Input
