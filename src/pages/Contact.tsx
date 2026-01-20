@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { contactService } from '@/lib/db';
 import SEO from '@/components/SEO';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
+import { TiltCard } from '@/components/TiltCard';
 
 const Contact = () => {
   const { t } = useLanguage();
@@ -152,25 +153,44 @@ const Contact = () => {
         {/* Contact Methods */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-16 max-w-5xl mx-auto">
               {contactMethods.map((method, index) => (
-                <motion.a
+                <motion.div
                   key={index}
-                  href={method.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
+                  className={index === 2 ? "col-span-2 md:col-span-1 mx-auto w-full max-w-[calc(50%-0.5rem)] md:max-w-none" : "w-full"}
                 >
-                  <Card className="glass-effect p-8 text-center hover-lift border-white/10 group">
-                    <div className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${method.color} flex items-center justify-center mb-4 glow-effect group-hover:scale-110 transition-transform`}>
-                      <method.icon className="text-3xl text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2">{method.title}</h3>
-                    <p className="text-muted-foreground">{method.value}</p>
-                  </Card>
-                </motion.a>
+                  <a
+                    href={method.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full"
+                  >
+                    <TiltCard className="h-full">
+                      {/* Floating 3D Elements */}
+                      <div
+                        className="absolute inset-0 p-4 md:p-6 z-20 flex flex-col items-center justify-center pointer-events-none"
+                        style={{ transform: 'translateZ(40px)' }}
+                      >
+                        <div className={`w-11 h-11 md:w-12 md:h-12 mx-auto rounded-xl bg-gradient-to-br ${method.color} flex items-center justify-center mb-3 glow-effect`}>
+                          <method.icon className="text-xl text-white" />
+                        </div>
+                        <h3 className="text-sm md:text-base font-semibold mb-1">{method.title}</h3>
+                        <p className="text-xs md:text-sm text-muted-foreground break-all line-clamp-1">{method.value}</p>
+                      </div>
+
+                      <Card className="glass-effect p-4 md:p-6 text-center hover-lift border-white/10 relative z-10 h-full flex flex-col items-center justify-center">
+                        {/* Ghost elements to preserve height/layout */}
+                        <div className="w-11 h-11 md:w-12 md:h-12 mb-3 opacity-0" />
+                        <h3 className="text-sm md:text-base font-semibold mb-1 opacity-0">{method.title}</h3>
+                        <p className="text-xs md:text-sm opacity-0">{method.value}</p>
+                      </Card>
+                    </TiltCard>
+                  </a>
+                </motion.div>
               ))}
             </div>
 
