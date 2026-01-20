@@ -307,7 +307,7 @@ const Services = () => {
                     >
                       <Button
                         asChild
-                        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95"
+                        className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95"
                         onClick={() => sendGAEvent('service_order_click', {
                           service_id: pkg.id,
                           service_name: pkg.title,
@@ -429,8 +429,7 @@ const Services = () => {
                     >
                       <Button
                         asChild
-                        variant="outline"
-                        className="w-full glass-effect border-white/20 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95"
+                        className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95"
                         onClick={() => sendGAEvent('service_order_click', {
                           service_id: service.id,
                           service_name: service.title,
@@ -463,7 +462,7 @@ const Services = () => {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 {t('services.cta.subtitle')}
               </p>
-              <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
                 <Link to="/contact">{t('services.cta.button')}</Link>
               </Button>
             </motion.div>

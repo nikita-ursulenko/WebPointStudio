@@ -111,7 +111,8 @@ const Navigation = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90 glow-effect">
+
+            <Button asChild className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
               <Link to="/contact">{t('hero.cta')}</Link>
             </Button>
           </div>
@@ -181,7 +182,7 @@ const Navigation = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <Button asChild className="w-full bg-gradient-to-r from-primary to-accent">
+              <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect transition-all duration-500 hover:bg-right hover:scale-105 hover:shadow-xl active:scale-95">
                 <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
                   {t('hero.cta')}
                 </Link>
@@ -190,7 +191,7 @@ const Navigation = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </motion.nav >
   );
 };
 

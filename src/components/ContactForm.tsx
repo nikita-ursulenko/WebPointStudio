@@ -30,7 +30,7 @@ const ContactForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       contactSchema.parse(formData);
       setIsSubmitting(true);
@@ -134,7 +134,7 @@ const ContactForm = () => {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg py-6 glow-effect"
+        className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 text-lg py-6 glow-effect transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95"
       >
         {isSubmitting ? t('contact.sending') : t('contact.send')}
       </Button>

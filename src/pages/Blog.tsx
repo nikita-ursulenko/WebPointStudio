@@ -409,7 +409,7 @@ const NewsletterForm = () => {
       <Button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-gradient-to-r from-primary to-accent hover:opacity-90 disabled:opacity-50"
+        className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 disabled:opacity-50 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95"
       >
         {status === 'loading' ? t('blog.newsletter.sending') : t('blog.newsletter.subscribe')}
       </Button>

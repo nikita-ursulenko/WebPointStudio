@@ -184,7 +184,7 @@ const Home = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 glow-effect text-lg px-8 py-6">
+                <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 glow-effect text-lg px-8 py-6 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
                   <Link to="/contact">{t('hero.cta')}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="glass-effect border-white/20 text-lg px-8 py-6">
@@ -438,7 +438,7 @@ const Home = () => {
                       className="absolute bottom-8 left-8 right-8 z-20"
                       style={{ transform: 'translateZ(50px)' }}
                     >
-                      <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg">
+                      <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
                         <Link to="/services">{t('services.additional.more')}</Link>
                       </Button>
                     </div>
@@ -464,7 +464,7 @@ const Home = () => {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 {t('home.cta.subtitle')}
               </p>
-              <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg px-8 py-6">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] hover:opacity-100 text-lg px-8 py-6 transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95">
                 <Link to="/contact">{t('hero.cta')}</Link>
               </Button>
             </motion.div>
