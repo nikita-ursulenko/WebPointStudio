@@ -138,7 +138,7 @@ const Home = () => {
       />
       <div className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative min-h-screen py-20 flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen py-10 flex items-center justify-center overflow-hidden">
           {/* Video Background */}
           <div className="absolute inset-0 -z-10">
             <video
@@ -159,7 +159,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-center max-w-4xl mx-auto"
+              className="text-center max-w-6xl mx-auto"
             >
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
