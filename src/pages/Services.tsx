@@ -247,7 +247,11 @@ const Services = () => {
                       </div>
                     </div>
 
-                    <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col hover-lift ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                    {/* Floating 3D Text Content */}
+                    <div
+                      className="absolute inset-0 p-8 z-20 flex flex-col pointer-events-none"
+                      style={{ transform: 'translateZ(40px)' }}
+                    >
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
 
@@ -255,6 +259,31 @@ const Services = () => {
                       <p className="text-muted-foreground mb-4">{pkg.desc}</p>
 
                       <ul className="space-y-3 mb-8 flex-grow">
+                        {pkg.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-3">
+                            <div className="mt-1 flex-shrink-0">
+                              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                                <FaCheck className="text-xs text-primary" />
+                              </div>
+                            </div>
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Spacer for button */}
+                      <div className="h-12 mt-auto" />
+                    </div>
+
+                    <Card className={`glass-effect p-8 h-full border-white/10 flex flex-col hover-lift relative z-10 ${pkg.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
+
+                      {/* Ghost content */}
+                      <h3 className="text-2xl font-bold mb-2 opacity-0 select-none">{pkg.title}</h3>
+                      <p className="text-muted-foreground mb-4 opacity-0 select-none">{pkg.desc}</p>
+
+                      <ul className="space-y-3 mb-8 flex-grow opacity-0 select-none">
                         {pkg.features.map((feature, i) => (
                           <li key={i} className="flex items-start gap-3">
                             <div className="mt-1 flex-shrink-0">
@@ -278,7 +307,7 @@ const Services = () => {
                     >
                       <Button
                         asChild
-                        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
+                        className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95"
                         onClick={() => sendGAEvent('service_order_click', {
                           service_id: pkg.id,
                           service_name: pkg.title,
@@ -340,7 +369,11 @@ const Services = () => {
                       </div>
                     </div>
 
-                    <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col">
+                    {/* Floating 3D Text Content */}
+                    <div
+                      className="absolute inset-0 p-8 z-20 flex flex-col pointer-events-none"
+                      style={{ transform: 'translateZ(40px)' }}
+                    >
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
 
@@ -349,6 +382,31 @@ const Services = () => {
                         {service.desc}
                       </p>
                       <ul className="space-y-3 mb-8 flex-grow">
+                        {service.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-3">
+                            <div className="mt-1 flex-shrink-0">
+                              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                                <FaCheck className="text-xs text-primary" />
+                              </div>
+                            </div>
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      {/* Spacer for button */}
+                      <div className="h-12 mt-auto" />
+                    </div>
+
+                    <Card className="glass-effect p-8 hover-lift border-white/10 h-full flex flex-col relative z-10">
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
+
+                      {/* Ghost content */}
+                      <h3 className="text-2xl font-bold mb-3 opacity-0 select-none">{service.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-4 leading-relaxed opacity-0 select-none">
+                        {service.desc}
+                      </p>
+                      <ul className="space-y-3 mb-8 flex-grow opacity-0 select-none">
                         {service.features.map((feature, i) => (
                           <li key={i} className="flex items-start gap-3">
                             <div className="mt-1 flex-shrink-0">
@@ -372,7 +430,7 @@ const Services = () => {
                       <Button
                         asChild
                         variant="outline"
-                        className="w-full glass-effect border-white/20 shadow-lg"
+                        className="w-full glass-effect border-white/20 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95"
                         onClick={() => sendGAEvent('service_order_click', {
                           service_id: service.id,
                           service_name: service.title,

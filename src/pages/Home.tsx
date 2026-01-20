@@ -311,12 +311,24 @@ const Home = () => {
                       <feature.icon className="text-3xl text-white" />
                     </div>
 
-                    <Card className="glass-effect p-8 hover-lift h-full border-white/10">
+                    {/* Floating 3D Text */}
+                    <div
+                      className="absolute inset-0 p-8 z-20 flex flex-col pointer-events-none"
+                      style={{ transform: 'translateZ(40px)' }}
+                    >
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
+                      <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                      <p className="text-muted-foreground">{feature.desc}</p>
+                    </div>
+
+                    <Card className="glass-effect p-8 hover-lift h-full border-white/10 relative z-10">
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
 
-                      <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                      <p className="text-muted-foreground">{feature.desc}</p>
+                      {/* Ghost content to preserve height */}
+                      <h3 className="text-xl font-semibold mb-3 opacity-0 select-none">{feature.title}</h3>
+                      <p className="text-muted-foreground opacity-0 select-none">{feature.desc}</p>
                     </Card>
                   </TiltCard>
                 </motion.div>
@@ -375,13 +387,38 @@ const Home = () => {
                       </div>
                     </div>
 
-                    <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                    {/* Floating 3D Text Content */}
+                    <div
+                      className="absolute inset-0 p-8 z-20 flex flex-col pointer-events-none"
+                      style={{ transform: 'translateZ(40px)' }}
+                    >
                       {/* Spacer for icon */}
                       <div className="w-16 h-16 mb-6" />
 
                       <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
                       <p className="text-muted-foreground mb-6">{service.desc}</p>
                       <ul className="space-y-3 mb-8 flex-grow">
+                        {service.features.map((feature, i) => (
+                          <li key={i} className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                              <div className="w-2 h-2 rounded-full bg-primary" />
+                            </div>
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Spacer for button */}
+                      <div className="h-12 mt-auto" />
+                    </div>
+
+                    <Card className={`glass-effect p-8 h-full hover-lift border-white/10 flex flex-col relative z-10 ${service.popular ? 'border-primary/50 shadow-elegant' : ''}`}>
+                      {/* Spacer for icon */}
+                      <div className="w-16 h-16 mb-6" />
+
+                      <h3 className="text-2xl font-bold mb-3 opacity-0 select-none">{service.title}</h3>
+                      <p className="text-muted-foreground mb-6 opacity-0 select-none">{service.desc}</p>
+                      <ul className="space-y-3 mb-8 flex-grow opacity-0 select-none">
                         {service.features.map((feature, i) => (
                           <li key={i} className="flex items-center gap-2">
                             <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
