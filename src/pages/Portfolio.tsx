@@ -249,7 +249,17 @@ const Portfolio = () => {
         <div className="container mx-auto px-4 -mt-10 relative z-30">
           <div className="flex flex-wrap justify-center gap-4">
             <div className="glass-effect p-2 rounded-2xl flex flex-wrap justify-center gap-2 border border-white/10 shadow-elegant overflow-hidden">
-              {categories.map((cat) => (
+              {categories.filter(cat => {
+                if (cat.id === 'all') return allProjects.length > 0;
+                return allProjects.some(project => {
+                  const type = project.type.toLowerCase();
+                  if (cat.id === 'websites') return ['landing', 'business', 'shop', 'websites'].includes(type);
+                  if (cat.id === 'telegram') return type.startsWith('tg-') || type === 'telegram';
+                  if (cat.id === 'automation') return type.startsWith('auto-') || type === 'automation';
+                  if (cat.id === 'mobile') return type.startsWith('mobile-') || type === 'mobile';
+                  return type === cat.id;
+                });
+              }).map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => {
@@ -288,7 +298,10 @@ const Portfolio = () => {
                 className="flex flex-wrap justify-center gap-2"
               >
                 <div className="glass-effect p-1.5 rounded-xl flex flex-wrap justify-center gap-1 border border-white/5 shadow-lg">
-                  {subCategories[filter].map((sub) => (
+                  {subCategories[filter].filter(sub => {
+                    if (sub.id === 'all') return true; // Мы уже знаем, что проекты в этой категории есть, раз видна сама категория
+                    return allProjects.some(project => project.type.toLowerCase() === sub.id);
+                  }).map((sub) => (
                     <button
                       key={sub.id}
                       onClick={() => setSubFilter(sub.id)}
