@@ -71,6 +71,7 @@ const ProjectDetail = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const [adminProjects, setAdminProjects] = useState<ProjectFromAdmin[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Загрузка проектов из БД
   useEffect(() => {
@@ -89,6 +90,8 @@ const ProjectDetail = () => {
             console.error('Error parsing localStorage:', e);
           }
         }
+      } finally {
+        setLoading(false);
       }
     };
     loadProjects();
@@ -155,13 +158,29 @@ const ProjectDetail = () => {
 
 
 
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 flex flex-col items-center justify-center">
+        <div className="relative">
+          {/* Outer glow ring */}
+          <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
+          {/* Spinner */}
+          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin relative" />
+        </div>
+        <p className="mt-8 text-muted-foreground animate-pulse font-medium tracking-wide">
+          {language === 'ru' ? 'Загрузка проекта...' : language === 'ro' ? 'Se încarcă proiectul...' : 'Loading project...'}
+        </p>
+      </div>
+    );
+  }
+
   if (!project) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Проект не найден</h1>
+          <h1 className="text-4xl font-bold mb-4">{language === 'ru' ? 'Проект не найден' : language === 'ro' ? 'Proiectul nu a fost găsit' : 'Project not found'}</h1>
           <Button asChild>
-            <Link to="/portfolio">Вернуться к портфолио</Link>
+            <Link to="/portfolio">{t('portfolio.back')}</Link>
           </Button>
         </div>
       </div>
@@ -199,11 +218,11 @@ const ProjectDetail = () => {
                 : [project.image]
               ).map((img, index) => (
                 <CarouselItem key={index} className="pl-0">
-                  <div className="relative w-full overflow-hidden bg-background flex items-center justify-center">
+                  <div className="relative w-full aspect-[16/9] md:aspect-video min-h-[300px] md:min-h-[500px] lg:min-h-[600px] overflow-hidden bg-background flex items-center justify-center cursor-zoom-in">
                     <img
                       src={img}
                       alt={`${project.title} - ${index + 1}`}
-                      className="w-full h-auto max-h-[70vh] object-contain"
+                      className="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-500 hover:scale-105"
                     />
                   </div>
                 </CarouselItem>
@@ -224,7 +243,7 @@ const ProjectDetail = () => {
                     {project.category}
                   </span>
                 </div>
-                <h1 className="text-3xl md:text-5xl font-bold">{project.title}</h1>
+                <h1 className="text-2xl md:text-5xl font-bold">{project.title}</h1>
               </div>
               <Button
                 variant="ghost"
@@ -255,9 +274,9 @@ const ProjectDetail = () => {
                       <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
                         <span className="text-2xl">⚠️</span>
                       </div>
-                      <h2 className="text-2xl font-bold">{t('portfolio.problem')}</h2>
+                      <h2 className="text-xl md:text-2xl font-bold">{t('portfolio.problem')}</h2>
                     </div>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
+                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                       {project.problem}
                     </p>
                   </Card>
@@ -274,9 +293,9 @@ const ProjectDetail = () => {
                       <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
                         <span className="text-2xl">💡</span>
                       </div>
-                      <h2 className="text-2xl font-bold">{t('portfolio.solution')}</h2>
+                      <h2 className="text-xl md:text-2xl font-bold">{t('portfolio.solution')}</h2>
                     </div>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
+                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                       {project.solution}
                     </p>
                   </Card>
@@ -293,9 +312,9 @@ const ProjectDetail = () => {
                       <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
                         <FaCheckCircle className="text-2xl text-green-500" />
                       </div>
-                      <h2 className="text-2xl font-bold gradient-text">{t('portfolio.result')}</h2>
+                      <h2 className="text-xl md:text-2xl font-bold gradient-text">{t('portfolio.result')}</h2>
                     </div>
-                    <p className="text-2xl font-bold text-foreground">
+                    <p className="text-lg md:text-2xl font-bold text-foreground">
                       {project.result}
                     </p>
                   </Card>
@@ -312,13 +331,13 @@ const ProjectDetail = () => {
                 >
                   <Card className="glass-effect p-6 border-white/10 space-y-6">
                     <div>
-                      <div className="text-sm text-muted-foreground mb-2">{t('projectDetail.category')}</div>
-                      <div className="text-lg font-semibold">{project.category}</div>
+                      <div className="text-sm text-muted-foreground mb-1">{t('projectDetail.category')}</div>
+                      <div className="text-base md:text-lg font-semibold">{project.category}</div>
                     </div>
 
                     <div>
-                      <div className="text-sm text-muted-foreground mb-2">{t('projectDetail.type')}</div>
-                      <div className="text-lg font-semibold">
+                      <div className="text-sm text-muted-foreground mb-1">{t('projectDetail.type')}</div>
+                      <div className="text-base md:text-lg font-semibold">
                         {project.type === 'landing' && t('services.landing')}
                         {project.type === 'business' && t('services.business')}
                         {project.type === 'shop' && t('services.shop')}

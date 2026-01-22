@@ -218,9 +218,9 @@ const Portfolio = () => {
         url="/portfolio"
         structuredData={structuredData}
       />
-      <div className="min-h-screen pt-20">
+      <div className="min-h-screen pt-16 md:pt-20">
         {/* Hero */}
-        <section className="py-20 relative overflow-hidden">
+        <section className="py-12 md:py-20 relative overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <SeamlessVideoLoop
               src="/video/hero-video.mp4"
@@ -235,10 +235,10 @@ const Portfolio = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-center max-w-3xl mx-auto"
             >
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              <h1 className="text-3xl md:text-6xl font-bold mb-4 md:mb-6">
                 {t('portfolio.title')}
               </h1>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-lg md:text-xl text-muted-foreground px-4">
                 {t('portfolio.subtitle')}
               </p>
             </motion.div>
@@ -267,7 +267,7 @@ const Portfolio = () => {
                     setSubFilter('all'); // Сброс подфильтра при смене главной категории
                     sendGAEvent('portfolio_filter_click', { category: cat.id });
                   }}
-                  className={`relative px-6 py-3 rounded-xl transition-all duration-500 flex items-center gap-3 group ${filter === cat.id ? 'text-white' : 'text-muted-foreground hover:text-foreground'
+                  className={`relative px-4 md:px-6 py-2.5 md:py-3 rounded-xl transition-all duration-500 flex items-center gap-2 md:gap-3 group ${filter === cat.id ? 'text-white' : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
                   {filter === cat.id && (
@@ -278,8 +278,8 @@ const Portfolio = () => {
                       style={{ borderRadius: '12px' }}
                     />
                   )}
-                  <cat.icon className={`text-xl relative z-10 transition-transform duration-500 ${filter === cat.id ? 'scale-110' : 'group-hover:scale-110'}`} />
-                  <span className="font-semibold relative z-10 whitespace-nowrap">{cat.title}</span>
+                  <cat.icon className={`text-base md:text-xl relative z-10 transition-transform duration-500 ${filter === cat.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+                  <span className="font-semibold text-sm md:text-base relative z-10 whitespace-nowrap">{cat.title}</span>
                 </button>
               ))}
             </div>
@@ -326,7 +326,7 @@ const Portfolio = () => {
         </div>
 
         {/* Projects Grid */}
-        <section className="py-20">
+        <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
             <AnimatePresence mode="wait">
               <motion.div
@@ -334,7 +334,7 @@ const Portfolio = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
               >
                 {filteredProjects.map((project, index) => (
                   <motion.div
@@ -345,33 +345,24 @@ const Portfolio = () => {
                     className="h-full"
                   >
                     <Card className="glass-effect overflow-hidden hover-lift border-white/10 group h-full flex flex-col">
-                      <div className="relative h-64 overflow-hidden flex-shrink-0">
+                      <div className="relative h-48 md:h-64 overflow-hidden flex-shrink-0">
                         <img
                           src={project.image}
                           alt={project.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <div className="text-xs text-primary font-semibold mb-1">{project.category}</div>
-                          <h3 className="text-xl font-bold">{project.title}</h3>
+                        <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4">
+                          <div className="text-[10px] md:text-xs text-primary font-semibold mb-0.5 md:mb-1">{project.category}</div>
+                          <h3 className="text-lg md:text-xl font-bold leading-tight">{project.title}</h3>
                         </div>
                       </div>
 
-                      <div className="p-6 flex-grow flex flex-col gap-4">
-                        <div>
-                          <div className="text-sm font-semibold text-primary mb-1">{t('portfolio.problem')}</div>
-                          <p className="text-sm text-muted-foreground">{project.problem}</p>
-                        </div>
-
-                        <div>
-                          <div className="text-sm font-semibold text-accent mb-1">{t('portfolio.solution')}</div>
-                          <p className="text-sm text-muted-foreground">{project.solution}</p>
-                        </div>
-
-                        <div>
-                          <div className="text-sm font-semibold gradient-text mb-1">{t('portfolio.result')}</div>
-                          <p className="text-sm font-medium">{project.result}</p>
+                      <div className="p-4 md:p-6 flex-grow flex flex-col">
+                        <div className="flex-grow mb-4 md:mb-6">
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-3 md:line-clamp-4">
+                            {project.solution}
+                          </p>
                         </div>
 
                         <div className="mt-auto">
@@ -399,7 +390,7 @@ const Portfolio = () => {
             </AnimatePresence>
           </div>
         </section>
-      </div>
+      </div >
     </>
   );
 };
