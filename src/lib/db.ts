@@ -20,7 +20,7 @@ async function sendNotification(type: 'contact' | 'newsletter', payload: any) {
 
 export interface PortfolioProject {
   id?: number;
-  type: 'landing' | 'business' | 'shop';
+  type: 'landing' | 'business' | 'shop' | 'tg-basic' | 'tg-shop' | 'tg-complex' | 'auto-parsing' | 'auto-scripts' | 'auto-complex' | 'mobile-mvp' | 'mobile-business' | 'mobile-shop';
   title: string;
   category: string;
   image: string;
@@ -369,7 +369,7 @@ export interface ContactRequest {
   name: string;
   email: string;
   phone: string;
-  project_type: 'landing' | 'business' | 'shop' | 'support' | 'seo' | 'ads';
+  project_type: 'landing' | 'business' | 'shop' | 'support' | 'seo' | 'ads' | 'tg-basic' | 'tg-shop' | 'tg-complex' | 'auto-parsing' | 'auto-scripts' | 'auto-complex' | 'mobile-mvp' | 'mobile-business' | 'mobile-shop';
   message: string;
   status?: 'new' | 'read' | 'processed' | 'archived';
   created_at?: string;

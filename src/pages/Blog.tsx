@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaClock, FaArrowRight } from 'react-icons/fa';
+import { FaClock, FaArrowRight, FaGlobe, FaLightbulb, FaSearch, FaPaintBrush, FaStore, FaEuroSign } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -118,12 +118,12 @@ const Blog = () => {
   const articles: DisplayArticle[] = adminArticles.map(getArticleDisplayData).sort((a, b) => (b.id || 0) - (a.id || 0)); // Сортировка по ID, чтобы новые были сверху
 
   const categories = [
-    { value: 'all', label: t('blog.categories.all') },
-    { value: 'prices', label: t('blog.categories.prices') },
-    { value: 'tips', label: t('blog.categories.tips') },
-    { value: 'seo', label: t('blog.categories.seo') },
-    { value: 'design', label: t('blog.categories.design') },
-    { value: 'ecommerce', label: t('blog.categories.ecommerce') },
+    { value: 'all', label: t('blog.categories.all'), icon: FaGlobe },
+    { value: 'prices', label: t('blog.categories.prices'), icon: FaEuroSign },
+    { value: 'tips', label: t('blog.categories.tips'), icon: FaLightbulb },
+    { value: 'seo', label: t('blog.categories.seo'), icon: FaSearch },
+    { value: 'design', label: t('blog.categories.design'), icon: FaPaintBrush },
+    { value: 'ecommerce', label: t('blog.categories.ecommerce'), icon: FaStore },
   ];
 
   const filteredArticles = selectedCategory === 'all'
@@ -145,9 +145,9 @@ const Blog = () => {
   return (
     <>
       <SEO
-        title="Блог о веб-разработке | WebPoint - Полезные статьи о создании сайтов"
-        description="Полезные статьи о создании и продвижении сайтов. Советы по SEO, дизайну, ценам на разработку. Экспертные материалы от команды WebPoint."
-        keywords="блог веб разработки, статьи о создании сайтов, seo советы, дизайн сайтов, интернет магазин"
+        title="ИТ-Блог: Технологии, ИИ и Бизнес | WebPoint"
+        description="Экспертные статьи о веб-технологиях, мобильной разработке, внедрении ИИ и автоматизации бизнеса. Будьте в курсе инноваций вместе с WebPoint."
+        keywords="блог об ит, технологии для бизнеса, разработка приложений статьи, автоматизация ии советы, digital маркетинг"
         url="/blog"
         structuredData={structuredData}
       />
@@ -178,28 +178,35 @@ const Blog = () => {
           </div>
         </section>
 
-        {/* Categories */}
-        <section className="py-8 bg-card/50 border-y border-white/10">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-wrap justify-center gap-4">
-              {categories.map((category, index) => (
-                <motion.button
-                  key={category.value}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => setSelectedCategory(category.value)}
-                  className={`px-6 py-2 rounded-full font-medium transition-all ${selectedCategory === category.value
-                    ? 'bg-gradient-to-r from-primary to-accent text-white glow-effect'
-                    : 'glass-effect text-muted-foreground hover:text-foreground'
+        {/* Categories Tabs */}
+        <div className="container mx-auto px-4 -mt-10 mb-10 relative z-30">
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="glass-effect p-2 rounded-2xl flex flex-wrap justify-center gap-2 border border-white/10 shadow-elegant overflow-hidden">
+              {categories.map((cat) => (
+                <button
+                  key={cat.value}
+                  onClick={() => {
+                    setSelectedCategory(cat.value);
+                    trackEvent('Клик по категории блога', cat.label, 'click');
+                  }}
+                  className={`relative px-6 py-3 rounded-xl transition-all duration-500 flex items-center gap-3 group ${selectedCategory === cat.value ? 'text-white' : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
-                  {category.label}
-                </motion.button>
+                  {selectedCategory === cat.value && (
+                    <motion.div
+                      layoutId="activeTabBlog"
+                      className="absolute inset-0 bg-gradient-to-r from-primary to-accent shadow-lg"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      style={{ borderRadius: '12px' }}
+                    />
+                  )}
+                  <cat.icon className={`text-xl relative z-10 transition-transform duration-500 ${selectedCategory === cat.value ? 'scale-110' : 'group-hover:scale-110'}`} />
+                  <span className="font-semibold relative z-10 whitespace-nowrap">{cat.label}</span>
+                </button>
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Featured Article - только для "all" */}
         {selectedCategory === 'all' && filteredArticles.length > 0 && (

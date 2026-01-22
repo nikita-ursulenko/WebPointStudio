@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaExternalLinkAlt } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaRocket, FaTelegram, FaCogs, FaMobile, FaGlobe } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,11 @@ import SEO from '@/components/SEO';
 import { sendGAEvent } from '@/components/GoogleAnalytics';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 
-type ProjectType = 'all' | 'landing' | 'business' | 'shop';
+type ProjectType = 'all' | 'websites' | 'telegram' | 'automation' | 'mobile' | string;
 
 interface ProjectFromAdmin {
   id: number;
-  type: 'landing' | 'business' | 'shop';
+  type: string;
   title: string;
   category: string;
   image: string;
@@ -59,6 +59,7 @@ interface DisplayProject {
 const Portfolio = () => {
   const { t, language } = useLanguage();
   const [filter, setFilter] = useState<ProjectType>('all');
+  const [subFilter, setSubFilter] = useState<string>('all');
   const [adminProjects, setAdminProjects] = useState<ProjectFromAdmin[]>([]);
 
   // Загрузка проектов из БД
@@ -126,22 +127,77 @@ const Portfolio = () => {
   // Используем только проекты из БД
   const allProjects: DisplayProject[] = adminProjects.map(getProjectDisplayData).sort((a, b) => (b.id || 0) - (a.id || 0)); // Сортируем по ID (новые сверху)
 
-  const filters: { value: ProjectType; label: string }[] = [
-    { value: 'all', label: t('portfolio.all') },
-    { value: 'landing', label: t('portfolio.landing') },
-    { value: 'business', label: t('portfolio.business') },
-    { value: 'shop', label: t('portfolio.shop') },
+  const categories = [
+    { id: 'all', title: t('portfolio.all'), icon: FaGlobe },
+    { id: 'websites', title: t('services.category.websites'), icon: FaRocket },
+    { id: 'telegram', title: t('services.category.telegram'), icon: FaTelegram },
+    { id: 'automation', title: t('services.category.automation'), icon: FaCogs },
+    { id: 'mobile', title: t('services.category.mobile'), icon: FaMobile },
   ];
 
-  const filteredProjects = filter === 'all'
-    ? allProjects
-    : allProjects.filter(project => project.type === filter);
+  const subCategories: Record<string, { id: string; title: string }[]> = {
+    websites: [
+      { id: 'all', title: t('portfolio.all') },
+      { id: 'landing', title: t('portfolio.landing') },
+      { id: 'business', title: t('portfolio.business') },
+      { id: 'shop', title: t('portfolio.shop') },
+    ],
+    telegram: [
+      { id: 'all', title: t('portfolio.all') },
+      { id: 'tg-basic', title: t('services.tg.basic') },
+      { id: 'tg-shop', title: t('services.tg.shop') },
+      { id: 'tg-complex', title: t('services.tg.complex') },
+    ],
+    automation: [
+      { id: 'all', title: t('portfolio.all') },
+      { id: 'auto-parsing', title: t('services.auto.parsing') },
+      { id: 'auto-scripts', title: t('services.auto.scripts') },
+    ],
+    mobile: [
+      { id: 'all', title: t('portfolio.all') },
+      { id: 'mobile-mvp', title: t('services.mobile.mvp') },
+      { id: 'mobile-business', title: t('services.mobile.business') },
+      { id: 'mobile-shop', title: t('services.mobile.shop') },
+    ],
+  };
+
+  const filteredProjects = allProjects.filter(project => {
+    const type = project.type.toLowerCase();
+
+    // Первый уровень фильтрации
+    let matchesMain = false;
+    if (filter === 'all') {
+      matchesMain = true;
+    } else if (filter === 'websites') {
+      matchesMain = ['landing', 'business', 'shop', 'websites'].includes(type);
+    } else if (filter === 'telegram') {
+      matchesMain = type.startsWith('tg-') || type === 'telegram';
+    } else if (filter === 'automation') {
+      matchesMain = type.startsWith('auto-') || type === 'automation';
+    } else if (filter === 'mobile') {
+      matchesMain = type.startsWith('mobile-') || type === 'mobile';
+    } else {
+      matchesMain = type === filter;
+    }
+
+    if (!matchesMain) return false;
+
+    // Второй уровень фильтрации (подкатегории)
+    if (subFilter === 'all' || filter === 'all') return true;
+
+    // Специальная обработка для сайтов, так как у них типы напрямую совпадают с подфильтрами
+    if (filter === 'websites') {
+      return type === subFilter;
+    }
+
+    return type === subFilter;
+  });
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Портфолио проектов WebPoint",
-    "description": "Примеры успешно реализованных проектов: лендинги, корпоративные сайты, интернет-магазины",
+    "description": "Кейсы и проекты: мобильные приложения, высокотехнологичные сайты, боты и системы автоматизации",
     "itemListElement": allProjects.map((project, index) => ({
       "@type": "ListItem",
       "position": index + 1,
@@ -156,9 +212,9 @@ const Portfolio = () => {
   return (
     <>
       <SEO
-        title="Портфолио работ | WebPoint - Примеры созданных сайтов"
-        description="Портфолио успешных проектов: лендинги, корпоративные сайты, интернет-магазины. Более 150 реализованных проектов. Реальные результаты и кейсы."
-        keywords="портфолио сайтов, примеры лендингов, кейсы веб разработки, создание интернет магазинов"
+        title="Портфолио ИТ-проектов | WebPoint - Наши кейсы"
+        description="Посмотрите наши успешно реализованные проекты: мобильные приложения, сайты, Telegram Mini Apps и системы автоматизации. Реальные результаты для реального бизнеса."
+        keywords="портфолио ит проектов, примеры мобильных приложений, кейсы автоматизации, разработка сайтов примеры"
         url="/portfolio"
         structuredData={structuredData}
       />
@@ -189,28 +245,72 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* Categories */}
-        <section className="py-8 bg-card/50 border-y border-white/10">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-wrap justify-center gap-4">
-              {filters.map((item, index) => (
-                <motion.button
-                  key={item.value}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => setFilter(item.value)}
-                  className={`px-6 py-2 rounded-full font-medium transition-all ${filter === item.value
-                    ? 'bg-gradient-to-r from-primary to-accent text-white glow-effect'
-                    : 'glass-effect text-muted-foreground hover:text-foreground'
+        {/* Main Categories Tabs */}
+        <div className="container mx-auto px-4 -mt-10 relative z-30">
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="glass-effect p-2 rounded-2xl flex flex-wrap justify-center gap-2 border border-white/10 shadow-elegant overflow-hidden">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setFilter(cat.id as ProjectType);
+                    setSubFilter('all'); // Сброс подфильтра при смене главной категории
+                    sendGAEvent('portfolio_filter_click', { category: cat.id });
+                  }}
+                  className={`relative px-6 py-3 rounded-xl transition-all duration-500 flex items-center gap-3 group ${filter === cat.id ? 'text-white' : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
-                  {item.label}
-                </motion.button>
+                  {filter === cat.id && (
+                    <motion.div
+                      layoutId="activeTabPortfolio"
+                      className="absolute inset-0 bg-gradient-to-r from-primary to-accent shadow-lg"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      style={{ borderRadius: '12px' }}
+                    />
+                  )}
+                  <cat.icon className={`text-xl relative z-10 transition-transform duration-500 ${filter === cat.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+                  <span className="font-semibold relative z-10 whitespace-nowrap">{cat.title}</span>
+                </button>
               ))}
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* Sub-categories Tabs */}
+        <div className="container mx-auto px-4 mt-6 relative z-20">
+          <AnimatePresence mode="wait">
+            {filter !== 'all' && subCategories[filter] && (
+              <motion.div
+                key={filter}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex flex-wrap justify-center gap-2"
+              >
+                <div className="glass-effect p-1.5 rounded-xl flex flex-wrap justify-center gap-1 border border-white/5 shadow-lg">
+                  {subCategories[filter].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setSubFilter(sub.id)}
+                      className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${subFilter === sub.id ? 'text-white' : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                        }`}
+                    >
+                      {subFilter === sub.id && (
+                        <motion.div
+                          layoutId="activeSubTab"
+                          className="absolute inset-0 bg-white/10 backdrop-blur-md border border-white/10"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          style={{ borderRadius: '8px' }}
+                        />
+                      )}
+                      <span className="relative z-10 whitespace-nowrap">{sub.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Projects Grid */}
         <section className="py-20">

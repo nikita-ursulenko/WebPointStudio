@@ -48,7 +48,7 @@ import { uploadBlogImage, getBlogImageUrl } from '@/lib/storage';
 import { usePagination } from '@/hooks/usePagination';
 import { PaginationControls } from '@/components/admin/PaginationControls';
 
-type ProjectType = 'landing' | 'business' | 'shop';
+type ProjectType = 'landing' | 'business' | 'shop' | 'tg-basic' | 'tg-shop' | 'tg-complex' | 'auto-parsing' | 'auto-scripts' | 'auto-complex' | 'mobile-mvp' | 'mobile-business' | 'mobile-shop';
 
 interface ProjectTranslations {
   ro?: {
@@ -474,12 +474,21 @@ const AdminPortfolio = () => {
   };
 
   const getTypeLabel = (type: ProjectType) => {
-    const labels = {
+    const labels: Record<string, string> = {
       landing: 'Лендинг',
       business: 'Сайт-визитка',
       shop: 'Интернет-магазин',
+      'tg-basic': 'TG: Бот-визитка',
+      'tg-shop': 'TG: Магазин',
+      'tg-complex': 'TG: Сложная система',
+      'auto-parsing': 'Auto: Парсинг',
+      'auto-scripts': 'Auto: Скрипты',
+      'auto-complex': 'Auto: Smart Platform',
+      'mobile-mvp': 'Mobile: MVP',
+      'mobile-business': 'Mobile: Business',
+      'mobile-shop': 'Mobile: Shop',
     };
-    return labels[type];
+    return labels[type] || type;
   };
 
   return (
@@ -636,10 +645,26 @@ const AdminPortfolio = () => {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px] overflow-y-auto">
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50">Веб-сайты</div>
                     <SelectItem value="landing">{t('services.landing')}</SelectItem>
                     <SelectItem value="business">{t('services.business')}</SelectItem>
                     <SelectItem value="shop">{t('services.shop')}</SelectItem>
+
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50 border-t border-white/5">Telegram боты</div>
+                    <SelectItem value="tg-basic">{t('services.tg.basic')}</SelectItem>
+                    <SelectItem value="tg-shop">{t('services.tg.shop')}</SelectItem>
+                    <SelectItem value="tg-complex">{t('services.tg.complex')}</SelectItem>
+
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50 border-t border-white/5">Автоматизация</div>
+                    <SelectItem value="auto-parsing">{t('services.auto.parsing')}</SelectItem>
+                    <SelectItem value="auto-scripts">{t('services.auto.scripts')}</SelectItem>
+                    <SelectItem value="auto-complex">{t('services.auto.complex')}</SelectItem>
+
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50 border-t border-white/5">Мобильные приложения</div>
+                    <SelectItem value="mobile-mvp">{t('services.mobile.mvp')}</SelectItem>
+                    <SelectItem value="mobile-business">{t('services.mobile.business')}</SelectItem>
+                    <SelectItem value="mobile-shop">{t('services.mobile.shop')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

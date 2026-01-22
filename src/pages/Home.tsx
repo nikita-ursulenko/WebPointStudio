@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset, FaStore, FaBriefcase } from 'react-icons/fa';
+import { FaWhatsapp, FaTelegram, FaRocket, FaMobile, FaSearch, FaHeadset, FaStore, FaBriefcase, FaGlobe, FaRobot, FaCode, FaChartLine, FaHandshake } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -35,7 +35,7 @@ const Home = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "WebPoint",
-    "description": "Профессиональная разработка сайтов. Лендинги, интернет-магазины и корпоративные сайты под ключ. Работаем по всему миру.",
+    "description": "Разработка высокотехнологичных ИТ-решений: от корпоративных сайтов и мобильных приложений до сложных Telegram-систем и автоматизации с ИИ. Масштабируем ваш бизнес с помощью технологий.",
     "url": "https://webpoint.md",
     "logo": "https://webpoint.md/og-image.jpg",
     "contactPoint": {
@@ -79,55 +79,69 @@ const Home = () => {
   };
 
   const features = [
-    { icon: FaRocket, title: t('features.design'), desc: t('features.design.desc') },
-    { icon: FaMobile, title: t('features.responsive'), desc: t('features.responsive.desc') },
-    { icon: FaSearch, title: t('features.seo'), desc: t('features.seo.desc') },
-    { icon: FaHeadset, title: t('features.support'), desc: t('features.support.desc') },
+    { icon: FaCode, title: t('features.tech'), desc: t('features.tech.desc') },
+    { icon: FaChartLine, title: t('features.business'), desc: t('features.business.desc') },
+    { icon: FaRobot, title: t('features.ai'), desc: t('features.ai.desc') },
+    { icon: FaHandshake, title: t('features.support'), desc: t('features.support.desc') },
   ];
 
   const services = [
     {
-      id: 'landing',
-      icon: FaRocket,
-      title: t('services.landing'),
-      desc: t('services.landing.desc'),
+      id: 'websites',
+      icon: FaGlobe,
+      title: t('home.services.web.title'),
+      desc: t('home.services.web.desc'),
       price: '€199',
       features: [
-        t('services.features.landing.design'),
-        t('services.features.landing.responsive'),
-        t('services.features.landing.seo'),
-        t('services.features.landing.form'),
+        t('services.landing'),
+        t('services.business'),
+        t('services.shop'),
+        t('features.seo'),
       ],
-      gradient: 'from-blue-500 to-cyan-500',
+      gradient: 'from-blue-500 to-indigo-500',
     },
     {
-      id: 'business',
-      icon: FaBriefcase,
-      title: t('services.business'),
-      desc: t('services.business.desc'),
-      price: '€499',
+      id: 'telegram',
+      icon: FaTelegram,
+      title: t('home.services.tg.title'),
+      desc: t('home.services.tg.desc'),
+      price: '€99',
       features: [
-        t('services.features.business.pages'),
-        t('services.features.business.cms'),
-        t('services.features.business.social'),
-        t('services.features.business.analytics'),
+        t('services.tg.basic'),
+        t('services.tg.shop'),
+        'Telegram Mini Apps',
+        t('services.tg.complex'),
       ],
-      gradient: 'from-purple-500 to-pink-500',
+      gradient: 'from-sky-500 to-blue-600',
       popular: true,
     },
     {
-      id: 'shop',
-      icon: FaStore,
-      title: t('services.shop'),
-      desc: t('services.shop.desc'),
-      price: '€899',
+      id: 'automation',
+      icon: FaRobot,
+      title: t('home.services.auto.title'),
+      desc: t('home.services.auto.desc'),
+      price: '€149',
       features: [
-        t('services.features.shop.catalog'),
-        t('services.features.shop.cart'),
-        t('services.features.shop.account'),
-        t('services.features.shop.delivery'),
+        t('services.auto.parsing'),
+        t('services.auto.scripts'),
+        t('services.auto.complex'),
+        'AI Integration',
       ],
-      gradient: 'from-orange-500 to-red-500',
+      gradient: 'from-emerald-500 to-teal-600',
+    },
+    {
+      id: 'mobile',
+      icon: FaMobile,
+      title: t('home.services.mobile.title'),
+      desc: t('home.services.mobile.desc'),
+      price: '€999',
+      features: [
+        'iOS & Android Apps',
+        t('services.mobile.mvp'),
+        t('services.mobile.business'),
+        t('services.mobile.shop'),
+      ],
+      gradient: 'from-purple-500 to-pink-600',
     },
   ];
 
@@ -140,9 +154,9 @@ const Home = () => {
   return (
     <>
       <SEO
-        title="WebPoint - Создание Сайтов | Лендинги, Интернет-магазины"
-        description="Профессиональная разработка сайтов под ключ: лендинги, интернет-магазины, SEO-оптимизация. Опыт более 150 проектов. Современный дизайн. Работаем по всему миру!"
-        keywords="создание сайтов, разработка сайтов, лендинг пейдж, интернет-магазин, сайт-визитка, веб-дизайн, разработка сайтов под ключ"
+        title="WebPoint - Высокотехнологичные ИТ-решения для бизнеса"
+        description="Комплексная разработка цифровых продуктов: мобильные приложения, сайты любой сложности, Telegram экосистемы и внедрение ИИ. Автоматизируем процессы и масштабируем ваш бизнес."
+        keywords="ит решения для бизнеса, разработка мобильных приложений, создание сайтов, telegram mini apps, автоматизация процессов, внедрение ии, digital agency кишинев"
         url="/"
         structuredData={structuredData}
       />
@@ -361,7 +375,7 @@ const Home = () => {
               <p className="text-xl text-muted-foreground">{t('home.services.subtitle')}</p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {services.map((service, index) => (
                 <motion.div
                   key={index}
@@ -393,7 +407,8 @@ const Home = () => {
                       className="absolute top-8 right-8 z-20"
                       style={{ transform: 'translateZ(50px)' }}
                     >
-                      <div className={`text-3xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                      <div className={`text-4xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                        <span className="text-sm font-medium opacity-70 mr-1">{t('services.from')}</span>
                         {service.price}
                       </div>
                     </div>
@@ -450,7 +465,7 @@ const Home = () => {
                       style={{ transform: 'translateZ(50px)' }}
                     >
                       <Button asChild className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] shadow-lg transition-all duration-500 hover:bg-right hover:scale-110 hover:shadow-xl active:scale-95" onClick={() => trackEvent('Переход к услуге', `Главная - Услуги - ${service.title}`, 'click')}>
-                        <Link to="/services">{t('services.additional.more')}</Link>
+                        <Link to={`/services?category=${service.id}`}>{t('services.additional.more')}</Link>
                       </Button>
                     </div>
                   </TiltCard>

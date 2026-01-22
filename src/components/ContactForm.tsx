@@ -27,7 +27,7 @@ const ContactForm = () => {
   useEffect(() => {
     const typeParam = searchParams.get('type');
     if (typeParam) {
-      const validTypes = ['landing', 'business', 'shop', 'support', 'seo', 'ads'];
+      const validTypes = ['landing', 'business', 'shop', 'support', 'seo', 'ads', 'tg-basic', 'tg-shop', 'tg-complex', 'auto-parsing', 'auto-scripts', 'auto-complex', 'mobile-mvp', 'mobile-business', 'mobile-shop'];
       if (validTypes.includes(typeParam)) {
         setFormData(prev => ({ ...prev, projectType: typeParam }));
       }
@@ -38,7 +38,7 @@ const ContactForm = () => {
     name: z.string().min(2, 'Минимум 2 символа').max(100),
     email: z.string().email('Неверный email'),
     phone: z.string().min(6, 'Неверный номер телефона'),
-    projectType: z.enum(['landing', 'business', 'shop', 'support', 'seo', 'ads'], {
+    projectType: z.enum(['landing', 'business', 'shop', 'support', 'seo', 'ads', 'tg-basic', 'tg-shop', 'tg-complex', 'auto-parsing', 'auto-scripts', 'auto-complex', 'mobile-mvp', 'mobile-business', 'mobile-shop'], {
       errorMap: () => ({ message: 'Выберите тип проекта' })
     }),
     message: z.string().min(10, 'Минимум 10 символов').max(1000),
@@ -56,7 +56,7 @@ const ContactForm = () => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        project_type: formData.projectType as 'landing' | 'business' | 'shop' | 'support' | 'seo' | 'ads',
+        project_type: formData.projectType as any,
         message: formData.message,
       });
 
@@ -133,6 +133,15 @@ const ContactForm = () => {
               <SelectItem value="landing">{t('services.landing')}</SelectItem>
               <SelectItem value="business">{t('services.business')}</SelectItem>
               <SelectItem value="shop">{t('services.shop')}</SelectItem>
+              <SelectItem value="tg-basic">{t('services.tg.basic')}</SelectItem>
+              <SelectItem value="tg-shop">{t('services.tg.shop')}</SelectItem>
+              <SelectItem value="tg-complex">{t('services.tg.complex')}</SelectItem>
+              <SelectItem value="auto-parsing">{t('services.auto.parsing')}</SelectItem>
+              <SelectItem value="auto-scripts">{t('services.auto.scripts')}</SelectItem>
+              <SelectItem value="auto-complex">{t('services.auto.complex')}</SelectItem>
+              <SelectItem value="mobile-mvp">{t('services.mobile.mvp')}</SelectItem>
+              <SelectItem value="mobile-business">{t('services.mobile.business')}</SelectItem>
+              <SelectItem value="mobile-shop">{t('services.mobile.shop')}</SelectItem>
               <SelectItem value="support">{t('services.additional.support.title')}</SelectItem>
               <SelectItem value="seo">{t('services.additional.seo.title')}</SelectItem>
               <SelectItem value="ads">{t('services.additional.ads.title')}</SelectItem>
