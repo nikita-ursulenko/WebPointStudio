@@ -20,6 +20,7 @@ async function sendNotification(type: 'contact' | 'newsletter', payload: any) {
 
 export interface PortfolioProject {
   id?: number;
+  priority?: number;
   type: 'landing' | 'business' | 'shop' | 'tg-basic' | 'tg-shop' | 'tg-complex' | 'auto-parsing' | 'auto-scripts' | 'auto-complex' | 'mobile-mvp' | 'mobile-business' | 'mobile-shop';
   title: string;
   category: string;
@@ -58,6 +59,7 @@ export const portfolioService = {
     const { data, error } = await supabase
       .from('portfolio_projects')
       .select('*')
+      .order('priority', { ascending: true })
       .order('id', { ascending: false });
 
     if (error) {

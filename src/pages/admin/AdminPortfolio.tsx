@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaImage } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaImage, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { format, parse } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -69,6 +69,7 @@ interface ProjectTranslations {
 
 interface Project {
   id: number;
+  priority: number;
   type: ProjectType;
   title: string;
   category: string;
@@ -114,6 +115,18 @@ const AdminPortfolio = () => {
   const [imagePreview, setImagePreview] = useState<string>('');
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'websites' | 'telegram' | 'automation' | 'mobile'>('all');
+
+  // Filter projects by active tab
+  const filteredProjects = projects.filter((project) => {
+    if (activeTab === 'all') return true;
+    const type = project.type;
+    if (activeTab === 'websites') return ['landing', 'business', 'shop'].includes(type);
+    if (activeTab === 'telegram') return type.startsWith('tg-');
+    if (activeTab === 'automation') return type.startsWith('auto-');
+    if (activeTab === 'mobile') return type.startsWith('mobile-');
+    return true;
+  });
 
   const [formData, setFormData] = useState<ProjectFormData>({
     type: 'landing',
@@ -140,7 +153,7 @@ const AdminPortfolio = () => {
     nextPage,
     prevPage,
     setCurrentPage,
-  } = usePagination({ data: projects, itemsPerPage: 10 });
+  } = usePagination({ data: filteredProjects, itemsPerPage: 10 });
 
   // Загрузка проектов из БД
   useEffect(() => {
@@ -251,6 +264,37 @@ const AdminPortfolio = () => {
       }
       setIsDeleteDialogOpen(false);
       setProjectToDelete(null);
+    }
+  };
+
+  const handleMove = async (project: Project, direction: 'up' | 'down') => {
+    const currentIndex = projects.findIndex((p) => p.id === project.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= projects.length) return;
+
+    const targetProject = projects[targetIndex];
+
+    try {
+      // Swapping priorities
+      // Using a temporary priority to avoid uniqueness issues if there were any, 
+      // but here we just swap.
+      const currentPriority = project.priority;
+      const targetPriority = targetProject.priority;
+
+      await Promise.all([
+        portfolioService.update(project.id, { priority: targetPriority }),
+        portfolioService.update(targetProject.id, { priority: currentPriority }),
+      ]);
+
+      // Reload projects to show new order
+      const data = await portfolioService.getAll();
+      setProjects(data as Project[]);
+      toast.success('Порядок изменен');
+    } catch (error) {
+      console.error('Error reordering project:', error);
+      toast.error('Ошибка при изменении порядка');
     }
   };
 
@@ -506,6 +550,49 @@ const AdminPortfolio = () => {
         </Button>
       </div>
 
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Button
+          variant={activeTab === 'all' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('all'); setCurrentPage(1); }}
+          className={activeTab === 'all' ? 'bg-primary' : 'glass-effect'}
+        >
+          Все
+        </Button>
+        <Button
+          variant={activeTab === 'websites' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('websites'); setCurrentPage(1); }}
+          className={activeTab === 'websites' ? 'bg-primary' : 'glass-effect'}
+        >
+          Веб-сайты
+        </Button>
+        <Button
+          variant={activeTab === 'telegram' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('telegram'); setCurrentPage(1); }}
+          className={activeTab === 'telegram' ? 'bg-primary' : 'glass-effect'}
+        >
+          Telegram
+        </Button>
+        <Button
+          variant={activeTab === 'automation' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('automation'); setCurrentPage(1); }}
+          className={activeTab === 'automation' ? 'bg-primary' : 'glass-effect'}
+        >
+          Автоматизация
+        </Button>
+        <Button
+          variant={activeTab === 'mobile' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('mobile'); setCurrentPage(1); }}
+          className={activeTab === 'mobile' ? 'bg-primary' : 'glass-effect'}
+        >
+          Мобильные
+        </Button>
+      </div>
+
       {projects.length === 0 ? (
         <Card className="glass-effect p-12 text-center border-white/10">
           <FaImage className="mx-auto text-4xl text-muted-foreground mb-4" />
@@ -531,6 +618,7 @@ const AdminPortfolio = () => {
                       <TableHead>{t('admin.portfolio.typeLabel')}</TableHead>
                       <TableHead>Название</TableHead>
                       <TableHead>{t('admin.portfolio.category')}</TableHead>
+                      <TableHead>Порядок</TableHead>
                       <TableHead>Действия</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -541,6 +629,28 @@ const AdminPortfolio = () => {
                         <TableCell>{getTypeLabel(project.type)}</TableCell>
                         <TableCell className="font-medium">{project.title}</TableCell>
                         <TableCell>{project.category}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleMove(project, 'up')}
+                              disabled={projects.findIndex(p => p.id === project.id) === 0}
+                              title="Переместить выше"
+                            >
+                              <FaArrowUp />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleMove(project, 'down')}
+                              disabled={projects.findIndex(p => p.id === project.id) === projects.length - 1}
+                              title="Переместить ниже"
+                            >
+                              <FaArrowDown />
+                            </Button>
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Button
@@ -590,6 +700,24 @@ const AdminPortfolio = () => {
                 </div>
 
                 <div className="flex gap-2 mt-auto">
+                  <div className="flex gap-1 mr-auto">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleMove(project, 'up')}
+                      disabled={projects.findIndex(p => p.id === project.id) === 0}
+                    >
+                      <FaArrowUp />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleMove(project, 'down')}
+                      disabled={projects.findIndex(p => p.id === project.id) === projects.length - 1}
+                    >
+                      <FaArrowDown />
+                    </Button>
+                  </div>
                   <Button
                     variant="outline"
                     size="sm"

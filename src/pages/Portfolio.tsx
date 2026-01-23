@@ -125,7 +125,7 @@ const Portfolio = () => {
   };
 
   // Используем только проекты из БД
-  const allProjects: DisplayProject[] = adminProjects.map(getProjectDisplayData).sort((a, b) => (b.id || 0) - (a.id || 0)); // Сортируем по ID (новые сверху)
+  const allProjects: DisplayProject[] = adminProjects.map(getProjectDisplayData);
 
   const categories = [
     { id: 'all', title: t('portfolio.all'), icon: FaGlobe },

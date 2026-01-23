@@ -102,6 +102,13 @@ const AdminBlog = () => {
   const [isTranslating, setIsTranslating] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | ArticleCategory>('all');
+
+  // Filter articles by active tab
+  const filteredArticles = articles.filter((article) => {
+    if (activeTab === 'all') return true;
+    return article.categoryKey === activeTab;
+  });
 
   const [formData, setFormData] = useState<ArticleFormData>({
     title: '',
@@ -122,7 +129,7 @@ const AdminBlog = () => {
     nextPage,
     prevPage,
     setCurrentPage,
-  } = usePagination({ data: articles, itemsPerPage: 10 });
+  } = usePagination({ data: filteredArticles, itemsPerPage: 10 });
 
   // Загрузка статей из БД
   useEffect(() => {
@@ -408,6 +415,57 @@ const AdminBlog = () => {
         <h1 className="text-3xl font-bold">Управление блогом</h1>
         <Button onClick={handleAddArticle} className="w-full md:w-auto bg-gradient-to-r from-primary to-accent hover:opacity-90">
           <FaPlus className="mr-2" /> Добавить статью
+        </Button>
+      </div>
+
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Button
+          variant={activeTab === 'all' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('all'); setCurrentPage(1); }}
+          className={activeTab === 'all' ? 'bg-primary' : 'glass-effect'}
+        >
+          Все
+        </Button>
+        <Button
+          variant={activeTab === 'prices' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('prices'); setCurrentPage(1); }}
+          className={activeTab === 'prices' ? 'bg-primary' : 'glass-effect'}
+        >
+          {t('blog.categories.prices')}
+        </Button>
+        <Button
+          variant={activeTab === 'tips' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('tips'); setCurrentPage(1); }}
+          className={activeTab === 'tips' ? 'bg-primary' : 'glass-effect'}
+        >
+          {t('blog.categories.tips')}
+        </Button>
+        <Button
+          variant={activeTab === 'seo' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('seo'); setCurrentPage(1); }}
+          className={activeTab === 'seo' ? 'bg-primary' : 'glass-effect'}
+        >
+          {t('blog.categories.seo')}
+        </Button>
+        <Button
+          variant={activeTab === 'design' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('design'); setCurrentPage(1); }}
+          className={activeTab === 'design' ? 'bg-primary' : 'glass-effect'}
+        >
+          {t('blog.categories.design')}
+        </Button>
+        <Button
+          variant={activeTab === 'ecommerce' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => { setActiveTab('ecommerce'); setCurrentPage(1); }}
+          className={activeTab === 'ecommerce' ? 'bg-primary' : 'glass-effect'}
+        >
+          {t('blog.categories.ecommerce')}
         </Button>
       </div>
 
