@@ -19,7 +19,7 @@ All colors MUST be HSL.
 
     --primary: 220 90% 56%;
     --primary-foreground: 210 40% 98%;
-    
+
     --primary-glow: 220 90% 70%;
     --secondary-glow: 280 80% 60%;
 
@@ -46,12 +46,12 @@ All colors MUST be HSL.
     --gradient-hero: linear-gradient(135deg, hsl(220 90% 56%), hsl(280 80% 60%), hsl(320 80% 56%));
     --gradient-subtle: linear-gradient(180deg, hsl(220 25% 8%), hsl(220 25% 12%));
     --gradient-card: linear-gradient(135deg, hsl(220 20% 14% / 0.8), hsl(280 20% 16% / 0.6));
-    
+
     /* Shadows */
     --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
     --shadow-elegant: 0 20px 60px -15px hsl(220 90% 56% / 0.4);
     --shadow-card: 0 10px 30px -10px hsl(220 90% 56% / 0.2);
-    
+
     /* Animations */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -70,7 +70,6 @@ All colors MUST be HSL.
 
   html {
     scroll-behavior: smooth;
-    @apply bg-background;
   }
 }
 
@@ -138,9 +137,12 @@ All colors MUST be HSL.
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0, 0, 0);
   }
+
   50% {
     transform: translate3d(0, -20px, 0);
   }
@@ -150,9 +152,11 @@ All colors MUST be HSL.
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -160,10 +164,13 @@ All colors MUST be HSL.
 
 /* Легкие анимации фоновых элементов - только transform, без blur */
 @keyframes float-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0, 0, 0) scale(1);
     opacity: 0.3;
   }
+
   50% {
     transform: translate3d(20px, -30px, 0) scale(1.1);
     opacity: 0.5;
@@ -171,10 +178,13 @@ All colors MUST be HSL.
 }
 
 @keyframes float-glow-slow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0, 0, 0) scale(1);
     opacity: 0.3;
   }
+
   50% {
     transform: translate3d(-20px, 30px, 0) scale(1.15);
     opacity: 0.5;
