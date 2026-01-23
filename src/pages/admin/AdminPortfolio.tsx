@@ -396,13 +396,15 @@ const AdminPortfolio = () => {
 
     try {
       let savedProject: Project | null = null;
+      let finalImagePath = imagePath;
+      let finalAdditionalImages = formData.images ? formData.images.split('\n').filter(img => img.trim()) : [];
 
-      const projectData: DBPortfolioProject = {
+      const initialProjectData: DBPortfolioProject = {
         type: formData.type,
         title: formData.title,
         category: formData.category,
         image: imagePath,
-        images: formData.images ? formData.images.split('\n').filter(img => img.trim()) : [],
+        images: finalAdditionalImages,
         problem: formData.problem,
         solution: formData.solution,
         result: formData.result,
@@ -415,92 +417,89 @@ const AdminPortfolio = () => {
 
       if (editingProject && editingProject.id) {
         // Update existing project
-        if (fileToUpload) {
-          setIsUploadingImage(true);
-          try {
-            const correctPath = await uploadBlogImage(fileToUpload, editingProject.id);
-            projectData.image = correctPath;
-          } catch (error: any) {
-            console.error('Error uploading image:', error);
-            toast.error(`Ошибка загрузки изображения: ${error?.message || 'Неизвестная ошибка'}`);
-            setIsSubmitting(false);
-            setIsUploadingImage(false);
-            return;
-          } finally {
-            setIsUploadingImage(false);
-          }
-        }
+        const projectId = editingProject.id;
+        setIsUploadingImage(true);
 
-        // Загружаем дополнительные изображения
-        if (additionalFilesToUpload.length > 0) {
-          setIsUploadingImage(true);
-          try {
+        try {
+          // Upload main image if provided
+          if (fileToUpload) {
+            finalImagePath = await uploadBlogImage(fileToUpload, projectId);
+          }
+
+          // Upload additional images if provided
+          if (additionalFilesToUpload.length > 0) {
             const uploadedImages = await Promise.all(
-              additionalFilesToUpload.map(file => uploadBlogImage(file, editingProject.id))
+              additionalFilesToUpload.map(file => uploadBlogImage(file, projectId))
             );
-            projectData.images = [...(projectData.images || []), ...uploadedImages];
-          } catch (error: any) {
-            console.error('Error uploading additional images:', error);
-            toast.error(`Ошибка загрузки дополнительных изображений: ${error?.message || 'Неизвестная ошибка'}`);
-          } finally {
-            setIsUploadingImage(false);
+            finalAdditionalImages = [...finalAdditionalImages, ...uploadedImages];
           }
-        }
 
-        const updated = await portfolioService.update(editingProject.id, projectData);
-        if (!updated) {
-          toast.error('Ошибка при обновлении проекта');
+          // Final update with all new paths
+          const updated = await portfolioService.update(projectId, {
+            ...initialProjectData,
+            image: finalImagePath,
+            images: finalAdditionalImages
+          });
+
+          if (!updated) throw new Error('Failed to update project');
+          savedProject = updated as Project;
+        } catch (uploadError: any) {
+          console.error('Error during update/upload:', uploadError);
+          toast.error(`Ошибка при обновлении: ${uploadError?.message || 'Неизвестная ошибка'}`);
           setIsSubmitting(false);
+          setIsUploadingImage(false);
           return;
+        } finally {
+          setIsUploadingImage(false);
         }
-        savedProject = updated as Project;
       } else {
-        // Create new project first to get ID
-        const created = await portfolioService.create(projectData);
+        // Create new project
+        const created = await portfolioService.create(initialProjectData);
         if (!created || !created.id) {
           toast.error('Ошибка при создании проекта');
           setIsSubmitting(false);
           return;
         }
-        savedProject = created as Project;
 
-        // Если загружен файл главного изображения, загружаем его с правильным ID
-        if (fileToUpload && savedProject.id) {
-          setIsUploadingImage(true);
-          try {
-            const correctPath = await uploadBlogImage(fileToUpload, savedProject.id);
-            await portfolioService.update(savedProject.id, { ...projectData, image: correctPath });
-            savedProject = { ...savedProject, image: correctPath };
-          } catch (error: any) {
-            console.error('Error uploading image with correct ID:', error);
-            toast.error(`Ошибка загрузки изображения: ${error?.message || 'Неизвестная ошибка'}`);
-          } finally {
-            setIsUploadingImage(false);
+        const projectId = created.id;
+        setIsUploadingImage(true);
+
+        try {
+          // Upload all files after getting the ID
+          const uploadPromises: Promise<any>[] = [];
+
+          if (fileToUpload) {
+            uploadPromises.push(uploadBlogImage(fileToUpload, projectId).then(path => { finalImagePath = path; }));
           }
-        }
 
-        // Загружаем дополнительные изображения
-        if (additionalFilesToUpload.length > 0 && savedProject.id) {
-          setIsUploadingImage(true);
-          try {
-            const uploadedImages = await Promise.all(
-              additionalFilesToUpload.map(file => uploadBlogImage(file, savedProject.id))
-            );
-            await portfolioService.update(savedProject.id, {
-              ...projectData,
-              images: [...(projectData.images || []), ...uploadedImages],
+          if (additionalFilesToUpload.length > 0) {
+            uploadPromises.push(Promise.all(additionalFilesToUpload.map(file => uploadBlogImage(file, projectId))).then(paths => {
+              finalAdditionalImages = [...finalAdditionalImages, ...paths];
+            }));
+          }
+
+          if (uploadPromises.length > 0) {
+            await Promise.all(uploadPromises);
+
+            // Final update for new project to set the correct paths
+            const finalUpdated = await portfolioService.update(projectId, {
+              ...initialProjectData,
+              image: finalImagePath,
+              images: finalAdditionalImages
             });
-            savedProject = { ...savedProject, images: [...(savedProject.images || []), ...uploadedImages] };
-          } catch (error: any) {
-            console.error('Error uploading additional images:', error);
-            toast.error(`Ошибка загрузки дополнительных изображений: ${error?.message || 'Неизвестная ошибка'}`);
-          } finally {
-            setIsUploadingImage(false);
+            savedProject = finalUpdated as Project;
+          } else {
+            savedProject = created as Project;
           }
+        } catch (uploadError: any) {
+          console.error('Error during initial upload:', uploadError);
+          toast.error(`Проект создан, но ошибка загрузки фото: ${uploadError?.message}`);
+        } finally {
+          setIsUploadingImage(false);
         }
       }
 
-      // Обновляем список проектов из БД
+      // Refresh list
       const newProjects = await portfolioService.getAll();
       setProjects(newProjects as Project[]);
       toast.success(editingProject ? 'Проект обновлен' : 'Проект создан');
