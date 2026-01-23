@@ -152,6 +152,7 @@ const Portfolio = () => {
       { id: 'all', title: t('portfolio.all') },
       { id: 'auto-parsing', title: t('services.auto.parsing') },
       { id: 'auto-scripts', title: t('services.auto.scripts') },
+      { id: 'auto-complex', title: t('services.auto.complex') },
     ],
     mobile: [
       { id: 'all', title: t('portfolio.all') },

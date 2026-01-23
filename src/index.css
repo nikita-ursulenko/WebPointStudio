@@ -70,6 +70,7 @@ All colors MUST be HSL.
 
   html {
     scroll-behavior: smooth;
+    @apply bg-background;
   }
 }
 

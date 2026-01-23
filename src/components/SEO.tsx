@@ -39,6 +39,7 @@ const SEO = ({
       {/* Основные мета-теги */}
       <title>{title}</title>
       <meta name="description" content={description} />
+      <meta name="theme-color" content="#0a0e14" />
       {keywords && <meta name="keywords" content={keywords} />}
       {noindex && <meta name="robots" content="noindex, nofollow" />}
 
