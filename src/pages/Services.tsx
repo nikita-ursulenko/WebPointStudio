@@ -367,20 +367,7 @@ const Services = () => {
         structuredData={structuredData}
       />
       <div className="min-h-screen pt-20">
-        {/* Helper Styles for :target visibility */}
-        <style>{`
-          .service-section {
-            display: none;
-          }
-          .service-section:target {
-            display: grid;
-            animation: fadeIn 0.5s ease-in-out;
-          }
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}</style>
+
 
         {/* Hero */}
         <section className="py-20 relative overflow-hidden">
@@ -416,7 +403,11 @@ const Services = () => {
                 <a
                   key={cat.id}
                   href={`#${cat.id}`}
-                  onClick={() => trackEvent('Клик по категории', `Услуги - Таб - ${cat.title}`, 'click')}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`#${cat.id}`, { replace: true });
+                    trackEvent('Клик по категории', `Услуги - Таб - ${cat.title}`, 'click');
+                  }}
                   className={`relative px-6 py-3 rounded-xl transition-all duration-500 flex items-center gap-3 group ${activeCategory === cat.id ? 'text-white' : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
@@ -442,8 +433,7 @@ const Services = () => {
             {Object.keys(allPackages).map((categoryKey) => (
               <div
                 key={categoryKey}
-                id={categoryKey}
-                className="service-section grid-cols-1 lg:grid-cols-3 gap-8"
+                className={`${activeCategory === categoryKey ? 'grid animate-in fade-in slide-in-from-bottom-4 duration-500' : 'hidden'} grid-cols-1 lg:grid-cols-3 gap-8`}
               >
                 {allPackages[categoryKey].map((pkg, index) => (
                   <motion.div
