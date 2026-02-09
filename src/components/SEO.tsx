@@ -24,7 +24,7 @@ const SEO = ({
 }: SEOProps) => {
   const { language } = useLanguage();
   // Автоматически определяем домен из текущего URL
-  const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://webpoint.studio';
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImageUrl = image.startsWith('http') ? image : `${siteUrl}${image}`;
 
@@ -34,6 +34,8 @@ const SEO = ({
     en: 'en_US',
   };
 
+  const currentLocale = localeMap[language] || 'ru_RU';
+
   return (
     <Helmet>
       {/* Основные мета-теги */}
@@ -41,7 +43,8 @@ const SEO = ({
       <meta name="description" content={description} />
       <meta name="theme-color" content="#0a0e14" />
       {keywords && <meta name="keywords" content={keywords} />}
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+      <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
 
       {/* Canonical URL */}
       <link rel="canonical" href={fullUrl} />
@@ -54,7 +57,7 @@ const SEO = ({
       <meta property="og:image" content={fullImageUrl} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:locale" content={localeMap[language] || 'ru_RU'} />
+      <meta property="og:locale" content={currentLocale} />
       <meta property="og:site_name" content="WebPoint - Создание Сайтов" />
 
       {/* Twitter Card */}

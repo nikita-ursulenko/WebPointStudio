@@ -56,6 +56,7 @@ const ArticleDetail = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const [adminArticles, setAdminArticles] = useState<ArticleFromAdmin[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Загрузка статей из БД
   useEffect(() => {
@@ -74,6 +75,8 @@ const ArticleDetail = () => {
             console.error('Error parsing localStorage:', e);
           }
         }
+      } finally {
+        setLoading(false);
       }
     };
     loadArticles();
@@ -158,6 +161,20 @@ const ArticleDetail = () => {
       trackEvent('Просмотр статьи', `Блог - ${article.title}`, 'view');
     }
   }, [article]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 flex flex-col items-center justify-center">
+        <div className="relative">
+          <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
+          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin relative" />
+        </div>
+        <p className="mt-8 text-muted-foreground animate-pulse font-medium tracking-wide">
+          {language === 'ru' ? 'Загрузка статьи...' : language === 'ro' ? 'Se încarcă articolul...' : 'Loading article...'}
+        </p>
+      </div>
+    );
+  }
 
   if (!article) {
     return (

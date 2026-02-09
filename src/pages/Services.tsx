@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import SeamlessVideoLoop from '@/components/SeamlessVideoLoop';
 import { TiltCard } from '@/components/TiltCard';
 import {
@@ -17,23 +17,31 @@ import { trackEvent } from '@/lib/analytics';
 
 const Services = () => {
   const { t } = useLanguage();
-  const [activeCategory, setActiveCategory] = useState('websites');
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Determine active category from hash, default to 'websites'
+  const activeCategory = location.hash.replace('#', '') || 'websites';
 
   useEffect(() => {
+    // 1. Handle Legacy Query Params (redirect ?category=x -> #x)
     const categoryParam = searchParams.get('category');
     if (categoryParam) {
-      const validCategories = ['websites', 'telegram', 'automation', 'mobile'];
-      if (validCategories.includes(categoryParam)) {
-        setActiveCategory(categoryParam);
-        // Прокрутка к табам при переходе
-        const tabsElement = document.getElementById('services-tabs');
-        if (tabsElement) {
-          tabsElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+      navigate(`#${categoryParam}`, { replace: true });
+      return;
     }
-  }, [searchParams]);
+
+    // 2. Default Hash (if empty -> #websites)
+    if (!location.hash) {
+      navigate('#websites', { replace: true });
+    }
+
+    // 3. Scroll to tabs if hash changes (optional, but good for UX)
+    // We only scroll if it's not the initial load or if we want deep linking behavior
+    // For now, standard browser behavior handles #id scrolling mostly. 
+    // But since we have a sticky header or overlay, might need offset.
+  }, [searchParams, location.hash, navigate]);
 
   const categories = [
     { id: 'websites', title: t('services.category.websites'), icon: FaRocket },
@@ -108,6 +116,21 @@ const Services = () => {
         ],
         gradient: 'from-orange-500 to-red-500',
       },
+      {
+        id: 'websites-complex',
+        icon: FaLaptopCode,
+        title: 'Корпоративный портал',
+        desc: 'Сложные веб-системы и порталы',
+        price: '€1499',
+        time: 'от 30 дней',
+        features: [
+          'Личные кабинеты',
+          'Сложная бизнес-логика',
+          'Интеграции по API',
+          'Высокая нагрузка'
+        ],
+        gradient: 'from-indigo-500 to-blue-600',
+      }
     ],
     telegram: [
       {
@@ -344,6 +367,21 @@ const Services = () => {
         structuredData={structuredData}
       />
       <div className="min-h-screen pt-20">
+        {/* Helper Styles for :target visibility */}
+        <style>{`
+          .service-section {
+            display: none;
+          }
+          .service-section:target {
+            display: grid;
+            animation: fadeIn 0.5s ease-in-out;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+
         {/* Hero */}
         <section className="py-20 relative overflow-hidden">
           <div className="absolute inset-0 -z-10">
@@ -375,12 +413,10 @@ const Services = () => {
           <div className="flex flex-wrap justify-center gap-4">
             <div className="glass-effect p-2 rounded-2xl flex flex-wrap justify-center gap-2 border border-white/10 shadow-elegant overflow-hidden">
               {categories.map((cat) => (
-                <button
+                <a
                   key={cat.id}
-                  onClick={() => {
-                    setActiveCategory(cat.id);
-                    trackEvent('Клик по категории', `Услуги - Таб - ${cat.title}`, 'click');
-                  }}
+                  href={`#${cat.id}`}
+                  onClick={() => trackEvent('Клик по категории', `Услуги - Таб - ${cat.title}`, 'click')}
                   className={`relative px-6 py-3 rounded-xl transition-all duration-500 flex items-center gap-3 group ${activeCategory === cat.id ? 'text-white' : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
@@ -394,30 +430,27 @@ const Services = () => {
                   )}
                   <cat.icon className={`text-xl relative z-10 transition-transform duration-500 ${activeCategory === cat.id ? 'scale-110' : 'group-hover:scale-110'}`} />
                   <span className="font-semibold relative z-10 whitespace-nowrap">{cat.title}</span>
-                </button>
+                </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Main Packages with Animation */}
+        {/* Main Packages with :target visibility */}
         <section className="pb-20">
           <div className="container mx-auto px-4">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeCategory}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+            {Object.keys(allPackages).map((categoryKey) => (
+              <div
+                key={categoryKey}
+                id={categoryKey}
+                className="service-section grid-cols-1 lg:grid-cols-3 gap-8"
               >
-                {allPackages[activeCategory].map((pkg, index) => (
+                {allPackages[categoryKey].map((pkg, index) => (
                   <motion.div
                     key={pkg.id}
                     id={pkg.id}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className="relative"
                   >
@@ -501,7 +534,7 @@ const Services = () => {
                               service_name: pkg.title,
                               price: pkg.price
                             });
-                            trackEvent('Начало заказа', `Услуги - ${activeCategory} - ${pkg.title}`, 'click');
+                            trackEvent('Начало заказа', `Услуги - ${categoryKey} - ${pkg.title}`, 'click');
                           }}
                         >
                           <Link to={`/contact?type=${pkg.id}`}>{t('services.order')}</Link>
@@ -510,8 +543,8 @@ const Services = () => {
                     </TiltCard>
                   </motion.div>
                 ))}
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            ))}
           </div>
         </section>
 
